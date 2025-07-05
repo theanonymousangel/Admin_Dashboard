@@ -124,8 +124,8 @@ export default function OrdersPage() {
                     <TableCell className="hidden md:table-cell">{order.customerEmail}</TableCell>
                     <TableCell className="hidden lg:table-cell">{order.customerPhone || 'N/A'}</TableCell>
                     <TableCell className="hidden lg:table-cell">{order.customerAddress}</TableCell>
-                    <TableCell className="hidden xl:table-cell">{order.products.map(p => p.name).join(', ')}</TableCell>
-                    <TableCell className="hidden xl:table-cell">{order.products.map(p => p.size).join(', ')}</TableCell>
+                    <TableCell className="hidden xl:table-cell">{order.products[0]?.name}</TableCell>
+                    <TableCell className="hidden xl:table-cell">{order.products[0]?.size}</TableCell>
                     <TableCell className="hidden xl:table-cell">{order.products.reduce((sum, p) => sum + p.quantity, 0)}</TableCell>
                     <TableCell>${order.amount.toFixed(2)}</TableCell>
                     <TableCell>
