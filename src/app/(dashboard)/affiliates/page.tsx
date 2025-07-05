@@ -363,17 +363,17 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
 
 const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
     return (
-        <Tabs defaultValue="payouts" className="w-full">
+        <Tabs defaultValue="account" className="w-full">
             <TabsList className="px-6">
-                <TabsTrigger value="payouts">Payout Overview</TabsTrigger>
                 <TabsTrigger value="account">Account Overview</TabsTrigger>
+                <TabsTrigger value="payouts">Payout Overview</TabsTrigger>
             </TabsList>
             <Separator />
-            <TabsContent value="payouts" className="m-0">
-                <PayoutsView affiliate={affiliate} />
-            </TabsContent>
             <TabsContent value="account" className="m-0">
                 <AccountView affiliate={affiliate} onUpdate={onUpdate} />
+            </TabsContent>
+            <TabsContent value="payouts" className="m-0">
+                <PayoutsView affiliate={affiliate} />
             </TabsContent>
         </Tabs>
     );
