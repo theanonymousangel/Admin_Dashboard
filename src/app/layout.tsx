@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "E-Commerce AdminZen",
+  title: "Aerøne Admin",
   description: "Admin Dashboard for your e-commerce store.",
 };
 
