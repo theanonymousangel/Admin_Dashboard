@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import Image from "next/image";
 import {
   MoreHorizontal,
   File,
@@ -100,17 +99,7 @@ export default function CustomersPage() {
             {filteredCustomers.map((customer) => (
               <TableRow key={customer.id}>
                 <TableCell>
-                  <div className="flex items-center gap-3">
-                    <Image
-                      alt={customer.name}
-                      className="aspect-square rounded-full object-cover"
-                      height="32"
-                      src={customer.avatar}
-                      width="32"
-                      data-ai-hint="person avatar"
-                    />
-                    <div className="font-medium">{customer.name}</div>
-                  </div>
+                  <div className="font-medium">{customer.name}</div>
                 </TableCell>
                 <TableCell>{customer.totalOrders}</TableCell>
                 <TableCell>${customer.totalSpent.toFixed(2)}</TableCell>

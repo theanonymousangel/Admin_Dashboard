@@ -17,10 +17,10 @@ export const mockOrders: Order[] = [
 ];
 
 export const mockCustomers: Customer[] = [
-  { id: 'cust-01', name: 'Jane Doe', email: 'jane.doe@example.com', totalOrders: 5, totalSpent: 450.50, lastPurchaseDate: '2023-10-26', avatar: 'https://placehold.co/40x40.png' },
-  { id: 'cust-02', name: 'John Smith', email: 'john.smith@example.com', totalOrders: 3, totalSpent: 320.00, lastPurchaseDate: '2023-10-25', avatar: 'https://placehold.co/40x40.png' },
-  { id: 'cust-03', name: 'Alice Johnson', email: 'alice.j@example.com', totalOrders: 8, totalSpent: 1200.75, lastPurchaseDate: '2023-10-27', avatar: 'https://placehold.co/40x40.png' },
-  { id: 'cust-04', name: 'Bob Brown', email: 'bob.brown@example.com', totalOrders: 2, totalSpent: 180.25, lastPurchaseDate: '2023-09-15', avatar: 'https://placehold.co/40x40.png' },
+  { id: 'cust-01', name: 'Jane Doe', email: 'jane.doe@example.com', totalOrders: 5, totalSpent: 450.50, lastPurchaseDate: '2023-10-26' },
+  { id: 'cust-02', name: 'John Smith', email: 'john.smith@example.com', totalOrders: 3, totalSpent: 320.00, lastPurchaseDate: '2023-10-25' },
+  { id: 'cust-03', name: 'Alice Johnson', email: 'alice.j@example.com', totalOrders: 8, totalSpent: 1200.75, lastPurchaseDate: '2023-10-27' },
+  { id: 'cust-04', name: 'Bob Brown', email: 'bob.brown@example.com', totalOrders: 2, totalSpent: 180.25, lastPurchaseDate: '2023-09-15' },
 ];
 
 const today = new Date();

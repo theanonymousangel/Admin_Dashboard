@@ -30,7 +30,6 @@ export type Customer = {
   totalOrders: number;
   totalSpent: number;
   lastPurchaseDate: string;
-  avatar: string;
 };
 
 export type AffiliateSale = {
