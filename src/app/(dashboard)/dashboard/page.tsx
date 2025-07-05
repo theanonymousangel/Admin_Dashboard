@@ -2,7 +2,7 @@
 "use client";
 
 import {
-  Activity,
+  Ban,
   CreditCard,
   DollarSign,
   Users,
@@ -19,6 +19,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { mockOrders } from "@/lib/mock-data";
 
 
 const yearlyIncomeData = [
@@ -86,6 +87,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 
 export default function DashboardPage() {
+  const refundedOrCancelledOrders = mockOrders.filter(
+    order => order.status === 'Refunded' || order.status === 'Cancelled'
+  ).length;
+
   return (
     <>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -108,10 +113,10 @@ export default function DashboardPage() {
             icon={CreditCard}
         />
          <StatCard 
-            title="Active Now"
-            value="+573"
-            description="+201 since last hour"
-            icon={Activity}
+            title="Refunds/Cancellations"
+            value={`${refundedOrCancelledOrders}`}
+            description="Total refunded or cancelled orders"
+            icon={Ban}
         />
       </div>
       
