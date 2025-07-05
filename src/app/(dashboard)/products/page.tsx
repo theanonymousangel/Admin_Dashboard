@@ -141,7 +141,7 @@ export default function ProductsPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="hidden w-[100px] sm:table-cell">
-                      <span className="sr-only">Image</span>
+                      Image
                     </TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Status</TableHead>
