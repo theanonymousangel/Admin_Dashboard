@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -91,26 +92,6 @@ const MobileNav = ({ pathname }: { pathname: string }) => (
   </Sheet>
 );
 
-const DashboardTopNav = ({ pathname }: { pathname: string }) => (
-    <nav className="border-b bg-card hidden md:block">
-        <div className="flex items-center gap-x-8 px-4 sm:px-8 overflow-x-auto">
-            {operationsNavItems.map((item) => (
-                <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`whitespace-nowrap py-4 text-sm font-medium transition-colors 
-                    ${pathname === item.href
-                        ? "border-b-2 border-primary text-primary"
-                        : "text-muted-foreground hover:text-primary"
-                    }`}
-                >
-                    {item.label}
-                </Link>
-            ))}
-        </div>
-    </nav>
-);
-
 export default function DashboardLayout({
   children,
 }: {
@@ -194,7 +175,6 @@ export default function DashboardLayout({
               </DropdownMenu>
           </div>
         </header>
-        <DashboardTopNav pathname={pathname} />
         <main className="flex flex-1 flex-col gap-6 p-4 md:p-8">
           {children}
         </main>
