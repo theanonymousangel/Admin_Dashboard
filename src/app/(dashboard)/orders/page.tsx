@@ -100,10 +100,10 @@ export default function OrdersPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Transaction ID</TableHead>
+                  <TableHead>Date</TableHead>
                   <TableHead>Customer</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Date</TableHead>
                   <TableHead>
                     <span className="sr-only">Actions</span>
                   </TableHead>
@@ -113,6 +113,7 @@ export default function OrdersPage() {
                 {orders.map((order) => (
                   <TableRow key={order.id}>
                     <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
+                    <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
                     <TableCell>{order.customerName}</TableCell>
                     <TableCell>${order.amount.toFixed(2)}</TableCell>
                     <TableCell>
@@ -129,7 +130,6 @@ export default function OrdersPage() {
                             </SelectContent>
                         </Select>
                     </TableCell>
-                    <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
