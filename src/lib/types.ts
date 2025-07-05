@@ -34,6 +34,7 @@ export type AffiliateSale = {
   id: string;
   amount: number;
   date: string; // ISO date string e.g. "2024-07-01T10:00:00Z"
+  customerName: string;
 };
 
 export type Payout = {
@@ -44,6 +45,7 @@ export type Payout = {
     eligibleDate: Date;
     payoutDate: Date;
     status: 'Pending Eligibility' | 'Eligible for Payout' | 'Paid';
+    customerName: string;
 };
 
 export type AffiliateDocument = {
@@ -83,4 +85,5 @@ export type Transaction = {
   amount: number;
   status: 'Completed' | 'Pending' | 'Reversed';
   saleId: string;
+  customerName?: string;
 };

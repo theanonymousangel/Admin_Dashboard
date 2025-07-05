@@ -83,7 +83,7 @@ function calculatePayouts(sales: AffiliateSale[], commissionRate: number) {
       nextPayoutDate = payoutDate;
     }
 
-    return { saleId: sale.id, saleAmount: sale.amount, commission, saleDate, eligibleDate, payoutDate, status };
+    return { saleId: sale.id, saleAmount: sale.amount, commission, saleDate, eligibleDate, payoutDate, status, customerName: sale.customerName };
   }).sort((a,b) => b.saleDate.getTime() - a.saleDate.getTime());
 
   if (nextPayoutDate) {
@@ -375,6 +375,7 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
         amount: payout.commission,
         status: payout.status === 'Paid' ? 'Completed' : 'Pending',
         saleId: payout.saleId,
+        customerName: payout.customerName,
       });
     });
     
@@ -388,6 +389,7 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
             amount: -commissionToRefund,
             status: 'Reversed',
             saleId: saleToRefund.id,
+            customerName: saleToRefund.customerName,
         })
     }
 
@@ -432,8 +434,9 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Date</TableHead>
                 <TableHead>Transaction ID</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead>Date</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
@@ -442,8 +445,9 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
             <TableBody>
               {transactions.length > 0 ? transactions.map((tx) => (
                 <TableRow key={tx.id}>
-                  <TableCell>{format(new Date(tx.date), 'MMM dd, yyyy')}</TableCell>
                   <TableCell className="font-mono text-xs">{tx.id}</TableCell>
+                  <TableCell>{tx.customerName}</TableCell>
+                  <TableCell>{format(new Date(tx.date), 'MMM dd, yyyy')}</TableCell>
                   <TableCell>{tx.type}</TableCell>
                   <TableCell><TransactionBadge status={tx.status} type={tx.type} /></TableCell>
                   <TableCell className={`text-right font-medium ${tx.amount > 0 ? '' : 'text-destructive'}`}>
@@ -452,7 +456,7 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
                 </TableRow>
               )) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">No transactions to display.</TableCell>
+                  <TableCell colSpan={6} className="h-24 text-center">No transactions to display.</TableCell>
                 </TableRow>
               )}
             </TableBody>
