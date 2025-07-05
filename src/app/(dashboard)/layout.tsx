@@ -9,7 +9,6 @@ import {
   Box,
   Users,
   Network,
-  Settings,
   Menu,
   ChevronDown,
   Receipt,
@@ -39,10 +38,6 @@ const operationsNavItems = [
   { href: "/customers", icon: Users, label: "Customers" },
   { href: "/affiliates", icon: Network, label: "Affiliates" },
   { href: "/payouts", icon: Landmark, label: "Income/Payouts" },
-];
-
-const accountNavItems = [
-    { href: "/settings", icon: Settings, label: "Settings" },
 ];
 
 const NavLink = ({ href, icon: Icon, label, pathname }: { href: string; icon: React.ElementType; label: string; pathname: string; }) => (
@@ -81,12 +76,6 @@ const MobileNav = ({ pathname }: { pathname: string }) => (
               <NavLink key={item.href} {...item} pathname={pathname} />
             ))}
         </div>
-        <div className="flex flex-col gap-1 mt-2">
-            <h3 className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Account</h3>
-            {accountNavItems.map((item) => (
-              <NavLink key={item.href} {...item} pathname={pathname} />
-            ))}
-        </div>
       </nav>
     </SheetContent>
   </Sheet>
@@ -116,12 +105,6 @@ export default function DashboardLayout({
                       <NavLink key={item.href} {...item} pathname={pathname} />
                     ))}
                 </div>
-                 <div className="flex flex-col gap-1 mt-4">
-                    <h3 className="px-3 mb-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Account</h3>
-                    {accountNavItems.map((item) => (
-                      <NavLink key={item.href} {...item} pathname={pathname} />
-                    ))}
-                </div>
             </nav>
           </div>
           <div className="mt-auto p-4 border-t">
@@ -141,7 +124,9 @@ export default function DashboardLayout({
                 <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/settings">Settings</Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem>Support</DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>Logout</DropdownMenuItem>
@@ -167,7 +152,9 @@ export default function DashboardLayout({
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Settings</DropdownMenuItem>
+                   <DropdownMenuItem asChild>
+                    <Link href="/settings">Settings</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem>Support</DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Logout</DropdownMenuItem>
