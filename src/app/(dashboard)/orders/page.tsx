@@ -61,10 +61,97 @@ function OrderStatusBadge({ status }: { status: Order["status"] }) {
   return <Badge variant={variantMapping[status]}>{status}</Badge>;
 }
 
+const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusChange: (orderId: string, newStatus: Order['status']) => void; }) => (
+    <Card>
+      <CardHeader>
+        <CardTitle className="font-headline">Transactions</CardTitle>
+        <CardDescription>
+          A list of all recent transactions from your store.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Date</TableHead>
+              <TableHead>Transaction ID</TableHead>
+              <TableHead>Customer</TableHead>
+              <TableHead className="hidden md:table-cell">Affiliate</TableHead>
+              <TableHead className="hidden lg:table-cell">Phone Number</TableHead>
+              <TableHead className="hidden lg:table-cell">Address</TableHead>
+              <TableHead className="hidden xl:table-cell">Products</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>
+                <span className="sr-only">Actions</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {orders.map((order) => (
+              <TableRow key={order.id}>
+                <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+                <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
+                <TableCell>{order.customerName}</TableCell>
+                <TableCell className="hidden md:table-cell">{order.affiliateUsername || ""}</TableCell>
+                <TableCell className="hidden lg:table-cell">{order.customerPhone || 'N/A'}</TableCell>
+                <TableCell className="hidden lg:table-cell">{order.customerAddress}</TableCell>
+                <TableCell className="hidden xl:table-cell max-w-[300px] truncate" title={order.products.map(p => {
+                      const details = [p.size, p.color].filter(Boolean).join(', ');
+                      return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
+                  }).join('; ')}>
+                    {order.products.map(p => {
+                        const details = [p.size, p.color].filter(Boolean).join(', ');
+                        return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
+                    }).join('; ')}
+                </TableCell>
+                <TableCell>${order.amount.toFixed(2)}</TableCell>
+                <TableCell>
+                   <Select onValueChange={(value) => onStatusChange(order.id, value as Order['status'])} defaultValue={order.status}>
+                        <SelectTrigger className="w-[120px] h-8">
+                            <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Pending">Pending</SelectItem>
+                            <SelectItem value="Shipped">Shipped</SelectItem>
+                            <SelectItem value="Completed">Completed</SelectItem>
+                            <SelectItem value="Refunded">Refunded</SelectItem>
+                            <SelectItem value="Cancelled">Cancelled</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem>View Details</DropdownMenuItem>
+                      <DropdownMenuItem>Customer History</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+       <CardFooter>
+          <div className="text-xs text-muted-foreground">
+            Showing <strong>1-{orders.length}</strong> of <strong>{orders.length}</strong> transactions
+          </div>
+        </CardFooter>
+    </Card>
+);
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>(mockOrders);
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("all");
 
   const handleStatusChange = (orderId: string, newStatus: Order['status']) => {
     setOrders(prevOrders => prevOrders.map(order => 
@@ -73,12 +160,18 @@ export default function OrdersPage() {
   };
   
   const filteredOrders = useMemo(() => {
+    let results = orders;
+
+    if (activeTab !== 'all') {
+      results = results.filter(order => order.status.toLowerCase() === activeTab);
+    }
+
     if (!searchTerm) {
-      return orders;
+      return results;
     }
     const lowercasedTerm = searchTerm.toLowerCase();
 
-    return orders.filter(order => 
+    return results.filter(order => 
       order.id.toLowerCase().includes(lowercasedTerm) ||
       (order.affiliateUsername && order.affiliateUsername.toLowerCase().includes(lowercasedTerm)) ||
       order.customerName.toLowerCase().includes(lowercasedTerm) ||
@@ -88,10 +181,12 @@ export default function OrdersPage() {
       order.amount.toString().includes(lowercasedTerm) ||
       order.status.toLowerCase().includes(lowercasedTerm)
     );
-  }, [orders, searchTerm]);
+  }, [orders, searchTerm, activeTab]);
   
+  const tableContent = <OrdersDisplay orders={filteredOrders} onStatusChange={handleStatusChange} />;
+
   return (
-    <Tabs defaultValue="all">
+    <Tabs defaultValue="all" onValueChange={setActiveTab}>
       <div className="flex items-center">
         <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
@@ -119,90 +214,16 @@ export default function OrdersPage() {
         </div>
       </div>
       <TabsContent value="all">
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-headline">Transactions</CardTitle>
-            <CardDescription>
-              A list of all recent transactions from your store.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Transaction ID</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead className="hidden md:table-cell">Affiliate</TableHead>
-                  <TableHead className="hidden lg:table-cell">Phone Number</TableHead>
-                  <TableHead className="hidden lg:table-cell">Address</TableHead>
-                  <TableHead className="hidden xl:table-cell">Products</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>
-                    <span className="sr-only">Actions</span>
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredOrders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
-                    <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
-                    <TableCell>{order.customerName}</TableCell>
-                    <TableCell className="hidden md:table-cell">{order.affiliateUsername || ""}</TableCell>
-                    <TableCell className="hidden lg:table-cell">{order.customerPhone || 'N/A'}</TableCell>
-                    <TableCell className="hidden lg:table-cell">{order.customerAddress}</TableCell>
-                    <TableCell className="hidden xl:table-cell max-w-[300px] truncate" title={order.products.map(p => {
-                          const details = [p.size, p.color].filter(Boolean).join(', ');
-                          return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
-                      }).join('; ')}>
-                        {order.products.map(p => {
-                            const details = [p.size, p.color].filter(Boolean).join(', ');
-                            return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
-                        }).join('; ')}
-                    </TableCell>
-                    <TableCell>${order.amount.toFixed(2)}</TableCell>
-                    <TableCell>
-                       <Select onValueChange={(value) => handleStatusChange(order.id, value as Order['status'])} defaultValue={order.status}>
-                            <SelectTrigger className="w-[120px] h-8">
-                                <SelectValue placeholder="Status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Pending">Pending</SelectItem>
-                                <SelectItem value="Shipped">Shipped</SelectItem>
-                                <SelectItem value="Completed">Completed</SelectItem>
-                                <SelectItem value="Refunded">Refunded</SelectItem>
-                                <SelectItem value="Cancelled">Cancelled</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>View Details</DropdownMenuItem>
-                          <DropdownMenuItem>Customer History</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-           <CardFooter>
-              <div className="text-xs text-muted-foreground">
-                Showing <strong>1-{filteredOrders.length}</strong> of <strong>{filteredOrders.length}</strong> transactions
-              </div>
-            </CardFooter>
-        </Card>
+        {tableContent}
+      </TabsContent>
+      <TabsContent value="pending">
+        {tableContent}
+      </TabsContent>
+      <TabsContent value="shipped">
+        {tableContent}
+      </TabsContent>
+      <TabsContent value="completed">
+        {tableContent}
       </TabsContent>
     </Tabs>
   );
