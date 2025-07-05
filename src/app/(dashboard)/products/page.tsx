@@ -129,6 +129,8 @@ export default function ProductsPage() {
                     <TableHead className="hidden md:table-cell">
                       Stock Quantity
                     </TableHead>
+                    <TableHead className="hidden lg:table-cell">Sizes</TableHead>
+                    <TableHead className="hidden lg:table-cell">Colors</TableHead>
                     <TableHead>
                       <span className="sr-only">Actions</span>
                     </TableHead>
@@ -161,6 +163,12 @@ export default function ProductsPage() {
                         }`}
                       >
                         {product.stock}
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {product.sizes?.join(", ") || "N/A"}
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {product.colors?.join(", ") || "N/A"}
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>
