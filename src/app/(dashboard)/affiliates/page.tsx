@@ -468,18 +468,18 @@ const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpd
         <Tabs defaultValue="account" className="w-full">
             <TabsList className="px-6">
                 <TabsTrigger value="account">Account Overview</TabsTrigger>
-                <TabsTrigger value="payouts">Payout Overview</TabsTrigger>
                 <TabsTrigger value="transactions">Transactions</TabsTrigger>
+                <TabsTrigger value="payouts">Payout Overview</TabsTrigger>
             </TabsList>
             <Separator />
             <TabsContent value="account" className="m-0">
                 <AccountView affiliate={affiliate} onUpdate={onUpdate} />
             </TabsContent>
-            <TabsContent value="payouts" className="m-0">
-                <PayoutsView affiliate={affiliate} />
-            </TabsContent>
             <TabsContent value="transactions" className="m-0">
                 <TransactionsView affiliate={affiliate} />
+            </TabsContent>
+            <TabsContent value="payouts" className="m-0">
+                <PayoutsView affiliate={affiliate} />
             </TabsContent>
         </Tabs>
     );
