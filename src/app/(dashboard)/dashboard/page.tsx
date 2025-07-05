@@ -94,7 +94,7 @@ export default function DashboardPage() {
   return (
     <>
       <div>
-        <h1 className="text-3xl font-bold font-headline">Dashboard</h1>
+        <h1 className="text-3xl font-bold">Dashboard</h1>
         <p className="text-sm text-muted-foreground">
           Overview of all of the sales and transactions.
         </p>
