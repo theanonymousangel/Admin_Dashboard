@@ -37,6 +37,9 @@ import {
 } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import { mockAffiliates } from "@/lib/mock-data";
 import type { Affiliate, AffiliateSale, Payout } from "@/lib/types";
 
@@ -111,7 +114,7 @@ function PayoutStatusBadge({ status }: { status: Payout["status"] }) {
     "Pending Eligibility": "bg-yellow-100 text-yellow-800",
   }
 
-  return <Badge variant={variant} className={`border-none ${bgColors[status]}`}>{status}</Badge>;
+  return <Badge variant={variant[status]} className={`border-none ${bgColors[status]}`}>{status}</Badge>;
 }
 
 const AffiliatePayoutDetails = ({ affiliate }: { affiliate: Affiliate }) => {
@@ -222,17 +225,21 @@ const AffiliatePayoutDetails = ({ affiliate }: { affiliate: Affiliate }) => {
   )
 }
 
-
-function AffiliateStatusBadge({ status }: { status: Affiliate["status"] }) {
-  const variant = {
-    "Active": "default",
-    "Inactive": "secondary",
-  }[status] as "default" | "secondary";
-  return <Badge variant={variant}>{status}</Badge>;
-}
-
 export default function AffiliatesPage() {
-  const [affiliates] = useState<Affiliate[]>(mockAffiliates);
+  const [affiliates, setAffiliates] = useState<Affiliate[]>(mockAffiliates);
+  
+  const handleCommissionChange = (affiliateId: string, newCommission: number) => {
+    setAffiliates(prev => prev.map(aff => 
+      aff.id === affiliateId ? { ...aff, commissionRate: newCommission } : aff
+    ));
+  };
+
+  const handleStatusChange = (affiliateId: string, newStatus: Affiliate['status']) => {
+    setAffiliates(prev => prev.map(aff => 
+      aff.id === affiliateId ? { ...aff, status: newStatus } : aff
+    ));
+  };
+
 
   return (
     <Card>
@@ -265,15 +272,46 @@ export default function AffiliatesPage() {
           </TableHeader>
           {affiliates.map((affiliate) => (
             <Collapsible asChild key={affiliate.id}>
-              <tbody>
+              <tbody className="group">
                 <CollapsibleTrigger asChild>
                   <TableRow className="cursor-pointer">
                     <TableCell className="font-medium">{affiliate.name}</TableCell>
                     <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
-                    <TableCell>{affiliate.commissionRate}%</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <Input
+                          type="number"
+                          value={affiliate.commissionRate}
+                          onChange={(e) => {
+                              e.stopPropagation();
+                              handleCommissionChange(affiliate.id, Number(e.target.value))
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-20 h-8"
+                        />
+                         <span className="text-muted-foreground">%</span>
+                      </div>
+                    </TableCell>
                     <TableCell>${affiliate.balance.toFixed(2)}</TableCell>
                     <TableCell>
-                      <AffiliateStatusBadge status={affiliate.status} />
+                      <Select
+                        defaultValue={affiliate.status}
+                        onValueChange={(value) => {
+                            handleStatusChange(affiliate.id, value as Affiliate['status']);
+                        }}
+                       >
+                        <SelectTrigger
+                            className="w-[120px] h-8"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Active">Active</SelectItem>
+                            <SelectItem value="Inactive">Inactive</SelectItem>
+                            <SelectItem value="Pending">Pending</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </TableCell>
                   </TableRow>
                 </CollapsibleTrigger>
@@ -291,7 +329,7 @@ export default function AffiliatesPage() {
       </CardContent>
       <CardFooter>
         <div className="text-xs text-muted-foreground">
-          Showing <strong>1-3</strong> of <strong>{affiliates.length}</strong> affiliates
+          Showing <strong>1-{affiliates.length}</strong> of <strong>{affiliates.length}</strong> affiliates
         </div>
       </CardFooter>
     </Card>

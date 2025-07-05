@@ -39,11 +39,13 @@ const salesForAffiliate2: AffiliateSale[] = [
     { id: 'sale-06', amount: 50.25, date: new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 25).toISOString() },
 ];
 const salesForAffiliate3: AffiliateSale[] = [];
+const salesForAffiliate4: AffiliateSale[] = [];
 
 export const mockAffiliates: Affiliate[] = [
   { id: 'aff-01', name: 'Fashionista Blog', email: 'contact@fashionistablog.com', totalSales: 12500, commissionRate: 10, balance: 1250, status: 'Active', sales: salesForAffiliate1 },
   { id: 'aff-02', name: 'Style Influencer', email: 'style@influencer.com', totalSales: 8200, commissionRate: 12, balance: 984, status: 'Active', sales: salesForAffiliate2 },
   { id: 'aff-03', name: 'New Trends Co', email: 'trends@newco.com', totalSales: 500, commissionRate: 10, balance: 50, status: 'Inactive', sales: salesForAffiliate3 },
+  { id: 'aff-04', name: 'Urban Stylist', email: 'urban@stylist.com', totalSales: 0, commissionRate: 10, balance: 0, status: 'Pending', sales: salesForAffiliate4 },
 ];
 
 export const mockNotifications: Notification[] = [

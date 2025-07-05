@@ -53,7 +53,7 @@ export type Affiliate = {
   totalSales: number;
   commissionRate: number;
   balance: number;
-  status: 'Active' | 'Inactive';
+  status: 'Active' | 'Inactive' | 'Pending';
   sales: AffiliateSale[];
 };
 
