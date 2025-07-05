@@ -267,9 +267,8 @@ export default function AffiliatesPage() {
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {affiliates.map((affiliate) => (
-              <Collapsible key={affiliate.id} className="contents">
+          {affiliates.map((affiliate) => (
+            <Collapsible asChild key={affiliate.id} as="tbody">
                 <>
                   <TableRow className="group">
                     <TableCell className="font-medium">{affiliate.name}</TableCell>
@@ -296,9 +295,8 @@ export default function AffiliatesPage() {
                     </TableRow>
                   </CollapsibleContent>
                 </>
-              </Collapsible>
-            ))}
-          </TableBody>
+            </Collapsible>
+          ))}
         </Table>
       </CardContent>
        <CardFooter>
@@ -309,5 +307,3 @@ export default function AffiliatesPage() {
     </Card>
   );
 }
-
-    
