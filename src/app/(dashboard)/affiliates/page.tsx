@@ -267,9 +267,10 @@ export default function AffiliatesPage() {
               </TableHead>
             </TableRow>
           </TableHeader>
-          {affiliates.map((affiliate) => (
-            <Collapsible asChild key={affiliate.id} as="tbody">
-                <>
+          <TableBody>
+            {affiliates.map((affiliate) => (
+              <Collapsible key={affiliate.id}>
+                <TableBody>
                   <TableRow className="group">
                     <TableCell className="font-medium">{affiliate.name}</TableCell>
                     <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
@@ -281,28 +282,29 @@ export default function AffiliatesPage() {
                     <TableCell>
                       <CollapsibleTrigger asChild>
                         <Button variant="ghost" size="icon">
-                            <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
-                            <span className="sr-only">Toggle Payout Details</span>
+                          <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
+                          <span className="sr-only">Toggle Payout Details</span>
                         </Button>
                       </CollapsibleTrigger>
                     </TableCell>
                   </TableRow>
                   <CollapsibleContent asChild>
                     <TableRow className="bg-muted/50 hover:bg-muted/50">
-                        <TableCell colSpan={6}>
-                            <AffiliatePayoutDetails affiliate={affiliate} />
-                        </TableCell>
+                      <TableCell colSpan={6}>
+                        <AffiliatePayoutDetails affiliate={affiliate} />
+                      </TableCell>
                     </TableRow>
                   </CollapsibleContent>
-                </>
-            </Collapsible>
-          ))}
+                </TableBody>
+              </Collapsible>
+            ))}
+          </TableBody>
         </Table>
       </CardContent>
-       <CardFooter>
-          <div className="text-xs text-muted-foreground">
-            Showing <strong>1-3</strong> of <strong>{affiliates.length}</strong> affiliates
-          </div>
+      <CardFooter>
+        <div className="text-xs text-muted-foreground">
+          Showing <strong>1-3</strong> of <strong>{affiliates.length}</strong> affiliates
+        </div>
       </CardFooter>
     </Card>
   );
