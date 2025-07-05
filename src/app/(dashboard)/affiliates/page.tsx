@@ -257,10 +257,6 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
         onUpdate(affiliate.id, { payoutDetails });
     };
 
-    const handleDeleteAffiliate = () => {
-        onUpdate(affiliate.id, { status: 'Deleted' });
-    };
-
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const newFiles = Array.from(e.target.files).map(file => ({
@@ -329,35 +325,6 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                     </CardContent>
                     <CardFooter>
                         <Button disabled={isDeleted}>Update Password</Button>
-                    </CardFooter>
-                </Card>
-                <Card className="border-destructive">
-                    <CardHeader>
-                        <CardTitle>Delete Affiliate</CardTitle>
-                        <CardDescription>
-                            Mark this affiliate as 'Deleted'. They will no longer have access to their account or generate new commissions. Their sales data will be retained.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardFooter>
-                         <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="destructive" disabled={isDeleted}>Delete Affiliate</Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        This will mark the affiliate as deleted and block their access. This action can be undone by changing their status back. Are you sure you wish to proceed?
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleDeleteAffiliate} className={buttonVariants({ variant: "destructive" })}>
-                                        Yes, Delete Affiliate
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
                     </CardFooter>
                 </Card>
             </div>
@@ -583,6 +550,10 @@ export default function AffiliatesPage() {
     setAffiliates(prev => prev.map(aff =>
       aff.id === affiliateId ? { ...aff, ...data } : aff
     ));
+    // If status is changed to 'Deleted', close the details view
+    if (data.status === 'Deleted') {
+      setOpenAffiliateId(null);
+    }
   };
   
   const handlePermanentDelete = (affiliateId: string) => {
@@ -653,7 +624,6 @@ export default function AffiliatesPage() {
                       onValueChange={(value) => {
                           handleAffiliateUpdate(affiliate.id, { status: value as Affiliate['status'] });
                       }}
-                      disabled={affiliate.status === 'Deleted'}
                       >
                       <SelectTrigger
                           className={`w-[120px] h-8 ${affiliate.status === 'Deleted' ? 'text-muted-foreground' : ''}`}
