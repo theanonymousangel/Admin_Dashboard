@@ -42,7 +42,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 
 
 import { mockAffiliates } from "@/lib/mock-data";
-import type { Affiliate, AffiliateSale, Payout, AffiliateDocument, Transaction } from "@/lib/types";
+import type { Affiliate, AffiliateSale, Payout, AffiliateDocument, Transaction, PayoutDetails } from "@/lib/types";
 
 function getNextPayoutDate(eligibleDate: Date): Date {
   const payoutDays = [7, 14, 21, 28];
@@ -233,6 +233,11 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
         lastName: affiliate.lastName,
         username: affiliate.username,
         email: affiliate.email,
+        paypalEmail: affiliate.payoutDetails?.paypalEmail ?? '',
+        accountHolder: affiliate.payoutDetails?.accountHolder ?? '',
+        bankName: affiliate.payoutDetails?.bankName ?? '',
+        accountNumber: affiliate.payoutDetails?.accountNumber ?? '',
+        routingNumber: affiliate.payoutDetails?.routingNumber ?? '',
     });
     const [documents, setDocuments] = useState<AffiliateDocument[]>(affiliate.documents);
 
@@ -242,7 +247,14 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
     };
 
     const handleSaveDetails = () => {
-        onUpdate(affiliate.id, formData);
+        const { firstName, lastName, username, email } = formData;
+        onUpdate(affiliate.id, { firstName, lastName, username, email });
+    };
+
+    const handleSavePayoutDetails = () => {
+        const { paypalEmail, accountHolder, bankName, accountNumber, routingNumber } = formData;
+        const payoutDetails: Partial<PayoutDetails> = { paypalEmail, accountHolder, bankName, accountNumber, routingNumber };
+        onUpdate(affiliate.id, { payoutDetails });
     };
 
     const handleDeleteAffiliate = () => {
@@ -349,7 +361,7 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                     </CardFooter>
                 </Card>
             </div>
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 space-y-6">
                  <Card>
                     <CardHeader>
                         <CardTitle>Affiliate Documents</CardTitle>
@@ -391,6 +403,41 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                             <Input id="file-upload" type="file" multiple className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={handleFileUpload} disabled={isDeleted}/>
                         </div>
                     </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Payout Information</CardTitle>
+                        <CardDescription>Banking or PayPal details for sending payouts.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="paypalEmail">PayPal Email</Label>
+                            <Input id="paypalEmail" value={formData.paypalEmail} onChange={handleInputChange} placeholder="affiliate@paypal.com" disabled={isDeleted} />
+                        </div>
+                        <div className="relative my-4">
+                            <Separator />
+                            <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 bg-background px-2 text-sm text-muted-foreground">OR</span>
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="accountHolder">Account Holder Name</Label>
+                            <Input id="accountHolder" value={formData.accountHolder} onChange={handleInputChange} placeholder="Jane Doe" disabled={isDeleted} />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="bankName">Bank Name</Label>
+                            <Input id="bankName" value={formData.bankName} onChange={handleInputChange} placeholder="Global Bank" disabled={isDeleted} />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="accountNumber">Account Number</Label>
+                            <Input id="accountNumber" value={formData.accountNumber} onChange={handleInputChange} placeholder="**** **** **** 1234" disabled={isDeleted} />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="routingNumber">Routing Number</Label>
+                            <Input id="routingNumber" value={formData.routingNumber} onChange={handleInputChange} placeholder="123456789" disabled={isDeleted} />
+                        </div>
+                    </CardContent>
+                    <CardFooter>
+                        <Button onClick={handleSavePayoutDetails} disabled={isDeleted}>Save Payout Info</Button>
+                    </CardFooter>
                 </Card>
             </div>
         </div>
@@ -536,10 +583,6 @@ export default function AffiliatesPage() {
     setAffiliates(prev => prev.map(aff =>
       aff.id === affiliateId ? { ...aff, ...data } : aff
     ));
-    // If status is changed to 'Deleted', close the details view
-    if (data.status === 'Deleted' && openAffiliateId === affiliateId) {
-        // setOpenAffiliateId(null);
-    }
   };
   
   const handlePermanentDelete = (affiliateId: string) => {
@@ -582,7 +625,7 @@ export default function AffiliatesPage() {
             {affiliates.map((affiliate) => (
               <React.Fragment key={affiliate.id}>
                 <TableRow 
-                  className={`border-b cursor-pointer ${affiliate.status === 'Deleted' ? 'opacity-50' : ''}`}
+                  className="border-b cursor-pointer"
                   onClick={() => {
                     setOpenAffiliateId(openAffiliateId === affiliate.id ? null : affiliate.id)
                   }}
@@ -613,7 +656,7 @@ export default function AffiliatesPage() {
                       disabled={affiliate.status === 'Deleted'}
                       >
                       <SelectTrigger
-                          className="w-[120px] h-8"
+                          className={`w-[120px] h-8 ${affiliate.status === 'Deleted' ? 'text-muted-foreground' : ''}`}
                       >
                           <SelectValue placeholder="Status" />
                       </SelectTrigger>

@@ -57,6 +57,14 @@ export type AffiliateDocument = {
   uploadedAt: string;
 };
 
+export type PayoutDetails = {
+  bankName: string;
+  accountHolder: string;
+  accountNumber: string;
+  routingNumber: string;
+  paypalEmail: string;
+};
+
 export type Affiliate = {
   id: string;
   username: string;
@@ -69,6 +77,7 @@ export type Affiliate = {
   status: 'Active' | 'Inactive' | 'Pending' | 'Rejected' | 'Deleted';
   sales: AffiliateSale[];
   documents: AffiliateDocument[];
+  payoutDetails?: Partial<PayoutDetails>;
 };
 
 export type Notification = {
