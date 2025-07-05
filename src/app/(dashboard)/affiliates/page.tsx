@@ -98,12 +98,15 @@ function calculatePayouts(sales: AffiliateSale[], commissionRate: number) {
     const commission = sale.amount * (commissionRate / 100);
 
     let status: Payout["status"];
-    if (isAfter(today, payoutDate)) {
-      status = "Paid";
-    } else if (isAfter(today, eligibleDate)) {
-      status = "Eligible for Payout";
+    
+    if (sale.status) {
+      status = sale.status;
     } else {
-      status = "Pending Eligibility";
+      if (isAfter(today, eligibleDate)) {
+        status = "Eligible for Payout";
+      } else {
+        status = "Pending Eligibility";
+      }
     }
 
     if (status === "Pending Eligibility") {
@@ -147,13 +150,20 @@ function PayoutStatusBadge({ status }: { status: Payout["status"] }) {
   return <Badge variant={variant[status]} className={`border-none ${bgColors[status]}`}>{status}</Badge>;
 }
 
-const PayoutsView = ({ affiliate }: { affiliate: Affiliate }) => {
+const PayoutsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
   const { payouts, nextPayoutTotal, nextPayoutDate, totalCommissionPending } = useMemo(
     () => calculatePayouts(affiliate.sales, affiliate.commissionRate),
     [affiliate.sales, affiliate.commissionRate]
   );
   
   const [filter, setFilter] = useState("all");
+
+  const handleStatusChange = (saleId: string, newStatus: Payout['status']) => {
+    const updatedSales = affiliate.sales.map(sale => 
+        sale.id === saleId ? { ...sale, status: newStatus } : sale
+    );
+    onUpdate(affiliate.id, { sales: updatedSales });
+  };
 
   const filteredPayouts = useMemo(() => {
     return payouts.filter(p => {
@@ -250,7 +260,21 @@ const PayoutsView = ({ affiliate }: { affiliate: Affiliate }) => {
                                 </TableCell>
                                 <TableCell>${payout.saleAmount.toFixed(2)}</TableCell>
                                 <TableCell>{format(payout.eligibleDate, 'MMM dd, yyyy')}</TableCell>
-                                <TableCell><PayoutStatusBadge status={payout.status} /></TableCell>
+                                <TableCell>
+                                  <Select
+                                      value={payout.status}
+                                      onValueChange={(value) => handleStatusChange(payout.saleId, value as Payout['status'])}
+                                  >
+                                      <SelectTrigger className="w-[180px] h-8">
+                                          <SelectValue placeholder="Set Status" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                          <SelectItem value="Pending Eligibility">Pending Eligibility</SelectItem>
+                                          <SelectItem value="Eligible for Payout">Eligible for Payout</SelectItem>
+                                          <SelectItem value="Paid">Paid</SelectItem>
+                                      </SelectContent>
+                                  </Select>
+                                </TableCell>
                             </TableRow>
                         )) : (
                             <TableRow>
@@ -654,7 +678,7 @@ const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpd
                 <TransactionsView affiliate={affiliate} />
             </TabsContent>
             <TabsContent value="payouts" className="m-0">
-                <PayoutsView affiliate={affiliate} />
+                <PayoutsView affiliate={affiliate} onUpdate={onUpdate} />
             </TabsContent>
         </Tabs>
     );

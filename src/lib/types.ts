@@ -42,6 +42,7 @@ export type AffiliateSale = {
   amount: number;
   date: string; // ISO date string e.g. "2024-07-01T10:00:00Z"
   customerName: string;
+  status?: 'Pending Eligibility' | 'Eligible for Payout' | 'Paid';
 };
 
 export type Payout = {
