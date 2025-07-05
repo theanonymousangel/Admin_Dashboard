@@ -35,7 +35,7 @@ const operationsNavItems = [
   { href: "/products", icon: Box, label: "Products" },
   { href: "/orders", icon: Receipt, label: "Transactions" },
   { href: "/customers", icon: Users, label: "Customers" },
-  { href: "/affiliates", icon: Network, label: "Management" },
+  { href: "/affiliates", icon: Network, label: "Affiliates" },
 ];
 
 const accountNavItems = [
