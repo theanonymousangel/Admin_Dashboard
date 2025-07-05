@@ -222,7 +222,14 @@ const PayoutsView = ({ affiliate }: { affiliate: Affiliate }) => {
                                 <TableCell>{format(payout.saleDate, 'MMM dd, yyyy')}</TableCell>
                                 <TableCell>{payout.saleId}</TableCell>
                                 <TableCell>{payout.customerName}</TableCell>
-                                <TableCell>{payout.productName}</TableCell>
+                                <TableCell>
+                                  {payout.productName}
+                                  {(payout.productSize || payout.productColor) && 
+                                    <div className="text-xs text-muted-foreground">
+                                        {[payout.productSize, payout.productColor].filter(Boolean).join(', ')}
+                                    </div>
+                                  }
+                                </TableCell>
                                 <TableCell>${payout.saleAmount.toFixed(2)}</TableCell>
                                 <TableCell>{format(payout.eligibleDate, 'MMM dd, yyyy')}</TableCell>
                                 <TableCell><PayoutStatusBadge status={payout.status} /></TableCell>
