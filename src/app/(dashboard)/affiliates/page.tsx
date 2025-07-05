@@ -16,6 +16,7 @@ import {
   MoreHorizontal,
   UserX,
   UserCheck,
+  Info,
 } from "lucide-react";
 import { addDays, format, isAfter, isBefore, setDate, addMonths } from "date-fns";
 
@@ -61,6 +62,12 @@ import {
   SheetFooter,
   SheetClose,
 } from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 
 import { mockAffiliates, mockProducts } from "@/lib/mock-data";
@@ -807,7 +814,33 @@ export default function AffiliatesPage() {
                       </Select>
                     </TableCell>
                     <TableCell>{affiliate.sales.length}</TableCell>
-                    <TableCell>{affiliate.totalClicks?.toLocaleString() || 0}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <span>{affiliate.totalClicks?.toLocaleString() || 0}</span>
+                        {affiliate.productClicks && affiliate.productClicks.length > 0 && (
+                          <TooltipProvider>
+                            <Tooltip delayDuration={0}>
+                              <TooltipTrigger>
+                                <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <div className="p-1">
+                                  <h4 className="font-semibold mb-2 text-center">Clicks per Product</h4>
+                                  <ul className="space-y-1">
+                                    {affiliate.productClicks.map((pc) => (
+                                      <li key={pc.productId} className="flex justify-between gap-4">
+                                        <span className="text-muted-foreground">{pc.productName}:</span>
+                                        <span className="font-medium">{pc.clicks.toLocaleString()}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

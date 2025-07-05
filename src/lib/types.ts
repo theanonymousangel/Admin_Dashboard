@@ -73,6 +73,12 @@ export type PayoutDetails = {
   paypalEmail: string;
 };
 
+export type ProductClicks = {
+  productId: string;
+  productName: string;
+  clicks: number;
+};
+
 export type Affiliate = {
   id: string;
   username: string;
@@ -88,6 +94,7 @@ export type Affiliate = {
   documents: AffiliateDocument[];
   payoutDetails?: Partial<PayoutDetails>;
   promotableProductIds?: string[];
+  productClicks?: ProductClicks[];
 };
 
 export type Notification = {

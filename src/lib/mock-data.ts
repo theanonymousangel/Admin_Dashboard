@@ -1,4 +1,4 @@
-import type { Product, Order, Customer, Affiliate, Notification, AffiliateSale, AffiliateDocument } from './types';
+import type { Product, Order, Customer, Affiliate, Notification, AffiliateSale, AffiliateDocument, ProductClicks } from './types';
 
 export const mockProducts: Product[] = [
   { id: 'prod-001', name: 'Classic White Tee', price: 29.99, stock: 150, status: 'In Stock', image: ['https://placehold.co/80x80.png'], category: 'T-Shirts', tags: ['classic', 'white', 'cotton'], description: 'A high-quality classic white t-shirt made from 100% premium cotton.', sizes: ['S', 'M', 'L', 'XL', '2XL'], colors: ['White', 'Black'] },
@@ -47,10 +47,21 @@ export const mockAffiliates: Affiliate[] = [
   { id: 'aff-01', username: 'fashion_blog', firstName: 'Jane', lastName: 'Doe', email: 'contact@fashionistablog.com', totalSales: 12500, commissionRate: 10, balance: 1250, status: 'Active', sales: salesForAffiliate1, totalClicks: 1523, documents: [
       { id: 'doc-1', name: 'Affiliate Agreement.pdf', url: '#', uploadedAt: '2024-07-01' },
       { id: 'doc-2', name: 'Tax Form W9.pdf', url: '#', uploadedAt: '2024-07-01' },
-  ], payoutDetails: { paypalEmail: 'contact@fashionistablog.com' }, promotableProductIds: ['prod-001', 'prod-002'] },
-  { id: 'aff-02', username: 'style_influencer', firstName: 'John', lastName: 'Smith', email: 'style@influencer.com', totalSales: 8200, commissionRate: 12, balance: 984, status: 'Active', sales: salesForAffiliate2, totalClicks: 987, documents: [], payoutDetails: { bankName: 'Global Bank Inc.', accountHolder: 'John Smith', accountNumber: '**** **** **** 5678', routingNumber: '987654321' }, promotableProductIds: ['prod-001', 'prod-003', 'prod-005'] },
-  { id: 'aff-03', username: 'newtrendsco', firstName: 'Alice', lastName: 'Johnson', email: 'trends@newco.com', totalSales: 500, commissionRate: 10, balance: 50, status: 'Pending', sales: salesForAffiliate3, totalClicks: 120, documents: [], payoutDetails: {}, promotableProductIds: [] },
-  { id: 'aff-04', username: 'urban_stylist', firstName: 'Bob', lastName: 'Brown', email: 'urban@stylist.com', totalSales: 0, commissionRate: 10, balance: 0, status: 'Pending', sales: salesForAffiliate4, totalClicks: 45, documents: [], payoutDetails: {}, promotableProductIds: [] },
+  ], payoutDetails: { paypalEmail: 'contact@fashionistablog.com' }, promotableProductIds: ['prod-001', 'prod-002'], productClicks: [
+      { productId: 'prod-001', productName: 'Classic White Tee', clicks: 800 },
+      { productId: 'prod-002', productName: 'Denim Jacket', clicks: 723 },
+  ] },
+  { id: 'aff-02', username: 'style_influencer', firstName: 'John', lastName: 'Smith', email: 'style@influencer.com', totalSales: 8200, commissionRate: 12, balance: 984, status: 'Active', sales: salesForAffiliate2, totalClicks: 987, documents: [], payoutDetails: { bankName: 'Global Bank Inc.', accountHolder: 'John Smith', accountNumber: '**** **** **** 5678', routingNumber: '987654321' }, promotableProductIds: ['prod-001', 'prod-003', 'prod-005'], productClicks: [
+        { productId: 'prod-001', productName: 'Classic White Tee', clicks: 450 },
+        { productId: 'prod-003', productName: 'Black Skinny Jeans', clicks: 300 },
+        { productId: 'prod-005', productName: 'Beige Hoodie', clicks: 237 },
+    ] },
+  { id: 'aff-03', username: 'newtrendsco', firstName: 'Alice', lastName: 'Johnson', email: 'trends@newco.com', totalSales: 500, commissionRate: 10, balance: 50, status: 'Pending', sales: salesForAffiliate3, totalClicks: 120, documents: [], payoutDetails: {}, promotableProductIds: [], productClicks: [
+        { productId: 'prod-001', productName: 'Classic White Tee', clicks: 120 },
+    ] },
+  { id: 'aff-04', username: 'urban_stylist', firstName: 'Bob', lastName: 'Brown', email: 'urban@stylist.com', totalSales: 0, commissionRate: 10, balance: 0, status: 'Pending', sales: salesForAffiliate4, totalClicks: 45, documents: [], payoutDetails: {}, promotableProductIds: [], productClicks: [
+        { productId: 'prod-002', productName: 'Denim Jacket', clicks: 45 },
+    ] },
 ];
 
 export const mockNotifications: Notification[] = [
