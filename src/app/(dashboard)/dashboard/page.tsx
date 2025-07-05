@@ -113,7 +113,7 @@ export default function DashboardPage() {
             icon={CreditCard}
         />
          <StatCard 
-            title="Refunds/Cancellations"
+            title="Refunds"
             value={`$${totalRefundedAmount.toFixed(2)}`}
             description="Total value of refunded/cancelled orders"
             icon={Ban}
