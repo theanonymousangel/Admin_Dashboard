@@ -16,7 +16,7 @@ import {
 import { addDays, format, isAfter, isBefore, setDate, addMonths } from "date-fns";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -38,6 +38,8 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+
 
 import { mockAffiliates } from "@/lib/mock-data";
 import type { Affiliate, AffiliateSale, Payout, AffiliateDocument, Transaction } from "@/lib/types";
@@ -225,6 +227,7 @@ const PayoutsView = ({ affiliate }: { affiliate: Affiliate }) => {
 }
 
 const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
+    const isDeleted = affiliate.status === 'Deleted';
     const [formData, setFormData] = useState({
         firstName: affiliate.firstName,
         lastName: affiliate.lastName,
@@ -240,6 +243,10 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
 
     const handleSaveDetails = () => {
         onUpdate(affiliate.id, formData);
+    };
+
+    const handleDeleteAffiliate = () => {
+        onUpdate(affiliate.id, { status: 'Deleted' });
     };
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -274,24 +281,24 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="firstName">First Name</Label>
-                                <Input id="firstName" value={formData.firstName} onChange={handleInputChange} />
+                                <Input id="firstName" value={formData.firstName} onChange={handleInputChange} disabled={isDeleted} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="lastName">Last Name</Label>
-                                <Input id="lastName" value={formData.lastName} onChange={handleInputChange} />
+                                <Input id="lastName" value={formData.lastName} onChange={handleInputChange} disabled={isDeleted} />
                             </div>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="username">Username</Label>
-                            <Input id="username" value={formData.username} onChange={handleInputChange} />
+                            <Input id="username" value={formData.username} onChange={handleInputChange} disabled={isDeleted} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="email">Email Address</Label>
-                            <Input id="email" type="email" value={formData.email} onChange={handleInputChange} />
+                            <Input id="email" type="email" value={formData.email} onChange={handleInputChange} disabled={isDeleted} />
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <Button onClick={handleSaveDetails}>Save Details</Button>
+                        <Button onClick={handleSaveDetails} disabled={isDeleted}>Save Details</Button>
                     </CardFooter>
                 </Card>
                 <Card>
@@ -301,15 +308,44 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                     <CardContent className="space-y-4">
                          <div className="space-y-2">
                             <Label htmlFor="new-password">New Password</Label>
-                            <Input id="new-password" type="password" placeholder="••••••••" />
+                            <Input id="new-password" type="password" placeholder="••••••••" disabled={isDeleted}/>
                         </div>
                          <div className="space-y-2">
                             <Label htmlFor="confirm-password">Confirm New Password</Label>
-                            <Input id="confirm-password" type="password" placeholder="••••••••" />
+                            <Input id="confirm-password" type="password" placeholder="••••••••" disabled={isDeleted}/>
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <Button>Update Password</Button>
+                        <Button disabled={isDeleted}>Update Password</Button>
+                    </CardFooter>
+                </Card>
+                <Card className="border-destructive">
+                    <CardHeader>
+                        <CardTitle>Delete Affiliate</CardTitle>
+                        <CardDescription>
+                            Mark this affiliate as 'Deleted'. They will no longer have access to their account or generate new commissions. Their sales data will be retained.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardFooter>
+                         <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="destructive" disabled={isDeleted}>Delete Affiliate</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This will mark the affiliate as deleted and block their access. This action can be undone by changing their status back. Are you sure you wish to proceed?
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleDeleteAffiliate} className={buttonVariants({ variant: "destructive" })}>
+                                        Yes, Delete Affiliate
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </CardFooter>
                 </Card>
             </div>
@@ -333,7 +369,7 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                                                 <Button variant="ghost" size="icon" className="h-7 w-7">
                                                     <Download className="h-4 w-4" />
                                                 </Button>
-                                                <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-destructive/10" onClick={() => handleRemoveDocument(doc.id)}>
+                                                <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-destructive/10" onClick={() => handleRemoveDocument(doc.id)} disabled={isDeleted}>
                                                     <Trash2 className="h-4 w-4 text-destructive" />
                                                 </Button>
                                             </div>
@@ -348,11 +384,11 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                         </div>
                         <div className="relative border-2 border-dashed border-muted-foreground/20 rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
                             <UploadCloud className="mx-auto h-10 w-10 text-muted-foreground mb-2"/>
-                            <Label htmlFor="file-upload" className="font-semibold text-primary cursor-pointer">
+                            <Label htmlFor="file-upload" className={`font-semibold ${isDeleted ? 'cursor-not-allowed text-muted-foreground' : 'text-primary cursor-pointer'}`}>
                                 Upload Documents
                             </Label>
                             <p className="text-xs text-muted-foreground mt-1">Select one or more files to upload.</p>
-                            <Input id="file-upload" type="file" multiple className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={handleFileUpload} />
+                            <Input id="file-upload" type="file" multiple className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={handleFileUpload} disabled={isDeleted}/>
                         </div>
                     </CardContent>
                 </Card>
@@ -437,8 +473,8 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
             <TableHeader>
               <TableRow>
                 <TableHead>Transaction ID</TableHead>
-                <TableHead>Date</TableHead>
                 <TableHead>Customer</TableHead>
+                <TableHead>Date</TableHead>
                 <TableHead>Product</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
@@ -448,8 +484,8 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
               {transactions.length > 0 ? transactions.map((tx) => (
                 <TableRow key={tx.id}>
                   <TableCell className="font-mono text-xs">{tx.id}</TableCell>
-                  <TableCell>{format(new Date(tx.date), 'MMM dd, yyyy')}</TableCell>
                   <TableCell>{tx.customerName}</TableCell>
+                  <TableCell>{format(new Date(tx.date), 'MMM dd, yyyy')}</TableCell>
                   <TableCell>{tx.productName}</TableCell>
                   <TableCell><TransactionBadge status={tx.status} type={tx.type} /></TableCell>
                   <TableCell className={`text-right font-medium ${tx.amount > 0 ? '' : 'text-destructive'}`}>
@@ -537,8 +573,11 @@ export default function AffiliatesPage() {
             {affiliates.map((affiliate) => (
               <React.Fragment key={affiliate.id}>
                 <TableRow 
-                  className="cursor-pointer border-b"
-                  onClick={() => setOpenAffiliateId(openAffiliateId === affiliate.id ? null : affiliate.id)}
+                  className={`border-b ${affiliate.status === 'Deleted' ? 'opacity-50' : 'cursor-pointer'}`}
+                  onClick={() => {
+                    if (affiliate.status === 'Deleted') return;
+                    setOpenAffiliateId(openAffiliateId === affiliate.id ? null : affiliate.id)
+                  }}
                 >
                   <TableCell className="font-medium">{affiliate.username}</TableCell>
                   <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
@@ -551,6 +590,7 @@ export default function AffiliatesPage() {
                             handleAffiliateUpdate(affiliate.id, { commissionRate: Number(e.target.value) })
                         }}
                         className="w-20 h-8"
+                        disabled={affiliate.status === 'Deleted'}
                       />
                         <span className="text-muted-foreground">%</span>
                     </div>
@@ -562,6 +602,7 @@ export default function AffiliatesPage() {
                       onValueChange={(value) => {
                           handleAffiliateUpdate(affiliate.id, { status: value as Affiliate['status'] });
                       }}
+                      disabled={affiliate.status === 'Deleted'}
                       >
                       <SelectTrigger
                           className="w-[120px] h-8"
@@ -573,12 +614,13 @@ export default function AffiliatesPage() {
                           <SelectItem value="Inactive">Inactive</SelectItem>
                           <SelectItem value="Pending">Pending</SelectItem>
                           <SelectItem value="Rejected">Rejected</SelectItem>
+                          <SelectItem value="Deleted">Deleted</SelectItem>
                       </SelectContent>
                     </Select>
                   </TableCell>
                   <TableCell>{affiliate.sales.length}</TableCell>
                 </TableRow>
-                {openAffiliateId === affiliate.id && (
+                {openAffiliateId === affiliate.id && affiliate.status !== 'Deleted' && (
                   <TableRow className="bg-muted/50 hover:bg-muted/50">
                     <TableCell colSpan={6} className="p-0">
                       <AffiliateDetails affiliate={affiliate} onUpdate={handleAffiliateUpdate} />
