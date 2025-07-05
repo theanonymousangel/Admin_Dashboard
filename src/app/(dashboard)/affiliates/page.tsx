@@ -473,8 +473,8 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
             <TableHeader>
               <TableRow>
                 <TableHead>Transaction ID</TableHead>
-                <TableHead>Customer</TableHead>
                 <TableHead>Date</TableHead>
+                <TableHead>Customer</TableHead>
                 <TableHead>Product</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
@@ -484,8 +484,8 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
               {transactions.length > 0 ? transactions.map((tx) => (
                 <TableRow key={tx.id}>
                   <TableCell className="font-mono text-xs">{tx.id}</TableCell>
-                  <TableCell>{tx.customerName}</TableCell>
                   <TableCell>{format(new Date(tx.date), 'MMM dd, yyyy')}</TableCell>
+                  <TableCell>{tx.customerName}</TableCell>
                   <TableCell>{tx.productName}</TableCell>
                   <TableCell><TransactionBadge status={tx.status} type={tx.type} /></TableCell>
                   <TableCell className={`text-right font-medium ${tx.amount > 0 ? '' : 'text-destructive'}`}>
@@ -573,9 +573,8 @@ export default function AffiliatesPage() {
             {affiliates.map((affiliate) => (
               <React.Fragment key={affiliate.id}>
                 <TableRow 
-                  className={`border-b ${affiliate.status === 'Deleted' ? 'opacity-50' : 'cursor-pointer'}`}
+                  className={`border-b cursor-pointer ${affiliate.status === 'Deleted' ? 'opacity-50' : ''}`}
                   onClick={() => {
-                    if (affiliate.status === 'Deleted') return;
                     setOpenAffiliateId(openAffiliateId === affiliate.id ? null : affiliate.id)
                   }}
                 >
@@ -620,7 +619,7 @@ export default function AffiliatesPage() {
                   </TableCell>
                   <TableCell>{affiliate.sales.length}</TableCell>
                 </TableRow>
-                {openAffiliateId === affiliate.id && affiliate.status !== 'Deleted' && (
+                {openAffiliateId === affiliate.id && (
                   <TableRow className="bg-muted/50 hover:bg-muted/50">
                     <TableCell colSpan={6} className="p-0">
                       <AffiliateDetails affiliate={affiliate} onUpdate={handleAffiliateUpdate} />
