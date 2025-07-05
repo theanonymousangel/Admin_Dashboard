@@ -270,61 +270,57 @@ export default function AffiliatesPage() {
               <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {affiliates.map((affiliate) => (
-              <Collapsible asChild key={affiliate.id}>
-                <>
-                  <TableRow className="group">
-                    <CollapsibleTrigger asChild>
-                      <td className="font-medium p-4 align-middle cursor-pointer">{affiliate.name}</td>
-                    </CollapsibleTrigger>
-                    <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Input
-                          type="number"
-                          value={affiliate.commissionRate}
-                          onChange={(e) => {
-                              handleCommissionChange(affiliate.id, Number(e.target.value))
-                          }}
-                          className="w-20 h-8"
-                        />
-                         <span className="text-muted-foreground">%</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>${affiliate.balance.toFixed(2)}</TableCell>
-                    <TableCell>
-                      <Select
-                        defaultValue={affiliate.status}
-                        onValueChange={(value) => {
-                            handleStatusChange(affiliate.id, value as Affiliate['status']);
+          {affiliates.map((affiliate) => (
+            <Collapsible key={affiliate.id} as="tbody" className="border-b">
+              <CollapsibleTrigger asChild>
+                <TableRow className="cursor-pointer data-[state=open]:bg-muted/50">
+                  <TableCell className="font-medium">{affiliate.name}</TableCell>
+                  <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center gap-1">
+                      <Input
+                        type="number"
+                        value={affiliate.commissionRate}
+                        onChange={(e) => {
+                            handleCommissionChange(affiliate.id, Number(e.target.value))
                         }}
-                       >
-                        <SelectTrigger
-                            className="w-[120px] h-8"
-                        >
-                            <SelectValue placeholder="Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Active">Active</SelectItem>
-                            <SelectItem value="Inactive">Inactive</SelectItem>
-                            <SelectItem value="Pending">Pending</SelectItem>
-                            <SelectItem value="Rejected">Rejected</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                  </TableRow>
-                  <CollapsibleContent asChild>
-                    <TableRow className="bg-muted/50 hover:bg-muted/50">
-                      <TableCell colSpan={5}>
-                        <AffiliatePayoutDetails affiliate={affiliate} />
-                      </TableCell>
-                    </TableRow>
-                  </CollapsibleContent>
-                </>
-              </Collapsible>
-            ))}
-          </TableBody>
+                        className="w-20 h-8"
+                      />
+                        <span className="text-muted-foreground">%</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>${affiliate.balance.toFixed(2)}</TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    <Select
+                      defaultValue={affiliate.status}
+                      onValueChange={(value) => {
+                          handleStatusChange(affiliate.id, value as Affiliate['status']);
+                      }}
+                      >
+                      <SelectTrigger
+                          className="w-[120px] h-8"
+                      >
+                          <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          <SelectItem value="Active">Active</SelectItem>
+                          <SelectItem value="Inactive">Inactive</SelectItem>
+                          <SelectItem value="Pending">Pending</SelectItem>
+                          <SelectItem value="Rejected">Rejected</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                </TableRow>
+              </CollapsibleTrigger>
+              <CollapsibleContent asChild>
+                <TableRow className="bg-muted/50 hover:bg-muted/50">
+                  <TableCell colSpan={5}>
+                    <AffiliatePayoutDetails affiliate={affiliate} />
+                  </TableCell>
+                </TableRow>
+              </CollapsibleContent>
+            </Collapsible>
+          ))}
         </Table>
       </CardContent>
       <CardFooter>
