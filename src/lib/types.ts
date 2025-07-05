@@ -37,6 +37,8 @@ export type Customer = {
 export type AffiliateSale = {
   id: string;
   productName: string;
+  productSize?: string;
+  productColor?: string;
   amount: number;
   date: string; // ISO date string e.g. "2024-07-01T10:00:00Z"
   customerName: string;
@@ -45,6 +47,8 @@ export type AffiliateSale = {
 export type Payout = {
     saleId: string;
     productName: string;
+    productSize?: string;
+    productColor?: string;
     saleAmount: number;
     commission: number;
     saleDate: Date;
@@ -97,6 +101,8 @@ export type Transaction = {
   id: string;
   type: 'Commission' | 'Payout' | 'Refund' | 'Income';
   productName?: string;
+  productSize?: string;
+  productColor?: string;
   amount: number;
   status: 'Completed' | 'Pending' | 'Reversed';
   saleId?: string;

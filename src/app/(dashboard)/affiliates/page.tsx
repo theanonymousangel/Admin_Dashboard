@@ -96,7 +96,7 @@ function calculatePayouts(sales: AffiliateSale[], commissionRate: number) {
       nextPayoutDate = payoutDate;
     }
 
-    return { saleId: sale.id, productName: sale.productName, saleAmount: sale.amount, commission, saleDate, eligibleDate, payoutDate, status, customerName: sale.customerName };
+    return { saleId: sale.id, productName: sale.productName, productSize: sale.productSize, productColor: sale.productColor, saleAmount: sale.amount, commission, saleDate, eligibleDate, payoutDate, status, customerName: sale.customerName };
   }).sort((a,b) => b.saleDate.getTime() - a.saleDate.getTime());
 
   if (nextPayoutDate) {
@@ -438,6 +438,8 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
         date: payout.saleDate,
         type: 'Commission',
         productName: payout.productName,
+        productSize: payout.productSize,
+        productColor: payout.productColor,
         amount: payout.commission,
         status: payout.status === 'Paid' ? 'Completed' : 'Pending',
         saleId: payout.saleId,
@@ -453,6 +455,8 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
             date: addDays(new Date(saleToRefund.date), 5),
             type: 'Refund',
             productName: saleToRefund.productName,
+            productSize: saleToRefund.productSize,
+            productColor: saleToRefund.productColor,
             amount: -commissionToRefund,
             status: 'Reversed',
             saleId: saleToRefund.id,
@@ -515,7 +519,14 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
                   <TableCell>{format(new Date(tx.date), 'MMM dd, yyyy')}</TableCell>
                   <TableCell>{tx.id}</TableCell>
                   <TableCell>{tx.customerName}</TableCell>
-                  <TableCell>{tx.productName}</TableCell>
+                  <TableCell>
+                    {tx.productName}
+                    {(tx.productSize || tx.productColor) && 
+                      <div className="text-xs text-muted-foreground">
+                          {[tx.productSize, tx.productColor].filter(Boolean).join(', ')}
+                      </div>
+                    }
+                  </TableCell>
                   <TableCell><TransactionBadge status={tx.status} type={tx.type} /></TableCell>
                   <TableCell className={`text-right font-medium ${tx.amount > 0 ? '' : 'text-destructive'}`}>
                     {tx.amount > 0 ? `+$${tx.amount.toFixed(2)}` : `-$${Math.abs(tx.amount).toFixed(2)}`}
