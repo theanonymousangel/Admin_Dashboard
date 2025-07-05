@@ -49,7 +49,7 @@ export const mockAffiliates: Affiliate[] = [
       { id: 'doc-2', name: 'Tax Form W9.pdf', url: '#', uploadedAt: '2024-07-01' },
   ], payoutDetails: { paypalEmail: 'contact@fashionistablog.com' }, promotableProductIds: ['prod-001', 'prod-002'] },
   { id: 'aff-02', username: 'style_influencer', firstName: 'John', lastName: 'Smith', email: 'style@influencer.com', totalSales: 8200, commissionRate: 12, balance: 984, status: 'Active', sales: salesForAffiliate2, documents: [], payoutDetails: { bankName: 'Global Bank Inc.', accountHolder: 'John Smith', accountNumber: '**** **** **** 5678', routingNumber: '987654321' }, promotableProductIds: ['prod-001', 'prod-003', 'prod-005'] },
-  { id: 'aff-03', username: 'newtrendsco', firstName: 'Alice', lastName: 'Johnson', email: 'trends@newco.com', totalSales: 500, commissionRate: 10, balance: 50, status: 'Inactive', sales: salesForAffiliate3, documents: [], payoutDetails: {}, promotableProductIds: [] },
+  { id: 'aff-03', username: 'newtrendsco', firstName: 'Alice', lastName: 'Johnson', email: 'trends@newco.com', totalSales: 500, commissionRate: 10, balance: 50, status: 'Pending', sales: salesForAffiliate3, documents: [], payoutDetails: {}, promotableProductIds: [] },
   { id: 'aff-04', username: 'urban_stylist', firstName: 'Bob', lastName: 'Brown', email: 'urban@stylist.com', totalSales: 0, commissionRate: 10, balance: 0, status: 'Pending', sales: salesForAffiliate4, documents: [], payoutDetails: {}, promotableProductIds: [] },
 ];
 

@@ -260,7 +260,7 @@ const PayoutsView = ({ affiliate }: { affiliate: Affiliate }) => {
 }
 
 const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
-    const isDeleted = affiliate.status === 'Deleted';
+    const isDisabled = affiliate.status === 'Disabled';
     const [formData, setFormData] = useState({
         firstName: affiliate.firstName,
         lastName: affiliate.lastName,
@@ -322,24 +322,24 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="firstName">First Name</Label>
-                                <Input id="firstName" value={formData.firstName} onChange={handleInputChange} disabled={isDeleted} />
+                                <Input id="firstName" value={formData.firstName} onChange={handleInputChange} disabled={isDisabled} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="lastName">Last Name</Label>
-                                <Input id="lastName" value={formData.lastName} onChange={handleInputChange} disabled={isDeleted} />
+                                <Input id="lastName" value={formData.lastName} onChange={handleInputChange} disabled={isDisabled} />
                             </div>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="username">Username</Label>
-                            <Input id="username" value={formData.username} onChange={handleInputChange} disabled={isDeleted} />
+                            <Input id="username" value={formData.username} onChange={handleInputChange} disabled={isDisabled} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="email">Email Address</Label>
-                            <Input id="email" type="email" value={formData.email} onChange={handleInputChange} disabled={isDeleted} />
+                            <Input id="email" type="email" value={formData.email} onChange={handleInputChange} disabled={isDisabled} />
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <Button onClick={handleSaveDetails} disabled={isDeleted}>Save Details</Button>
+                        <Button onClick={handleSaveDetails} disabled={isDisabled}>Save Details</Button>
                     </CardFooter>
                 </Card>
                 <Card>
@@ -349,15 +349,15 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                     <CardContent className="space-y-4">
                          <div className="space-y-2">
                             <Label htmlFor="new-password">New Password</Label>
-                            <Input id="new-password" type="password" placeholder="••••••••" disabled={isDeleted}/>
+                            <Input id="new-password" type="password" placeholder="••••••••" disabled={isDisabled}/>
                         </div>
                          <div className="space-y-2">
                             <Label htmlFor="confirm-password">Confirm New Password</Label>
-                            <Input id="confirm-password" type="password" placeholder="••••••••" disabled={isDeleted}/>
+                            <Input id="confirm-password" type="password" placeholder="••••••••" disabled={isDisabled}/>
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <Button disabled={isDeleted}>Update Password</Button>
+                        <Button disabled={isDisabled}>Update Password</Button>
                     </CardFooter>
                 </Card>
             </div>
@@ -370,7 +370,7 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="paypalEmail">PayPal Email</Label>
-                            <Input id="paypalEmail" value={formData.paypalEmail} onChange={handleInputChange} placeholder="affiliate@paypal.com" disabled={isDeleted} />
+                            <Input id="paypalEmail" value={formData.paypalEmail} onChange={handleInputChange} placeholder="affiliate@paypal.com" disabled={isDisabled} />
                         </div>
                         <div className="relative my-4">
                             <Separator />
@@ -378,23 +378,23 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                         </div>
                          <div className="space-y-2">
                             <Label htmlFor="accountHolder">Account Holder Name</Label>
-                            <Input id="accountHolder" value={formData.accountHolder} onChange={handleInputChange} placeholder="Jane Doe" disabled={isDeleted} />
+                            <Input id="accountHolder" value={formData.accountHolder} onChange={handleInputChange} placeholder="Jane Doe" disabled={isDisabled} />
                         </div>
                          <div className="space-y-2">
                             <Label htmlFor="bankName">Bank Name</Label>
-                            <Input id="bankName" value={formData.bankName} onChange={handleInputChange} placeholder="Global Bank" disabled={isDeleted} />
+                            <Input id="bankName" value={formData.bankName} onChange={handleInputChange} placeholder="Global Bank" disabled={isDisabled} />
                         </div>
                          <div className="space-y-2">
                             <Label htmlFor="accountNumber">Account Number</Label>
-                            <Input id="accountNumber" value={formData.accountNumber} onChange={handleInputChange} placeholder="**** **** **** 1234" disabled={isDeleted} />
+                            <Input id="accountNumber" value={formData.accountNumber} onChange={handleInputChange} placeholder="**** **** **** 1234" disabled={isDisabled} />
                         </div>
                          <div className="space-y-2">
                             <Label htmlFor="routingNumber">Routing Number</Label>
-                            <Input id="routingNumber" value={formData.routingNumber} onChange={handleInputChange} placeholder="123456789" disabled={isDeleted} />
+                            <Input id="routingNumber" value={formData.routingNumber} onChange={handleInputChange} placeholder="123456789" disabled={isDisabled} />
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <Button onClick={handleSavePayoutDetails} disabled={isDeleted}>Save Payout Info</Button>
+                        <Button onClick={handleSavePayoutDetails} disabled={isDisabled}>Save Payout Info</Button>
                     </CardFooter>
                 </Card>
                  <Card>
@@ -416,7 +416,7 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                                                 <Button variant="ghost" size="icon" className="h-7 w-7">
                                                     <Download className="h-4 w-4" />
                                                 </Button>
-                                                <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-destructive/10" onClick={() => handleRemoveDocument(doc.id)} disabled={isDeleted}>
+                                                <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-destructive/10" onClick={() => handleRemoveDocument(doc.id)} disabled={isDisabled}>
                                                     <Trash2 className="h-4 w-4 text-destructive" />
                                                 </Button>
                                             </div>
@@ -431,11 +431,11 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                         </div>
                         <div className="relative border-2 border-dashed border-muted-foreground/20 rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
                             <UploadCloud className="mx-auto h-10 w-10 text-muted-foreground mb-2"/>
-                            <Label htmlFor="file-upload" className={`font-semibold ${isDeleted ? 'cursor-not-allowed text-muted-foreground' : 'text-primary cursor-pointer'}`}>
+                            <Label htmlFor="file-upload" className={`font-semibold ${isDisabled ? 'cursor-not-allowed text-muted-foreground' : 'text-primary cursor-pointer'}`}>
                                 Upload Documents
                             </Label>
                             <p className="text-xs text-muted-foreground mt-1">Select one or more files to upload.</p>
-                            <Input id="file-upload" type="file" multiple className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={handleFileUpload} disabled={isDeleted}/>
+                            <Input id="file-upload" type="file" multiple className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={handleFileUpload} disabled={isDisabled}/>
                         </div>
                     </CardContent>
                 </Card>
@@ -613,7 +613,7 @@ const PromotionsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdat
                                     id={`product-${product.id}`}
                                     checked={(affiliate.promotableProductIds || []).includes(product.id)}
                                     onCheckedChange={() => handleProductToggle(product.id)}
-                                    disabled={affiliate.status === 'Deleted'}
+                                    disabled={affiliate.status === 'Disabled'}
                                 />
                             </div>
                         ))}
@@ -671,7 +671,7 @@ export default function AffiliatesPage() {
     setAffiliates(prev => prev.map(aff =>
       aff.id === affiliateId ? { ...aff, ...data } : aff
     ));
-    if (data.status === 'Deleted') {
+    if (data.status === 'Disabled') {
       setOpenAffiliateId(null);
     }
   };
@@ -770,7 +770,7 @@ export default function AffiliatesPage() {
                               handleAffiliateUpdate(affiliate.id, { commissionRate: Number(e.target.value) })
                           }}
                           className="w-20 h-8"
-                          disabled={affiliate.status === 'Deleted'}
+                          disabled={affiliate.status === 'Disabled'}
                         />
                           <span className="text-muted-foreground">%</span>
                       </div>
@@ -784,16 +784,15 @@ export default function AffiliatesPage() {
                         }}
                         >
                         <SelectTrigger
-                            className={`w-[120px] h-8 ${affiliate.status === 'Deleted' ? 'text-muted-foreground' : ''}`}
+                            className={`w-[120px] h-8 ${affiliate.status === 'Disabled' ? 'text-muted-foreground' : ''}`}
                         >
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="Active">Active</SelectItem>
-                            <SelectItem value="Inactive">Inactive</SelectItem>
                             <SelectItem value="Pending">Pending</SelectItem>
                             <SelectItem value="Rejected">Rejected</SelectItem>
-                            <SelectItem value="Deleted">Deleted</SelectItem>
+                            <SelectItem value="Disabled">Disabled</SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>
@@ -809,7 +808,7 @@ export default function AffiliatesPage() {
                         <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          {affiliate.status !== 'Deleted' ? (
+                          {affiliate.status !== 'Disabled' ? (
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                 <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="flex items-center gap-2">
@@ -826,7 +825,7 @@ export default function AffiliatesPage() {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction onClick={() => handleAffiliateUpdate(affiliate.id, { status: 'Deleted' })}>
+                                  <AlertDialogAction onClick={() => handleAffiliateUpdate(affiliate.id, { status: 'Disabled' })}>
                                     Yes, Disable
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
@@ -843,7 +842,7 @@ export default function AffiliatesPage() {
                               <DropdownMenuItem
                                 className="flex items-center gap-2 text-destructive focus:text-destructive focus:bg-destructive/10"
                                 onSelect={(e) => e.preventDefault()}
-                                disabled={affiliate.status !== 'Deleted'}
+                                disabled={affiliate.status !== 'Disabled'}
                               >
                                 <Trash2 className="h-4 w-4" />
                                 <span>Permanently Delete</span>

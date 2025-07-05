@@ -82,7 +82,7 @@ export type Affiliate = {
   totalSales: number;
   commissionRate: number;
   balance: number;
-  status: 'Active' | 'Inactive' | 'Pending' | 'Rejected' | 'Deleted';
+  status: 'Active' | 'Pending' | 'Rejected' | 'Disabled';
   sales: AffiliateSale[];
   documents: AffiliateDocument[];
   payoutDetails?: Partial<PayoutDetails>;
