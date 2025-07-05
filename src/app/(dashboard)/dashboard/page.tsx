@@ -5,8 +5,9 @@ import {
   CreditCard,
   DollarSign,
   Users,
+  Info
 } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 import {
   Card,
@@ -15,21 +16,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
 
 const yearlyIncomeData = [
-    { month: 'Jan', income: 4500 },
-    { month: 'Feb', income: 5200 },
-    { month: 'Mar', income: 6100 },
-    { month: 'Apr', income: 7200 },
-    { month: 'May', income: 8300 },
-    { month: 'Jun', income: 9400 },
-    { month: 'Jul', income: 10000 },
-    { month: 'Aug', income: 11000 },
-    { month: 'Sep', income: 9800 },
-    { month: 'Oct', income: 12000 },
-    { month: 'Nov', income: 13500 },
-    { month: 'Dec', income: 15000 },
+    { date: 'Jul, 2025', income: 800, goal: 740 },
+    { date: 'Aug, 2025', income: 1600, goal: 1480 },
+    { date: 'Sep, 2025', income: 2500, goal: 2220 },
+    { date: 'Oct, 2025', income: 3300, goal: 2960 },
+    { date: 'Nov, 2025', income: 4100, goal: 3700 },
+    { date: 'Dec, 2025', income: 4900, goal: 4440 },
+    { date: 'Jan, 2026', income: 5900, goal: 5180 },
+    { date: 'Feb, 2026', income: 6900, goal: 5920 },
+    { date: 'Mar, 2026', income: 7900, goal: 6660 },
+    { date: 'Apr, 2026', income: 8900, goal: 7400 },
+    { date: 'May, 2026', income: 9900, goal: 8140 },
+    { date: 'Jun, 2026', income: 9950, goal: 8880 },
+    { date: 'Jul, 2026', income: 10000, goal: 9620 },
 ];
+
 
 const recentSignups = [
     { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+$1,999.00' },
@@ -58,6 +63,32 @@ const StatCard = ({ title, value, description, icon: Icon }: StatCardProps) => (
     </CardContent>
   </Card>
 );
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const incomePayload = payload.find((p: any) => p.dataKey === 'income');
+    const goalPayload = payload.find((p: any) => p.dataKey === 'goal');
+    
+    if (!incomePayload) return null;
+
+    return (
+      <div className="rounded-lg border bg-background p-3 shadow-sm min-w-[180px]">
+        <div className="flex justify-between items-center">
+          <p className="text-sm font-medium">{label}</p>
+          <p className="text-sm font-medium">{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(incomePayload.value)}</p>
+        </div>
+         {goalPayload &&
+          <div className="flex justify-between items-center mt-1">
+            <p className="text-sm text-muted-foreground">Goal:</p>
+            <p className="text-sm text-muted-foreground">{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(goalPayload.value)}</p>
+          </div>
+        }
+      </div>
+    );
+  }
+  return null;
+};
+
 
 export default function DashboardPage() {
   return (
@@ -91,40 +122,56 @@ export default function DashboardPage() {
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Overview</CardTitle>
+          <CardHeader className="flex flex-row items-center">
+            <div className="grid gap-2">
+              <CardTitle>Yearly net income performance</CardTitle>
+              <CardDescription>July, 2025 - July, 2026</CardDescription>
+            </div>
+            <Button asChild size="sm" variant="ghost" className="ml-auto gap-1">
+                <Info className="h-4 w-4" />
+            </Button>
           </CardHeader>
           <CardContent className="pl-2">
             <ResponsiveContainer width="100%" height={350}>
-                <BarChart data={yearlyIncomeData}>
+                <LineChart 
+                  data={yearlyIncomeData}
+                  margin={{ top: 5, right: 20, left: -10, bottom: 0 }}
+                >
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis
-                        dataKey="month"
-                        stroke="#888888"
+                        dataKey="date"
+                        stroke="hsl(var(--muted-foreground))"
                         fontSize={12}
                         tickLine={false}
                         axisLine={false}
+                        tickFormatter={(value) => value.split(',')[0]}
                     />
                     <YAxis
-                        stroke="#888888"
+                        stroke="hsl(var(--muted-foreground))"
                         fontSize={12}
                         tickLine={false}
                         axisLine={false}
                         tickFormatter={(value) => `$${value / 1000}K`}
                     />
-                     <Tooltip 
-                        contentStyle={{
-                            borderRadius: '0.5rem',
-                            borderColor: 'hsl(var(--border))',
-                            backgroundColor: 'hsl(var(--background))'
-                        }}
-                        labelStyle={{
-                            fontWeight: 'bold'
-                        }}
-                        formatter={(value: number) => [`$${value.toLocaleString()}`, 'Income']}
-                    />
-                    <Bar dataKey="income" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                </BarChart>
+                    <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3' }} />
+                    <Legend iconType="circle" verticalAlign="top" align="right" />
+                    <Line 
+                      dataKey="income" 
+                      name="Jul, 2025 - Jul, 2026" 
+                      type="monotone" 
+                      stroke="hsl(var(--primary))" 
+                      strokeWidth={2} 
+                      dot={{ r: 4, fill: 'hsl(var(--primary))' }} 
+                      activeDot={{ r: 8, strokeWidth: 2 }} />
+                    <Line 
+                      dataKey="goal" 
+                      name="Goal" 
+                      type="monotone" 
+                      stroke="hsl(var(--muted-foreground))" 
+                      strokeWidth={2} 
+                      strokeDasharray="5 5" 
+                      dot={false} />
+                </LineChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
