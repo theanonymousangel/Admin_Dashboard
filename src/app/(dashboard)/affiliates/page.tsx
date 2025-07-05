@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -268,8 +269,8 @@ export default function AffiliatesPage() {
           </TableHeader>
           <TableBody>
             {affiliates.map((affiliate) => (
-              <Collapsible asChild key={affiliate.id}>
-                <tbody>
+              <Collapsible key={affiliate.id} className="contents">
+                <>
                   <TableRow className="group">
                     <TableCell className="font-medium">{affiliate.name}</TableCell>
                     <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
@@ -294,7 +295,7 @@ export default function AffiliatesPage() {
                         </TableCell>
                     </TableRow>
                   </CollapsibleContent>
-                </tbody>
+                </>
               </Collapsible>
             ))}
           </TableBody>
@@ -308,3 +309,5 @@ export default function AffiliatesPage() {
     </Card>
   );
 }
+
+    
