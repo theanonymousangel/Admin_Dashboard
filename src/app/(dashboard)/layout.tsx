@@ -33,7 +33,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const operationsNavItems = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Executive" },
+  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/performance", icon: TrendingUp, label: "Performance" },
   { href: "/products", icon: Box, label: "Subscription Products" },
   { href: "/orders", icon: Receipt, label: "Sales" },

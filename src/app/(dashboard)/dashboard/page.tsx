@@ -2,15 +2,11 @@
 
 import {
   Activity,
-  CalendarClock,
-  CalendarDays,
   CreditCard,
   DollarSign,
-  Goal,
-  Info,
-  Wallet,
+  Users,
 } from "lucide-react";
-import { Line, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 import {
   Card,
@@ -19,49 +15,46 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
 
 const yearlyIncomeData = [
-    { month: 'Jul, 2025', income: 0 },
-    { month: 'Aug, 2025', income: 1100 },
-    { month: 'Sep, 2025', income: 1500 },
-    { month: 'Oct, 2025', income: 2300 },
-    { month: 'Nov, 2025', income: 3400 },
-    { month: 'Dec, 2025', income: 4100 },
-    { month: 'Jan, 2026', income: 4500 },
-    { month: 'Feb, 2026', income: 5200 },
-    { month: 'Mar, 2026', income: 6100 },
-    { month: 'Apr, 2026', income: 7200 },
-    { month: 'May, 2026', income: 8300 },
-    { month: 'Jun, 2026', income: 9400 },
-    { month: 'Jul, 2026', income: 10000 },
+    { month: 'Jan', income: 4500 },
+    { month: 'Feb', income: 5200 },
+    { month: 'Mar', income: 6100 },
+    { month: 'Apr', income: 7200 },
+    { month: 'May', income: 8300 },
+    { month: 'Jun', income: 9400 },
+    { month: 'Jul', income: 10000 },
+    { month: 'Aug', income: 11000 },
+    { month: 'Sep', income: 9800 },
+    { month: 'Oct', income: 12000 },
+    { month: 'Nov', income: 13500 },
+    { month: 'Dec', income: 15000 },
 ];
 
+const recentSignups = [
+    { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+$1,999.00' },
+    { name: 'Jackson Lee', email: 'jackson.lee@email.com', amount: '+$39.00' },
+    { name: 'Isabella Nguyen', email: 'isabella.nguyen@email.com', amount: '+$299.00' },
+    { name: 'William Kim', email: 'will@email.com', amount: '+$99.00' },
+    { name: 'Sofia Davis', email: 'sofia.davis@email.com', amount: '+$39.00' },
+];
 
 interface StatCardProps {
     title: string;
     value: string;
-    goal: string;
-    progress: number;
+    description: string;
     icon: React.ElementType;
-    isPrimary?: boolean;
 }
 
-const StatCard = ({ title, value, goal, progress, icon: Icon, isPrimary = false }: StatCardProps) => (
-  <Card className={isPrimary ? "bg-primary text-primary-foreground" : "bg-card"}>
-    <CardHeader className="pb-4">
-      <div className="flex items-start justify-between">
-        <div className={`rounded-md p-2 ${isPrimary ? 'bg-white/20' : 'bg-primary/10'}`}>
-            <Icon className={`h-5 w-5 ${isPrimary ? 'text-primary-foreground' : 'text-primary'}`} />
-        </div>
-        <Info className={`h-4 w-4 cursor-pointer ${isPrimary ? 'text-primary-foreground/60' : 'text-muted-foreground'}`} />
-      </div>
+const StatCard = ({ title, value, description, icon: Icon }: StatCardProps) => (
+  <Card>
+    <CardHeader className="flex flex-row items-center justify-between pb-2">
+      <CardTitle className="text-sm font-medium">{title}</CardTitle>
+      <Icon className="h-4 w-4 text-muted-foreground" />
     </CardHeader>
-    <CardContent className="pt-0">
-      <div className={`text-3xl font-bold ${isPrimary ? '' : 'text-foreground'}`}>{value}</div>
-      <p className={`text-xs ${isPrimary ? 'text-primary-foreground/80' : 'text-muted-foreground'} mt-1`}>Goal: {goal}</p>
-      <Progress value={progress} className={`mt-4 h-2 ${isPrimary ? '[&>div]:bg-white' : ''}`} />
+    <CardContent>
+      <div className="text-2xl font-bold">{value}</div>
+      <p className="text-xs text-muted-foreground">{description}</p>
     </CardContent>
   </Card>
 );
@@ -69,136 +62,95 @@ const StatCard = ({ title, value, goal, progress, icon: Icon, isPrimary = false 
 export default function DashboardPage() {
   return (
     <>
-      <div className="flex items-center justify-between">
-          <div className="grid gap-1">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Executive</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline">
-                <Goal className="mr-2 h-4 w-4"/>
-                Edit Goal
-            </Button>
-            <Button variant="outline" className="hidden sm:flex">
-                VENDOR
-            </Button>
-          </div>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard 
-            title="Daily net income"
-            value="$0.00"
-            goal="$27.40"
-            progress={0}
+            title="Total Revenue"
+            value="$45,231.89"
+            description="+20.1% from last month"
             icon={DollarSign}
-            isPrimary
         />
         <StatCard 
-            title="Monthly net income"
-            value="$0.00"
-            goal="$739.80"
-            progress={0}
-            icon={CalendarDays}
+            title="Subscriptions"
+            value="+2350"
+            description="+180.1% from last month"
+            icon={Users}
         />
         <StatCard 
-            title="Yearly net income"
-            value="$0.00"
-            goal="$10,000.00"
-            progress={0}
-            icon={Wallet}
-        />
-         <StatCard 
-            title="Average order value"
-            value="$0.00"
-            goal="$200.00"
-            progress={0}
+            title="Sales"
+            value="+12,234"
+            description="+19% from last month"
             icon={CreditCard}
         />
-        <StatCard 
-            title="Daily transactions"
-            value="0"
-            goal="1"
-            progress={0}
+         <StatCard 
+            title="Active Now"
+            value="+573"
+            description="+201 since last hour"
             icon={Activity}
-        />
-        <StatCard 
-            title="Days elapsed since goal start"
-            value="1 Day(s)"
-            goal="364 left"
-            progress={1}
-            icon={CalendarClock}
         />
       </div>
       
-      <Card>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-4">
           <CardHeader>
-            <div className="flex flex-wrap items-center justify-between gap-2">
-                <div>
-                    <CardTitle className="font-bold">Yearly net income performance</CardTitle>
-                </div>
-                <div className="flex items-center gap-4">
-                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span className="h-2 w-2 rounded-full bg-primary"></span>
-                        Goal
-                     </div>
-                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span className="h-2 w-2 rounded-full border-2 border-primary"></span>
-                        Jul, 2025 - Jul, 2026
-                     </div>
-                    <Info className="h-5 w-5 text-muted-foreground cursor-pointer" />
-                </div>
-            </div>
+            <CardTitle>Overview</CardTitle>
           </CardHeader>
-          <CardContent className="h-[350px] w-full pr-8">
-            <ResponsiveContainer>
-              <LineChart
-                data={yearlyIncomeData}
-                margin={{
-                  top: 5,
-                  right: 10,
-                  left: 10,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis 
-                    dataKey="month" 
-                    tickLine={false}
-                    axisLine={{ stroke: 'hsl(var(--border))' }}
-                    tickMargin={10}
-                    fontSize={12}
-                 />
-                <YAxis 
-                    tickFormatter={(value) => `$${(value / 1000).toFixed(2)}K`}
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={10}
-                    fontSize={12}
-                    domain={[0, 'dataMax + 1000']}
-                />
-                <Tooltip 
-                    contentStyle={{
-                        borderRadius: '0.5rem',
-                        borderColor: 'hsl(var(--border))',
-                        backgroundColor: 'hsl(var(--background))'
-                    }}
-                    labelStyle={{
-                        fontWeight: 'bold'
-                    }}
-                    formatter={(value: number) => [`$${value.toLocaleString()}`, 'Income']}
-                />
-                <Line 
-                    type="monotone" 
-                    dataKey="income" 
-                    stroke="hsl(var(--primary))" 
-                    strokeWidth={2}
-                    dot={{ r: 4, strokeWidth: 2, fill: 'hsl(var(--primary-foreground))', stroke: 'hsl(var(--primary))' }}
-                    activeDot={{ r: 6, strokeWidth: 2 }}
-                />
-              </LineChart>
+          <CardContent className="pl-2">
+            <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={yearlyIncomeData}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis
+                        dataKey="month"
+                        stroke="#888888"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                    />
+                    <YAxis
+                        stroke="#888888"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                        tickFormatter={(value) => `$${value / 1000}K`}
+                    />
+                     <Tooltip 
+                        contentStyle={{
+                            borderRadius: '0.5rem',
+                            borderColor: 'hsl(var(--border))',
+                            backgroundColor: 'hsl(var(--background))'
+                        }}
+                        labelStyle={{
+                            fontWeight: 'bold'
+                        }}
+                        formatter={(value: number) => [`$${value.toLocaleString()}`, 'Income']}
+                    />
+                    <Bar dataKey="income" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
+        <Card className="col-span-3">
+            <CardHeader>
+                <CardTitle>Recent Sales</CardTitle>
+                <CardDescription>You made 265 sales this month.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-8">
+                    {recentSignups.map(signup => (
+                        <div className="flex items-center" key={signup.email}>
+                            <div className="h-9 w-9 bg-muted rounded-full flex items-center justify-center">
+                                <Users className="h-5 w-5 text-muted-foreground" />
+                            </div>
+                            <div className="ml-4 space-y-1">
+                                <p className="text-sm font-medium leading-none">{signup.name}</p>
+                                <p className="text-sm text-muted-foreground">{signup.email}</p>
+                            </div>
+                            <div className="ml-auto font-medium">{signup.amount}</div>
+                        </div>
+                    ))}
+                </div>
+            </CardContent>
+        </Card>
+      </div>
     </>
   );
 }
