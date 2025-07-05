@@ -197,6 +197,8 @@ const PayoutsView = ({ affiliate }: { affiliate: Affiliate }) => {
                     <TableHeader>
                         <TableRow>
                             <TableHead>Sale ID</TableHead>
+                            <TableHead>Customer</TableHead>
+                            <TableHead>Product</TableHead>
                             <TableHead>Sale Amount</TableHead>
                             <TableHead>Sale Date</TableHead>
                             <TableHead>Eligible Payout Date</TableHead>
@@ -207,6 +209,8 @@ const PayoutsView = ({ affiliate }: { affiliate: Affiliate }) => {
                         {filteredPayouts.length > 0 ? filteredPayouts.map((payout) => (
                             <TableRow key={payout.saleId}>
                                 <TableCell className="font-mono text-xs">{payout.saleId}</TableCell>
+                                <TableCell>{payout.customerName}</TableCell>
+                                <TableCell>{payout.productName}</TableCell>
                                 <TableCell>${payout.saleAmount.toFixed(2)}</TableCell>
                                 <TableCell>{format(payout.saleDate, 'MMM dd, yyyy')}</TableCell>
                                 <TableCell>{format(payout.eligibleDate, 'MMM dd, yyyy')}</TableCell>
@@ -214,7 +218,7 @@ const PayoutsView = ({ affiliate }: { affiliate: Affiliate }) => {
                             </TableRow>
                         )) : (
                             <TableRow>
-                                <TableCell colSpan={5} className="h-24 text-center">No payouts in this category.</TableCell>
+                                <TableCell colSpan={7} className="h-24 text-center">No payouts in this category.</TableCell>
                             </TableRow>
                         )}
                     </TableBody>
@@ -686,3 +690,5 @@ export default function AffiliatesPage() {
     </Card>
   );
 }
+
+    
