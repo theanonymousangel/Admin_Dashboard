@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { addDays, format, isAfter, isBefore, setDate, addMonths, parseISO } from "date-fns";
 import {
   DollarSign,
@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
 
 import { mockAffiliates } from "@/lib/mock-data";
 import type { Affiliate, AffiliateSale, Payout, Transaction } from "@/lib/types";
@@ -236,11 +237,21 @@ const BalanceChartTooltip = ({ active, payload, label }: any) => {
 
 export default function PayoutsPage() {
     const [affiliates] = useState<Affiliate[]>(mockAffiliates);
-
     const { globalStats, nextPayoutInfo, allTransactions, chartData } = useMemo(
         () => processAffiliateData(affiliates),
         [affiliates]
     );
+    const [editableTransactions, setEditableTransactions] = useState<Transaction[]>([]);
+
+    useEffect(() => {
+        setEditableTransactions(allTransactions);
+    }, [allTransactions]);
+
+    const handleNoteChange = (transactionId: string, newNote: string) => {
+        setEditableTransactions(prev => 
+            prev.map(t => t.id === transactionId ? { ...t, notes: newNote } : t)
+        );
+    };
     
     return (
         <div className="flex flex-col gap-6">
@@ -327,14 +338,21 @@ export default function PayoutsPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {allTransactions.slice(0, 10).map(t => (
+                                {editableTransactions.slice(0, 10).map(t => (
                                     <TableRow key={t.id}>
                                         <TableCell className="font-medium">{t.type}</TableCell>
                                         <TableCell>{t.affiliateName}</TableCell>
                                         <TableCell>${t.amount.toFixed(2)}</TableCell>
                                         <TableCell>{format(t.date, 'MMM dd, yyyy')}</TableCell>
                                         <TableCell><TransactionStatusBadge status="Completed" /></TableCell>
-                                        <TableCell className="text-muted-foreground">{t.notes}</TableCell>
+                                        <TableCell>
+                                            <Input
+                                                value={t.notes || ''}
+                                                onChange={(e) => handleNoteChange(t.id, e.target.value)}
+                                                className="h-8 border-none bg-transparent p-0 focus-visible:ring-1 focus-visible:ring-ring"
+                                                placeholder="Add a note..."
+                                            />
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
