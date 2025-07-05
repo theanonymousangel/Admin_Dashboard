@@ -96,7 +96,7 @@ export default function DashboardPage() {
             icon={DollarSign}
         />
         <StatCard 
-            title="Platform Earnings"
+            title="Earnings"
             value="$1,356.96"
             description="3% of total monthly revenue"
             icon={TrendingUp}
