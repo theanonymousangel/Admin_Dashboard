@@ -149,7 +149,7 @@ const PayoutsView = ({ affiliate }: { affiliate: Affiliate }) => {
 
   return (
     <div className="p-6 bg-background">
-        <h3 className="text-lg font-semibold mb-4 font-headline">Payout Overview</h3>
+        <h3 className="text-lg font-semibold mb-4">Payout Overview</h3>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
