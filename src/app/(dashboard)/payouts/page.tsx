@@ -13,7 +13,7 @@ import {
   ArrowRightLeft,
   Banknote,
 } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -146,26 +146,40 @@ const processAffiliateData = (affiliates: Affiliate[]) => {
 
   allTransactions.sort((a, b) => b.date.getTime() - a.date.getTime());
 
-  const monthlyData: { [key: string]: { month: string, income: number, payouts: number } } = {};
-  allTransactions.forEach(t => {
-      const monthKey = format(t.date, 'yyyy-MM');
-      if (!monthlyData[monthKey]) {
-          monthlyData[monthKey] = { month: format(t.date, 'MMM yy'), income: 0, payouts: 0 };
-      }
+  const sortedTransactionsForChart = [...allTransactions].sort((a, b) => a.date.getTime() - b.date.getTime());
+  let runningBalance = 0;
+  
+  const firstTransactionDate = sortedTransactionsForChart.length > 0 ? sortedTransactionsForChart[0].date : new Date();
+  const startDate = new Date(firstTransactionDate);
+  startDate.setDate(startDate.getDate() - 1);
+
+  const balanceHistory = [{
+      date: startDate,
+      balance: 0,
+      type: null,
+      amount: 0,
+  }];
+
+  sortedTransactionsForChart.forEach(t => {
       if (t.type === 'Income') {
-          monthlyData[monthKey].income += t.amount;
+          runningBalance += t.amount;
       } else if (t.type === 'Payout') {
-          monthlyData[monthKey].payouts += t.amount;
+          runningBalance -= t.amount;
       }
+      balanceHistory.push({
+          date: t.date,
+          balance: runningBalance,
+          type: t.type,
+          amount: t.amount,
+      });
   });
-  const chartData = Object.values(monthlyData).sort((a,b) => new Date(a.month).getTime() - new Date(b.month).getTime());
 
   return {
     globalStats: { totalEarnings, totalPaidOut, totalPending, totalAvailable },
     nextPayoutInfo: { date: nextGlobalPayoutDate, amount: nextGlobalPayoutAmount, count: nextGlobalPayoutAffiliateCount },
     allTransactions,
     affiliateDataMap,
-    chartData,
+    chartData: balanceHistory,
   };
 };
 
@@ -193,21 +207,30 @@ const TransactionStatusBadge = ({ status }: { status: Payout['status'] | 'Comple
     return <Badge style={style} className="border-transparent font-normal text-xs">{status}</Badge>;
 }
 
-const PayoutsChartTooltip = ({ active, payload, label }: any) => {
+const BalanceChartTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
+        const data = payload[0].payload;
+        const balanceValue = payload[0].value;
+        const date = new Date(label);
+
+        if (data.type === null) return null;
+
         return (
-            <div className="rounded-lg border bg-card p-3 shadow-sm min-w-[200px]">
-                <p className="text-sm font-bold mb-2 text-card-foreground">{label}</p>
-                <div className="space-y-1.5">
-                    {payload.map((pld: any) => (
-                        <div key={pld.dataKey} className="flex justify-between items-center text-xs">
-                            <div className="flex items-center">
-                                <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: pld.fill }}></span>
-                                <span className="text-muted-foreground">{pld.name}</span>
-                            </div>
-                            <span className="font-medium text-foreground">{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(pld.value)}</span>
-                        </div>
-                    ))}
+            <div className="rounded-lg border bg-card p-3 shadow-sm min-w-[220px] text-sm">
+                <p className="font-bold mb-2 text-card-foreground">{format(date, "MMM dd, yyyy - HH:mm")}</p>
+                <div className="space-y-1">
+                     <div className="flex justify-between items-center">
+                        <span className={`font-medium ${data.type === 'Income' ? 'text-green-600' : 'text-red-600'}`}>
+                            {data.type}
+                        </span>
+                        <span className={`font-medium ${data.type === 'Income' ? 'text-green-600' : 'text-red-600'}`}>
+                            {data.type === 'Income' ? '+' : '-'}{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(data.amount)}
+                        </span>
+                    </div>
+                    <div className="flex justify-between items-center border-t pt-1 mt-1">
+                        <span className="text-muted-foreground">New Balance</span>
+                        <span className="font-medium text-foreground">{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(balanceValue)}</span>
+                    </div>
                 </div>
             </div>
         );
@@ -255,23 +278,42 @@ export default function PayoutsPage() {
                 <TabsContent value="overview" className="space-y-4">
                      <Card>
                         <CardHeader>
-                            <CardTitle>Income vs. Payouts</CardTitle>
-                            <CardDescription>A summary of total sales income generated by affiliates versus commissions paid out.</CardDescription>
+                            <CardTitle>Affiliate Net Balance</CardTitle>
+                            <CardDescription>This chart shows the running balance of affiliate-generated income minus commission payouts over time.</CardDescription>
                         </CardHeader>
                         <CardContent className="pl-2">
                            <ResponsiveContainer width="100%" height={300}>
-                                <BarChart data={chartData}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))"/>
-                                    <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${Number(value) / 1000}k`} />
-                                    <Tooltip
-                                        content={<PayoutsChartTooltip />}
-                                        cursor={{ fill: 'hsl(var(--accent))', radius: 4 }}
+                                <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                                    <XAxis
+                                        dataKey="date"
+                                        type="number"
+                                        scale="time"
+                                        domain={['dataMin', 'dataMax']}
+                                        tickFormatter={(unixTime) => format(new Date(unixTime), 'MMM dd')}
+                                        stroke="hsl(var(--muted-foreground))"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
                                     />
-                                    <Legend wrapperStyle={{fontSize: "12px", paddingTop: '10px'}} formatter={(value) => <span className="text-foreground">{value}</span>}/>
-                                    <Bar dataKey="income" fill="hsl(var(--muted))" name="Total Sales" radius={[4, 4, 0, 0]} />
-                                    <Bar dataKey="payouts" fill="hsl(var(--primary))" name="Commissions Paid" radius={[4, 4, 0, 0]} />
-                                </BarChart>
+                                    <YAxis
+                                        stroke="hsl(var(--muted-foreground))"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tickFormatter={(value) => `$${Number(value) / 1000}k`}
+                                    />
+                                    <Tooltip content={<BalanceChartTooltip />} />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="balance"
+                                        name="Net Balance"
+                                        stroke="hsl(var(--primary))"
+                                        strokeWidth={2}
+                                        dot={false}
+                                        activeDot={{ r: 6, strokeWidth: 2 }}
+                                    />
+                                </LineChart>
                            </ResponsiveContainer>
                         </CardContent>
                      </Card>
