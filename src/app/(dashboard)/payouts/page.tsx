@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -192,6 +193,27 @@ const TransactionStatusBadge = ({ status }: { status: Payout['status'] | 'Comple
     return <Badge style={style} className="border-transparent font-normal text-xs">{status}</Badge>;
 }
 
+const PayoutsChartTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="rounded-lg border bg-card p-3 shadow-sm min-w-[200px]">
+                <p className="text-sm font-bold mb-2 text-card-foreground">{label}</p>
+                <div className="space-y-1.5">
+                    {payload.map((pld: any) => (
+                        <div key={pld.dataKey} className="flex justify-between items-center text-xs">
+                            <div className="flex items-center">
+                                <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: pld.fill }}></span>
+                                <span className="text-muted-foreground">{pld.name}</span>
+                            </div>
+                            <span className="font-medium text-foreground">{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(pld.value)}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+    return null;
+};
 
 export default function PayoutsPage() {
     const [affiliates] = useState<Affiliate[]>(mockAffiliates);
@@ -239,13 +261,12 @@ export default function PayoutsPage() {
                         <CardContent className="pl-2">
                            <ResponsiveContainer width="100%" height={300}>
                                 <BarChart data={chartData}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))"/>
                                     <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                                     <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${Number(value) / 1000}k`} />
                                     <Tooltip
-                                        contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)' }}
-                                        labelStyle={{ color: 'hsl(var(--foreground))', fontWeight: 'bold' }}
-                                        itemStyle={{ color: 'hsl(var(--foreground))' }}
+                                        content={<PayoutsChartTooltip />}
+                                        cursor={{ fill: 'hsl(var(--accent))', radius: 4 }}
                                     />
                                     <Legend wrapperStyle={{fontSize: "12px", paddingTop: '10px'}}/>
                                     <Bar dataKey="income" fill="hsl(var(--muted))" name="Total Sales" radius={[4, 4, 0, 0]} />
