@@ -207,11 +207,11 @@ const PayoutsView = ({ affiliate }: { affiliate: Affiliate }) => {
                 <Table>
                     <TableHeader>
                         <TableRow>
+                            <TableHead>Sale Date</TableHead>
                             <TableHead>Sale ID</TableHead>
                             <TableHead>Customer</TableHead>
                             <TableHead>Product</TableHead>
                             <TableHead>Sale Amount</TableHead>
-                            <TableHead>Sale Date</TableHead>
                             <TableHead>Eligible Payout Date</TableHead>
                             <TableHead>Status</TableHead>
                         </TableRow>
@@ -219,11 +219,11 @@ const PayoutsView = ({ affiliate }: { affiliate: Affiliate }) => {
                     <TableBody>
                         {filteredPayouts.length > 0 ? filteredPayouts.map((payout) => (
                             <TableRow key={payout.saleId}>
+                                <TableCell>{format(payout.saleDate, 'MMM dd, yyyy')}</TableCell>
                                 <TableCell className="font-mono text-xs">{payout.saleId}</TableCell>
                                 <TableCell>{payout.customerName}</TableCell>
                                 <TableCell>{payout.productName}</TableCell>
                                 <TableCell>${payout.saleAmount.toFixed(2)}</TableCell>
-                                <TableCell>{format(payout.saleDate, 'MMM dd, yyyy')}</TableCell>
                                 <TableCell>{format(payout.eligibleDate, 'MMM dd, yyyy')}</TableCell>
                                 <TableCell><PayoutStatusBadge status={payout.status} /></TableCell>
                             </TableRow>
@@ -501,8 +501,8 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Transaction ID</TableHead>
                 <TableHead>Date</TableHead>
+                <TableHead>Transaction ID</TableHead>
                 <TableHead>Customer</TableHead>
                 <TableHead>Product</TableHead>
                 <TableHead>Status</TableHead>
@@ -512,8 +512,8 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
             <TableBody>
               {transactions.length > 0 ? transactions.map((tx) => (
                 <TableRow key={tx.id}>
-                  <TableCell className="font-mono text-xs">{tx.id}</TableCell>
                   <TableCell>{format(new Date(tx.date), 'MMM dd, yyyy')}</TableCell>
+                  <TableCell className="font-mono text-xs">{tx.id}</TableCell>
                   <TableCell>{tx.customerName}</TableCell>
                   <TableCell>{tx.productName}</TableCell>
                   <TableCell><TransactionBadge status={tx.status} type={tx.type} /></TableCell>
