@@ -35,7 +35,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 const operationsNavItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/products", icon: Box, label: "Products" },
-  { href: "/orders", icon: Receipt, label: "Sales" },
+  { href: "/orders", icon: Receipt, label: "Transactions" },
   { href: "/customers", icon: Users, label: "Customers" },
   { href: "/affiliates", icon: Network, label: "Affiliates" },
   { href: "/payouts", icon: Landmark, label: "Income/Payouts" },
