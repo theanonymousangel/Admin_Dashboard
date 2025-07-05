@@ -12,6 +12,9 @@ import {
   UploadCloud,
   Trash2,
   File as FileIcon,
+  MoreHorizontal,
+  UserX,
+  UserCheck,
 } from "lucide-react";
 import { addDays, format, isAfter, isBefore, setDate, addMonths } from "date-fns";
 
@@ -39,6 +42,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 
 import { mockAffiliates } from "@/lib/mock-data";
@@ -644,30 +655,74 @@ export default function AffiliatesPage() {
                     </Select>
                   </TableCell>
                   <TableCell>{affiliate.sales.length}</TableCell>
-                  <TableCell>
-                    {affiliate.status === 'Deleted' && (
-                     <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
-                                <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size="icon" variant="ghost" onClick={(e) => e.stopPropagation()}>
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Actions</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        {affiliate.status !== 'Deleted' ? (
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="flex items-center gap-2">
+                                <UserX className="h-4 w-4" />
+                                <span>Disable Account</span>
+                              </DropdownMenuItem>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Disable Affiliate Account?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete the affiliate and all of their associated data.
+                                  Disabling this account will revoke their access and stop commission tracking. Their data will be retained. Are you sure?
                                 </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleAffiliateUpdate(affiliate.id, { status: 'Deleted' })}>
+                                  Yes, Disable
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        ) : (
+                          <DropdownMenuItem onClick={() => handleAffiliateUpdate(affiliate.id, { status: 'Active' })} className="flex items-center gap-2">
+                            <UserCheck className="h-4 w-4" />
+                            <span>Enable Account</span>
+                          </DropdownMenuItem>
+                        )}
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <DropdownMenuItem
+                              className="flex items-center gap-2 text-destructive focus:text-destructive focus:bg-destructive/10"
+                              onSelect={(e) => e.preventDefault()}
+                              disabled={affiliate.status !== 'Deleted'}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              <span>Permanently Delete</span>
+                            </DropdownMenuItem>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete the affiliate and all of their associated data.
+                              </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handlePermanentDelete(affiliate.id)} className={buttonVariants({ variant: "destructive" })}>
-                                    Yes, Permanently Delete
-                                </AlertDialogAction>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handlePermanentDelete(affiliate.id)} className={buttonVariants({ variant: "destructive" })}>
+                                Yes, Permanently Delete
+                              </AlertDialogAction>
                             </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                    )}
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
                 {openAffiliateId === affiliate.id && (
@@ -690,5 +745,3 @@ export default function AffiliatesPage() {
     </Card>
   );
 }
-
-    
