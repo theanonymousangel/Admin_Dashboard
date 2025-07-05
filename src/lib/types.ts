@@ -16,10 +16,11 @@ export type Order = {
   customerEmail: string;
   customerPhone?: string;
   customerAddress: string;
-  products: { name: string; quantity: number; size: string; }[];
+  products: { name: string; quantity: number; size: 'S' | 'M' | 'L' | 'XL' | '2XL'; }[];
   amount: number;
   status: 'Pending' | 'Completed' | 'Shipped' | 'Refunded' | 'Cancelled';
   date: string;
+  affiliateUsername?: string;
 };
 
 export type Customer = {

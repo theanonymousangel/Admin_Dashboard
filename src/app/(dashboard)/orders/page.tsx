@@ -80,6 +80,7 @@ export default function OrdersPage() {
 
     return orders.filter(order => 
       order.id.toLowerCase().includes(lowercasedTerm) ||
+      (order.affiliateUsername && order.affiliateUsername.toLowerCase().includes(lowercasedTerm)) ||
       order.customerName.toLowerCase().includes(lowercasedTerm) ||
       order.customerEmail.toLowerCase().includes(lowercasedTerm) ||
       (order.customerPhone && order.customerPhone.includes(lowercasedTerm)) ||
@@ -132,6 +133,7 @@ export default function OrdersPage() {
                 <TableRow>
                   <TableHead>Date</TableHead>
                   <TableHead>Transaction ID</TableHead>
+                  <TableHead className="hidden md:table-cell">Affiliate</TableHead>
                   <TableHead>Customer</TableHead>
                   <TableHead className="hidden md:table-cell">Email</TableHead>
                   <TableHead className="hidden lg:table-cell">Phone Number</TableHead>
@@ -151,6 +153,7 @@ export default function OrdersPage() {
                   <TableRow key={order.id}>
                     <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
                     <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
+                    <TableCell className="hidden md:table-cell">{order.affiliateUsername || 'N/A'}</TableCell>
                     <TableCell>{order.customerName}</TableCell>
                     <TableCell className="hidden md:table-cell">{order.customerEmail}</TableCell>
                     <TableCell className="hidden lg:table-cell">{order.customerPhone || 'N/A'}</TableCell>

@@ -10,9 +10,9 @@ export const mockProducts: Product[] = [
 ];
 
 export const mockOrders: Order[] = [
-  { id: 'ord-101', customerName: 'Jane Doe', customerEmail: 'jane.doe@example.com', customerPhone: '123-456-7890', customerAddress: '123 Oak St, Anytown, USA', products: [{ name: 'Classic White Tee', quantity: 2, size: 'M' }], amount: 59.98, status: 'Completed', date: '2023-10-26' },
-  { id: 'ord-102', customerName: 'John Smith', customerEmail: 'john.smith@example.com', customerPhone: '234-567-8901', customerAddress: '456 Maple Ave, Somecity, USA', products: [{ name: 'Denim Jacket', quantity: 1, size: 'L' }, { name: 'Black Skinny Jeans', quantity: 1, size: 'L' }], amount: 169.98, status: 'Shipped', date: '2023-10-25' },
-  { id: 'ord-103', customerName: 'Alice Johnson', customerEmail: 'alice.j@example.com', customerPhone: '345-678-9012', customerAddress: '789 Pine Rd, Otherville, USA', products: [{ name: 'Beige Hoodie', quantity: 1, size: 'S' }], amount: 59.99, status: 'Pending', date: '2023-10-27' },
+  { id: 'ord-101', customerName: 'Jane Doe', customerEmail: 'jane.doe@example.com', customerPhone: '123-456-7890', customerAddress: '123 Oak St, Anytown, USA', products: [{ name: 'Classic White Tee', quantity: 2, size: 'M' }], amount: 59.98, status: 'Completed', date: '2023-10-26', affiliateUsername: 'fashion_blog' },
+  { id: 'ord-102', customerName: 'John Smith', customerEmail: 'john.smith@example.com', customerPhone: '234-567-8901', customerAddress: '456 Maple Ave, Somecity, USA', products: [{ name: 'Denim Jacket', quantity: 1, size: 'L' }, { name: 'Black Skinny Jeans', quantity: 1, size: 'L' }], amount: 169.98, status: 'Shipped', date: '2023-10-25', affiliateUsername: 'style_influencer' },
+  { id: 'ord-103', customerName: 'Alice Johnson', customerEmail: 'alice.j@example.com', customerPhone: '345-678-9012', customerAddress: '789 Pine Rd, Otherville, USA', products: [{ name: 'Beige Hoodie', quantity: 1, size: 'S' }], amount: 59.99, status: 'Pending', date: '2023-10-27', affiliateUsername: 'fashion_blog' },
   { id: 'ord-104', customerName: 'Bob Brown', customerEmail: 'bob.brown@example.com', customerPhone: '456-789-0123', customerAddress: '101 Birch Blvd, Anyplace, USA', products: [{ name: 'Leather Boots', quantity: 1, size: 'M' }], amount: 129.99, status: 'Cancelled', date: '2023-10-24' },
 ];
 
