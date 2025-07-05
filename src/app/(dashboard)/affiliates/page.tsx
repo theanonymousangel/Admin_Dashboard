@@ -158,7 +158,7 @@ const PayoutsView = ({ affiliate }: { affiliate: Affiliate }) => {
             </Card>
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium">Total Outstanding Commission</CardTitle>
+                    <CardTitle className="text-sm font-medium">Unpaid Commission</CardTitle>
                     <Hourglass className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
