@@ -194,7 +194,7 @@ export default function ProductsPage() {
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent className="sm:max-w-xl">
           <SheetHeader>
-            <SheetTitle className="font-headline">Add New Product</SheetTitle>
+            <SheetTitle>Add New Product</SheetTitle>
             <SheetDescription>
               Fill in the details below to add a new product to your store.
             </SheetDescription>
