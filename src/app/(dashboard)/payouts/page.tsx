@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export default function PayoutsPage() {
@@ -9,7 +11,7 @@ export default function PayoutsPage() {
             </CardHeader>
             <CardContent>
                 <p>Income/Payouts content coming soon...</p>
-            </Content>
+            </CardContent>
         </Card>
     );
 }

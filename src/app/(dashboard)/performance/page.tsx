@@ -9,7 +9,7 @@ export default function PerformancePage() {
             </CardHeader>
             <CardContent>
                 <p>Performance content coming soon...</p>
-            </Content>
+            </CardContent>
         </Card>
     );
 }
