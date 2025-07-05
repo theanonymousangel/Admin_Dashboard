@@ -9,6 +9,7 @@ import {
   Search,
   UploadCloud,
   Trash2,
+  Link as LinkIcon,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -66,7 +67,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { mockProducts } from "@/lib/mock-data";
 import type { Product } from "@/lib/types";
-import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
 
 function ProductStatusBadge({ status }: { status: Product["status"] }) {
   const variant = {
@@ -253,15 +254,26 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>(mockProducts);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [openProductId, setOpenProductId] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const handleProductUpdate = (productId: string, data: Partial<Product>) => {
     setProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, ...data } : p)
     );
   };
+
   const handleProductDelete = (productId: string) => {
     setProducts(prev => prev.filter(p => p.id !== productId));
     setOpenProductId(null);
+  };
+  
+  const handleGenerateLink = (productId: string) => {
+    const link = `${window.location.origin}/checkout?product_id=${productId}`;
+    navigator.clipboard.writeText(link);
+    toast({
+      title: "Link Generated & Copied",
+      description: `A checkout link has been copied to your clipboard.`,
+    });
   };
 
   return (
@@ -319,9 +331,7 @@ export default function ProductsPage() {
                     </TableHead>
                     <TableHead className="hidden lg:table-cell">Sizes</TableHead>
                     <TableHead className="hidden lg:table-cell">Colors</TableHead>
-                    <TableHead>
-                      <span className="sr-only">Actions</span>
-                    </TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -360,7 +370,20 @@ export default function ProductsPage() {
                             {product.colors?.join(", ") || "N/A"}
                           </TableCell>
                           <TableCell>
-                            <span className="sr-only">View Details</span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 gap-1"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleGenerateLink(product.id);
+                              }}
+                            >
+                              <LinkIcon className="h-3.5 w-3.5" />
+                              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                Get Link
+                              </span>
+                            </Button>
                           </TableCell>
                         </TableRow>
                         {openProductId === product.id && (
@@ -447,3 +470,4 @@ export default function ProductsPage() {
     </>
   );
 }
+
