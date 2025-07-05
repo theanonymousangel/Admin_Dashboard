@@ -260,7 +260,7 @@ export default function AffiliatesPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
+              <TableHead>Username</TableHead>
               <TableHead>Total Sales</TableHead>
               <TableHead>Commission Rate</TableHead>
               <TableHead>Balance</TableHead>
