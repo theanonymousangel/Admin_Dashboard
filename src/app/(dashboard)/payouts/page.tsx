@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   ArrowRightLeft,
   Banknote,
+  Save,
 } from "lucide-react";
 import { Line, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
@@ -20,6 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 
 import { mockAffiliates } from "@/lib/mock-data";
 import type { Affiliate, AffiliateSale, Payout, Transaction } from "@/lib/types";
@@ -242,6 +244,7 @@ export default function PayoutsPage() {
         [affiliates]
     );
     const [editableTransactions, setEditableTransactions] = useState<Transaction[]>([]);
+    const { toast } = useToast();
 
     useEffect(() => {
         setEditableTransactions(allTransactions);
@@ -251,6 +254,14 @@ export default function PayoutsPage() {
         setEditableTransactions(prev => 
             prev.map(t => t.id === transactionId ? { ...t, notes: newNote } : t)
         );
+    };
+
+    const handleSaveNote = (transactionId: string) => {
+        // In a real app, this would save to a database
+        toast({
+            title: "Note Saved",
+            description: `Your note for transaction ${transactionId} has been updated.`,
+        });
     };
     
     return (
@@ -346,12 +357,17 @@ export default function PayoutsPage() {
                                         <TableCell>{format(t.date, 'MMM dd, yyyy')}</TableCell>
                                         <TableCell><TransactionStatusBadge status="Completed" /></TableCell>
                                         <TableCell>
-                                            <Input
-                                                value={t.notes || ''}
-                                                onChange={(e) => handleNoteChange(t.id, e.target.value)}
-                                                className="h-8 border-none bg-transparent p-0 focus-visible:ring-1 focus-visible:ring-ring"
-                                                placeholder="Add a note..."
-                                            />
+                                            <div className="flex items-center gap-2">
+                                                <Input
+                                                    value={t.notes || ''}
+                                                    onChange={(e) => handleNoteChange(t.id, e.target.value)}
+                                                    className="h-8 border-none bg-transparent p-0 focus-visible:ring-1 focus-visible:ring-ring flex-1"
+                                                    placeholder="Add a note..."
+                                                />
+                                                <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => handleSaveNote(t.id)}>
+                                                    <Save className="h-4 w-4" />
+                                                </Button>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))}
