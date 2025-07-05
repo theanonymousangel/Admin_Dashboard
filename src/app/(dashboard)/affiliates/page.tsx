@@ -40,7 +40,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { mockAffiliates } from "@/lib/mock-data";
-import type { Affiliate, AffiliateSale, Payout, AffiliateDocument } from "@/lib/types";
+import type { Affiliate, AffiliateSale, Payout, AffiliateDocument, Transaction } from "@/lib/types";
 
 function getNextPayoutDate(eligibleDate: Date): Date {
   const payoutDays = [7, 14, 21, 28];
@@ -362,14 +362,6 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
 };
 
 const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
-  type Transaction = {
-    id: string;
-    date: Date;
-    type: 'Commission' | 'Payout' | 'Refund';
-    amount: number;
-    status: 'Completed' | 'Pending' | 'Reversed';
-    saleId: string;
-  };
 
   const transactions = useMemo(() => {
     const { payouts } = calculatePayouts(affiliate.sales, affiliate.commissionRate);
@@ -450,7 +442,7 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
             <TableBody>
               {transactions.length > 0 ? transactions.map((tx) => (
                 <TableRow key={tx.id}>
-                  <TableCell>{format(tx.date, 'MMM dd, yyyy')}</TableCell>
+                  <TableCell>{format(new Date(tx.date), 'MMM dd, yyyy')}</TableCell>
                   <TableCell className="font-mono text-xs">{tx.id}</TableCell>
                   <TableCell>{tx.type}</TableCell>
                   <TableCell><TransactionBadge status={tx.status} type={tx.type} /></TableCell>
@@ -532,6 +524,7 @@ export default function AffiliatesPage() {
               <TableHead>Commission Rate</TableHead>
               <TableHead>Balance</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Date Joined</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -578,10 +571,11 @@ export default function AffiliatesPage() {
                       </SelectContent>
                     </Select>
                   </TableCell>
+                  <TableCell>{new Date(affiliate.dateJoined).toLocaleDateString()}</TableCell>
                 </TableRow>
                 {openAffiliateId === affiliate.id && (
                   <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    <TableCell colSpan={5} className="p-0">
+                    <TableCell colSpan={6} className="p-0">
                       <AffiliateDetails affiliate={affiliate} onUpdate={handleAffiliateUpdate} />
                     </TableCell>
                   </TableRow>
