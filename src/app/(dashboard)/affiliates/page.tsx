@@ -220,7 +220,7 @@ const PayoutsView = ({ affiliate }: { affiliate: Affiliate }) => {
                         {filteredPayouts.length > 0 ? filteredPayouts.map((payout) => (
                             <TableRow key={payout.saleId}>
                                 <TableCell>{format(payout.saleDate, 'MMM dd, yyyy')}</TableCell>
-                                <TableCell className="font-mono text-xs">{payout.saleId}</TableCell>
+                                <TableCell>{payout.saleId}</TableCell>
                                 <TableCell>{payout.customerName}</TableCell>
                                 <TableCell>{payout.productName}</TableCell>
                                 <TableCell>${payout.saleAmount.toFixed(2)}</TableCell>
@@ -513,7 +513,7 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
               {transactions.length > 0 ? transactions.map((tx) => (
                 <TableRow key={tx.id}>
                   <TableCell>{format(new Date(tx.date), 'MMM dd, yyyy')}</TableCell>
-                  <TableCell className="font-mono text-xs">{tx.id}</TableCell>
+                  <TableCell>{tx.id}</TableCell>
                   <TableCell>{tx.customerName}</TableCell>
                   <TableCell>{tx.productName}</TableCell>
                   <TableCell><TransactionBadge status={tx.status} type={tx.type} /></TableCell>
