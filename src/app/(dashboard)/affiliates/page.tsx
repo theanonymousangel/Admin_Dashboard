@@ -92,7 +92,11 @@ function calculatePayouts(sales: AffiliateSale[], commissionRate: number) {
     })
   }
 
-  return { payouts, nextPayoutTotal, nextPayoutDate, pendingTotal };
+  const totalCommissionPending = payouts
+    .filter(p => p.status !== 'Paid')
+    .reduce((acc, p) => acc + p.commission, 0);
+
+  return { payouts, nextPayoutTotal, nextPayoutDate, pendingTotal, totalCommissionPending };
 }
 
 function PayoutStatusBadge({ status }: { status: Payout["status"] }) {
@@ -111,7 +115,7 @@ function PayoutStatusBadge({ status }: { status: Payout["status"] }) {
 }
 
 const AffiliatePayoutDetails = ({ affiliate }: { affiliate: Affiliate }) => {
-  const { payouts, nextPayoutTotal, nextPayoutDate, pendingTotal } = useMemo(
+  const { payouts, nextPayoutTotal, nextPayoutDate, totalCommissionPending } = useMemo(
     () => calculatePayouts(affiliate.sales, affiliate.commissionRate),
     [affiliate.sales, affiliate.commissionRate]
   );
@@ -127,10 +131,6 @@ const AffiliatePayoutDetails = ({ affiliate }: { affiliate: Affiliate }) => {
       return false;
     });
   }, [payouts, filter]);
-
-  const totalCommissionPending = payouts
-    .filter(p => p.status !== 'Paid')
-    .reduce((acc, p) => acc + p.commission, 0);
 
   return (
     <div className="p-6 bg-background">
@@ -156,7 +156,7 @@ const AffiliatePayoutDetails = ({ affiliate }: { affiliate: Affiliate }) => {
             </Card>
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium">Total Commission Pending</CardTitle>
+                    <CardTitle className="text-sm font-medium">Total Outstanding Commission</CardTitle>
                     <Hourglass className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
@@ -269,7 +269,7 @@ export default function AffiliatesPage() {
           <TableBody>
             {affiliates.map((affiliate) => (
               <Collapsible asChild key={affiliate.id}>
-                <>
+                <tbody>
                   <TableRow className="group">
                     <TableCell className="font-medium">{affiliate.name}</TableCell>
                     <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
@@ -294,7 +294,7 @@ export default function AffiliatesPage() {
                         </TableCell>
                     </TableRow>
                   </CollapsibleContent>
-                </>
+                </tbody>
               </Collapsible>
             ))}
           </TableBody>
