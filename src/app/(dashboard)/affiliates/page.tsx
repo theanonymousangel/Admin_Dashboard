@@ -361,12 +361,134 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
     );
 };
 
+const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
+  type Transaction = {
+    id: string;
+    date: Date;
+    type: 'Commission' | 'Payout' | 'Refund';
+    amount: number;
+    status: 'Completed' | 'Pending' | 'Reversed';
+    saleId: string;
+  };
+
+  const transactions = useMemo(() => {
+    const { payouts } = calculatePayouts(affiliate.sales, affiliate.commissionRate);
+    const generatedTransactions: Transaction[] = [];
+
+    payouts.forEach(payout => {
+      generatedTransactions.push({
+        id: `${payout.saleId}-comm`,
+        date: payout.saleDate,
+        type: 'Commission',
+        amount: payout.commission,
+        status: payout.status === 'Paid' ? 'Completed' : 'Pending',
+        saleId: payout.saleId,
+      });
+
+      if (payout.status === 'Paid') {
+        generatedTransactions.push({
+          id: `${payout.saleId}-payout`,
+          date: payout.payoutDate,
+          type: 'Payout',
+          amount: -payout.commission,
+          status: 'Completed',
+          saleId: payout.saleId,
+        });
+      }
+    });
+    
+    if (affiliate.id === 'aff-01' && affiliate.sales.length > 0) {
+       const saleToRefund = affiliate.sales[0];
+       const commissionToRefund = saleToRefund.amount * (affiliate.commissionRate / 100);
+        generatedTransactions.push({
+            id: `${saleToRefund.id}-refund`,
+            date: addDays(new Date(saleToRefund.date), 5),
+            type: 'Refund',
+            amount: -commissionToRefund,
+            status: 'Reversed',
+            saleId: saleToRefund.id,
+        })
+    }
+
+
+    return generatedTransactions.sort((a, b) => b.date.getTime() - a.date.getTime());
+  }, [affiliate]);
+
+  const TransactionBadge = ({ status, type }: { status: Transaction['status'], type: Transaction['type'] }) => {
+    let text: string;
+    let colorClass: string;
+
+    if (type === 'Refund') {
+        text = 'Refunded';
+        colorClass = 'bg-red-100 text-red-800';
+    } else {
+        switch(status) {
+            case 'Completed':
+                text = 'Successful';
+                colorClass = 'bg-green-100 text-green-800';
+                break;
+            case 'Pending':
+                text = 'Pending';
+                colorClass = 'bg-yellow-100 text-yellow-800';
+                break;
+            case 'Reversed':
+                text = 'Reversed';
+                colorClass = 'bg-red-100 text-red-800';
+                break;
+        }
+    }
+    return <Badge className={`border-none ${colorClass}`}>{text}</Badge>;
+  }
+
+  return (
+    <div className="p-6 bg-background">
+      <Card>
+        <CardHeader>
+          <CardTitle>Transaction History</CardTitle>
+          <CardDescription>A log of all commissions, payouts, and refunds for this affiliate.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Transaction ID</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Amount</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {transactions.length > 0 ? transactions.map((tx) => (
+                <TableRow key={tx.id}>
+                  <TableCell>{format(tx.date, 'MMM dd, yyyy')}</TableCell>
+                  <TableCell className="font-mono text-xs">{tx.id}</TableCell>
+                  <TableCell>{tx.type}</TableCell>
+                  <TableCell><TransactionBadge status={tx.status} type={tx.type} /></TableCell>
+                  <TableCell className={`text-right font-medium ${tx.amount > 0 ? '' : 'text-destructive'}`}>
+                    {tx.amount > 0 ? `+$${tx.amount.toFixed(2)}` : `-$${Math.abs(tx.amount).toFixed(2)}`}
+                  </TableCell>
+                </TableRow>
+              )) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-24 text-center">No transactions to display.</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
 const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
     return (
         <Tabs defaultValue="account" className="w-full">
             <TabsList className="px-6">
                 <TabsTrigger value="account">Account Overview</TabsTrigger>
                 <TabsTrigger value="payouts">Payout Overview</TabsTrigger>
+                <TabsTrigger value="transactions">Transactions</TabsTrigger>
             </TabsList>
             <Separator />
             <TabsContent value="account" className="m-0">
@@ -374,6 +496,9 @@ const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpd
             </TabsContent>
             <TabsContent value="payouts" className="m-0">
                 <PayoutsView affiliate={affiliate} />
+            </TabsContent>
+            <TabsContent value="transactions" className="m-0">
+                <TransactionsView affiliate={affiliate} />
             </TabsContent>
         </Tabs>
     );
