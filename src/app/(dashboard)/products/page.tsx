@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import {
   File,
@@ -255,6 +255,8 @@ export default function ProductsPage() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [openProductId, setOpenProductId] = useState<string | null>(null);
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleProductUpdate = (productId: string, data: Partial<Product>) => {
     setProducts(prev => 
@@ -276,9 +278,145 @@ export default function ProductsPage() {
     });
   };
 
+  const filteredProducts = useMemo(() => {
+    let results = products;
+
+    if (activeTab !== 'all') {
+      const statusMap = {
+        'active': 'In Stock',
+        'low': 'Low Stock',
+        'archived': 'Out of Stock'
+      };
+      const filterStatus = statusMap[activeTab as keyof typeof statusMap];
+      if (filterStatus) {
+        results = results.filter(p => p.status === filterStatus);
+      }
+    }
+
+    if (searchTerm) {
+      const lowercasedTerm = searchTerm.toLowerCase();
+      results = results.filter(p =>
+        p.name.toLowerCase().includes(lowercasedTerm) ||
+        p.category.toLowerCase().includes(lowercasedTerm) ||
+        p.description.toLowerCase().includes(lowercasedTerm)
+      );
+    }
+    
+    return results;
+  }, [products, activeTab, searchTerm]);
+
+  const productsTable = (
+     <Card>
+        <CardHeader>
+          <CardTitle className="font-headline">Products</CardTitle>
+          <CardDescription>
+            Manage your products and view their sales performance.
+          </CardDescription>
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input 
+                type="search" 
+                placeholder="Search products..." 
+                className="w-full pl-8 sm:w-1/3" 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="hidden w-[100px] sm:table-cell">
+                  Image
+                </TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead className="hidden md:table-cell">Category</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="hidden md:table-cell">Price</TableHead>
+                <TableHead className="hidden md:table-cell">
+                  Stock Quantity
+                </TableHead>
+                <TableHead className="hidden lg:table-cell">Sizes</TableHead>
+                <TableHead className="hidden lg:table-cell">Colors</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredProducts.map((product) => (
+                <React.Fragment key={product.id}>
+                    <TableRow className="cursor-pointer" onClick={() => setOpenProductId(openProductId === product.id ? null : product.id)}>
+                      <TableCell className="hidden sm:table-cell">
+                        <Image
+                          alt={product.name}
+                          className="aspect-square rounded-md object-cover"
+                          height="64"
+                          src={product.image[0]}
+                          width="64"
+                          data-ai-hint="product image"
+                        />
+                      </TableCell>
+                      <TableCell className="font-medium">{product.name}</TableCell>
+                      <TableCell className="hidden md:table-cell">{product.category}</TableCell>
+                      <TableCell>
+                        <ProductStatusBadge status={product.status} />
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        ${product.price.toFixed(2)}
+                      </TableCell>
+                      <TableCell
+                        className={`hidden md:table-cell ${
+                          product.status === "Low Stock" ? "text-destructive font-bold" : ""
+                        }`}
+                      >
+                        {product.stock}
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {product.sizes?.join(", ") || "N/A"}
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {product.colors?.join(", ") || "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 gap-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleGenerateLink(product.id);
+                          }}
+                        >
+                          <LinkIcon className="h-3.5 w-3.5" />
+                          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                            Get Link
+                          </span>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                    {openProductId === product.id && (
+                        <TableRow className="bg-muted/50 hover:bg-muted/50">
+                            <TableCell colSpan={9} className="p-0">
+                                <ProductDetails product={product} onUpdate={handleProductUpdate} onDelete={handleProductDelete} />
+                            </TableCell>
+                        </TableRow>
+                    )}
+                </React.Fragment>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+        <CardFooter>
+          <div className="text-xs text-muted-foreground">
+            Showing <strong>{filteredProducts.length}</strong> of <strong>{products.length}</strong> products
+          </div>
+        </CardFooter>
+      </Card>
+  );
+
   return (
     <>
-      <Tabs defaultValue="all">
+      <Tabs defaultValue="all" onValueChange={setActiveTab}>
         <div className="flex items-center">
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
@@ -303,108 +441,10 @@ export default function ProductsPage() {
             </Button>
           </div>
         </div>
-        <TabsContent value="all">
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-headline">Products</CardTitle>
-              <CardDescription>
-                Manage your products and view their sales performance.
-              </CardDescription>
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input type="search" placeholder="Search products..." className="w-full pl-8 sm:w-1/3" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="hidden w-[100px] sm:table-cell">
-                      Image
-                    </TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead className="hidden md:table-cell">Category</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="hidden md:table-cell">Price</TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Stock Quantity
-                    </TableHead>
-                    <TableHead className="hidden lg:table-cell">Sizes</TableHead>
-                    <TableHead className="hidden lg:table-cell">Colors</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {products.map((product) => (
-                    <React.Fragment key={product.id}>
-                        <TableRow className="cursor-pointer" onClick={() => setOpenProductId(openProductId === product.id ? null : product.id)}>
-                          <TableCell className="hidden sm:table-cell">
-                            <Image
-                              alt={product.name}
-                              className="aspect-square rounded-md object-cover"
-                              height="64"
-                              src={product.image[0]}
-                              width="64"
-                              data-ai-hint="product image"
-                            />
-                          </TableCell>
-                          <TableCell className="font-medium">{product.name}</TableCell>
-                          <TableCell className="hidden md:table-cell">{product.category}</TableCell>
-                          <TableCell>
-                            <ProductStatusBadge status={product.status} />
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            ${product.price.toFixed(2)}
-                          </TableCell>
-                          <TableCell
-                            className={`hidden md:table-cell ${
-                              product.status === "Low Stock" ? "text-destructive font-bold" : ""
-                            }`}
-                          >
-                            {product.stock}
-                          </TableCell>
-                          <TableCell className="hidden lg:table-cell">
-                            {product.sizes?.join(", ") || "N/A"}
-                          </TableCell>
-                          <TableCell className="hidden lg:table-cell">
-                            {product.colors?.join(", ") || "N/A"}
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="h-8 gap-1"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleGenerateLink(product.id);
-                              }}
-                            >
-                              <LinkIcon className="h-3.5 w-3.5" />
-                              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                Get Link
-                              </span>
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                        {openProductId === product.id && (
-                            <TableRow className="bg-muted/50 hover:bg-muted/50">
-                                <TableCell colSpan={9} className="p-0">
-                                    <ProductDetails product={product} onUpdate={handleProductUpdate} onDelete={handleProductDelete} />
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </React.Fragment>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-            <CardFooter>
-              <div className="text-xs text-muted-foreground">
-                Showing <strong>1-{products.length}</strong> of <strong>{products.length}</strong> products
-              </div>
-            </CardFooter>
-          </Card>
-        </TabsContent>
+        <TabsContent value="all">{productsTable}</TabsContent>
+        <TabsContent value="active">{productsTable}</TabsContent>
+        <TabsContent value="low">{productsTable}</TabsContent>
+        <TabsContent value="archived">{productsTable}</TabsContent>
       </Tabs>
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent className="sm:max-w-xl">
