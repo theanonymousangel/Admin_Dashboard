@@ -55,8 +55,8 @@ const CustomerDetails = ({ customer, orders }: { customer: Customer, orders: Ord
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Order ID</TableHead>
                   <TableHead>Date</TableHead>
+                  <TableHead>Order ID</TableHead>
                   <TableHead>Products</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
@@ -67,8 +67,8 @@ const CustomerDetails = ({ customer, orders }: { customer: Customer, orders: Ord
               <TableBody>
                 {customerOrders.map(order => (
                   <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
                     <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+                    <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
                     <TableCell className="max-w-[200px] truncate">
                       {order.products.map(p => `${p.quantity}x ${p.name} (${p.size})`).join(', ')}
                     </TableCell>
