@@ -12,7 +12,7 @@ import {
   Hourglass,
   UploadCloud,
   Trash2,
-  File as FileIcon,
+  File,
   MoreHorizontal,
   UserX,
   UserCheck,
@@ -409,7 +409,7 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                                     {documents.map(doc => (
                                         <li key={doc.id} className="flex items-center justify-between text-sm p-2 rounded-md border">
                                             <div className="flex items-center gap-2 overflow-hidden">
-                                                <FileIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                                <File className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                                                 <span className="font-medium truncate" title={doc.name}>{doc.name}</span>
                                             </div>
                                             <div className="flex items-center gap-1">
@@ -729,12 +729,20 @@ export default function AffiliatesPage() {
                 Manage your affiliate partners and their performance.
               </CardDescription>
             </div>
-            <Button size="sm" className="h-8 gap-1" onClick={() => setIsAddSheetOpen(true)}>
-              <PlusCircle className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Add Affiliate
-              </span>
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button size="sm" className="h-8 gap-1" onClick={() => setIsAddSheetOpen(true)}>
+                <PlusCircle className="h-3.5 w-3.5" />
+                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                  Add Affiliate
+                </span>
+              </Button>
+              <Button size="sm" variant="outline" className="h-8 gap-1">
+                  <File className="h-3.5 w-3.5" />
+                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                      Export
+                  </span>
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
