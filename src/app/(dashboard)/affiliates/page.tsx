@@ -4,7 +4,6 @@
 import React, { useState, useMemo } from "react";
 import {
   PlusCircle,
-  ChevronDown,
   Download,
   CalendarDays,
   DollarSign,
@@ -262,34 +261,25 @@ export default function AffiliatesPage() {
               <TableHead>Commission Rate</TableHead>
               <TableHead>Balance</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>
-                <span className="sr-only">Actions</span>
-              </TableHead>
             </TableRow>
           </TableHeader>
           {affiliates.map((affiliate) => (
             <Collapsible asChild key={affiliate.id}>
               <tbody>
-                <TableRow className="group border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                  <TableCell className="font-medium">{affiliate.name}</TableCell>
-                  <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
-                  <TableCell>{affiliate.commissionRate}%</TableCell>
-                  <TableCell>${affiliate.balance.toFixed(2)}</TableCell>
-                  <TableCell>
-                    <AffiliateStatusBadge status={affiliate.status} />
-                  </TableCell>
-                  <TableCell>
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
-                        <span className="sr-only">Toggle Payout Details</span>
-                      </Button>
-                    </CollapsibleTrigger>
-                  </TableCell>
-                </TableRow>
+                <CollapsibleTrigger asChild>
+                  <TableRow className="cursor-pointer">
+                    <TableCell className="font-medium">{affiliate.name}</TableCell>
+                    <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
+                    <TableCell>{affiliate.commissionRate}%</TableCell>
+                    <TableCell>${affiliate.balance.toFixed(2)}</TableCell>
+                    <TableCell>
+                      <AffiliateStatusBadge status={affiliate.status} />
+                    </TableCell>
+                  </TableRow>
+                </CollapsibleTrigger>
                 <CollapsibleContent asChild>
                   <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    <TableCell colSpan={6}>
+                    <TableCell colSpan={5}>
                       <AffiliatePayoutDetails affiliate={affiliate} />
                     </TableCell>
                   </TableRow>
