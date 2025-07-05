@@ -5,7 +5,6 @@ import React, { useState, useMemo } from "react";
 import { addDays, format, isAfter, isBefore, setDate, addMonths, parseISO } from "date-fns";
 import {
   DollarSign,
-  Users,
   Wallet,
   CalendarClock,
   Download,
@@ -19,8 +18,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { mockAffiliates } from "@/lib/mock-data";
@@ -178,7 +175,6 @@ const processAffiliateData = (affiliates: Affiliate[]) => {
     globalStats: { totalEarnings, totalPaidOut, totalPending, totalAvailable },
     nextPayoutInfo: { date: nextGlobalPayoutDate, amount: nextGlobalPayoutAmount, count: nextGlobalPayoutAffiliateCount },
     allTransactions,
-    affiliateDataMap,
     chartData: balanceHistory,
   };
 };
@@ -240,14 +236,11 @@ const BalanceChartTooltip = ({ active, payload, label }: any) => {
 
 export default function PayoutsPage() {
     const [affiliates] = useState<Affiliate[]>(mockAffiliates);
-    const [selectedAffiliateId, setSelectedAffiliateId] = useState<string | null>(null);
 
-    const { globalStats, nextPayoutInfo, allTransactions, affiliateDataMap, chartData } = useMemo(
+    const { globalStats, nextPayoutInfo, allTransactions, chartData } = useMemo(
         () => processAffiliateData(affiliates),
         [affiliates]
     );
-
-    const selectedAffiliateData = selectedAffiliateId ? affiliateDataMap.get(selectedAffiliateId) : null;
     
     return (
         <div className="flex flex-col gap-6">
@@ -269,164 +262,86 @@ export default function PayoutsPage() {
                 <StatCard title="Next Global Payout" value={nextPayoutInfo.date ? format(nextPayoutInfo.date, 'MMM dd, yyyy') : 'N/A'} icon={CalendarClock} description="Next scheduled payout date."/>
             </div>
 
-            <Tabs defaultValue="overview">
-                <TabsList>
-                    <TabsTrigger value="overview">Overall View</TabsTrigger>
-                    <TabsTrigger value="byAffiliate">Affiliate Breakdown</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="overview" className="space-y-4">
-                     <Card>
-                        <CardHeader>
-                            <CardTitle>Affiliate Net Balance</CardTitle>
-                            <CardDescription>This chart shows the running balance of affiliate-generated income minus commission payouts over time.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="pl-2">
-                           <ResponsiveContainer width="100%" height={300}>
-                                <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                                    <XAxis
-                                        dataKey="date"
-                                        type="number"
-                                        scale="time"
-                                        domain={['dataMin', 'dataMax']}
-                                        tickFormatter={(unixTime) => format(new Date(unixTime), 'MMM dd')}
-                                        stroke="hsl(var(--muted-foreground))"
-                                        fontSize={12}
-                                        tickLine={false}
-                                        axisLine={false}
-                                    />
-                                    <YAxis
-                                        stroke="hsl(var(--muted-foreground))"
-                                        fontSize={12}
-                                        tickLine={false}
-                                        axisLine={false}
-                                        tickFormatter={(value) => `$${Number(value) / 1000}k`}
-                                    />
-                                    <Tooltip content={<BalanceChartTooltip />} />
-                                    <Line
-                                        type="monotone"
-                                        dataKey="balance"
-                                        name="Net Balance"
-                                        stroke="hsl(var(--primary))"
-                                        strokeWidth={2}
-                                        dot={false}
-                                        activeDot={{ r: 6, strokeWidth: 2 }}
-                                    />
-                                </LineChart>
-                           </ResponsiveContainer>
-                        </CardContent>
-                     </Card>
-                     <Card>
-                        <CardHeader>
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <CardTitle>Transactions</CardTitle>
-                                    <CardDescription>A log of all income and payout transactions.</CardDescription>
-                                </div>
-                                <Button variant="default" size="sm"><Download className="mr-2 h-4 w-4"/>Export CSV</Button>
+            <div className="space-y-4">
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>Affiliate Net Balance</CardTitle>
+                        <CardDescription>This chart shows the running balance of affiliate-generated income minus commission payouts over time.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="pl-2">
+                       <ResponsiveContainer width="100%" height={300}>
+                            <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                                <XAxis
+                                    dataKey="date"
+                                    type="number"
+                                    scale="time"
+                                    domain={['dataMin', 'dataMax']}
+                                    tickFormatter={(unixTime) => format(new Date(unixTime), 'MMM dd')}
+                                    stroke="hsl(var(--muted-foreground))"
+                                    fontSize={12}
+                                    tickLine={false}
+                                    axisLine={false}
+                                />
+                                <YAxis
+                                    stroke="hsl(var(--muted-foreground))"
+                                    fontSize={12}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tickFormatter={(value) => `$${Number(value) / 1000}k`}
+                                />
+                                <Tooltip content={<BalanceChartTooltip />} />
+                                <Line
+                                    type="monotone"
+                                    dataKey="balance"
+                                    name="Net Balance"
+                                    stroke="hsl(var(--primary))"
+                                    strokeWidth={2}
+                                    dot={false}
+                                    activeDot={{ r: 6, strokeWidth: 2 }}
+                                />
+                            </LineChart>
+                       </ResponsiveContainer>
+                    </CardContent>
+                 </Card>
+                 <Card>
+                    <CardHeader>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <CardTitle>Transactions</CardTitle>
+                                <CardDescription>A log of all income and payout transactions.</CardDescription>
                             </div>
-                        </CardHeader>
-                        <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Type</TableHead>
-                                        <TableHead>Affiliate</TableHead>
-                                        <TableHead>Amount</TableHead>
-                                        <TableHead>Date</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Notes</TableHead>
+                            <Button variant="default" size="sm"><Download className="mr-2 h-4 w-4"/>Export CSV</Button>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Type</TableHead>
+                                    <TableHead>Affiliate</TableHead>
+                                    <TableHead>Amount</TableHead>
+                                    <TableHead>Date</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Notes</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {allTransactions.slice(0, 10).map(t => (
+                                    <TableRow key={t.id}>
+                                        <TableCell className="font-medium">{t.type}</TableCell>
+                                        <TableCell>{t.affiliateName}</TableCell>
+                                        <TableCell>${t.amount.toFixed(2)}</TableCell>
+                                        <TableCell>{format(t.date, 'MMM dd, yyyy')}</TableCell>
+                                        <TableCell><TransactionStatusBadge status="Completed" /></TableCell>
+                                        <TableCell className="text-muted-foreground">{t.notes}</TableCell>
                                     </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {allTransactions.slice(0, 10).map(t => (
-                                        <TableRow key={t.id}>
-                                            <TableCell className="font-medium">{t.type}</TableCell>
-                                            <TableCell>{t.affiliateName}</TableCell>
-                                            <TableCell>${t.amount.toFixed(2)}</TableCell>
-                                            <TableCell>{format(t.date, 'MMM dd, yyyy')}</TableCell>
-                                            <TableCell><TransactionStatusBadge status="Completed" /></TableCell>
-                                            <TableCell className="text-muted-foreground">{t.notes}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                     </Card>
-                </TabsContent>
-                
-                <TabsContent value="byAffiliate" className="space-y-4">
-                    <Card>
-                        <CardHeader>
-                             <CardTitle>Affiliate Balance Viewer</CardTitle>
-                             <CardDescription>Select an affiliate to view their detailed financial summary.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                           <Select onValueChange={setSelectedAffiliateId}>
-                                <SelectTrigger className="w-full md:w-[320px]">
-                                    <SelectValue placeholder="Select an affiliate" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {Array.from(affiliateDataMap.values()).map(a => (
-                                        <SelectItem key={a.id} value={a.id}>{a.username}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            
-                            {selectedAffiliateData && (
-                                <div className="border-t pt-4 mt-4 space-y-4">
-                                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                                     <StatCard title="Total Earned" value={`$${selectedAffiliateData.calculated.totalEarnings.toFixed(2)}`} icon={DollarSign} />
-                                     <StatCard title="Total Paid" value={`$${selectedAffiliateData.calculated.totalPaid.toFixed(2)}`} icon={Banknote} />
-                                     <StatCard title="Pending Commission" value={`$${selectedAffiliateData.calculated.totalPending.toFixed(2)}`} icon={Wallet} />
-                                     <StatCard title="Next Payout Date" value={selectedAffiliateData.calculated.nextPayoutDate ? format(selectedAffiliateData.calculated.nextPayoutDate, 'MMM dd, yyyy') : 'N/A'} icon={CalendarClock} />
-                                  </div>
-                                  <Card>
-                                    <CardHeader>
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                <CardTitle>Payout Details</CardTitle>
-                                                <CardDescription>A detailed log of this affiliate's sales and commission status.</CardDescription>
-                                            </div>
-                                             <Button variant="default" size="sm"><Download className="mr-2 h-4 w-4"/>Export CSV</Button>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead>Sale Date</TableHead>
-                                                    <TableHead>Sale Amount</TableHead>
-                                                    <TableHead>Commission</TableHead>
-                                                    <TableHead>Eligibility Date</TableHead>
-                                                    <TableHead>Scheduled Payout</TableHead>
-                                                    <TableHead>Status</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {selectedAffiliateData.calculated.payouts.map((p: Payout) => (
-                                                  <TableRow key={p.saleId}>
-                                                    <TableCell>{format(p.saleDate, 'MMM dd, yyyy')}</TableCell>
-                                                    <TableCell>${p.saleAmount.toFixed(2)}</TableCell>
-                                                    <TableCell>${p.commission.toFixed(2)}</TableCell>
-                                                    <TableCell>{format(p.eligibleDate, 'MMM dd, yyyy')}</TableCell>
-                                                    <TableCell>{format(p.payoutDate, 'MMM dd, yyyy')}</TableCell>
-                                                    <TableCell>
-                                                        <TransactionStatusBadge status={p.status}/>
-                                                    </TableCell>
-                                                  </TableRow>  
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </CardContent>
-                                  </Card>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-            </Tabs>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                 </Card>
+            </div>
         </div>
     );
 }
