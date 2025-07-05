@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -89,16 +90,16 @@ export default function OrdersPage() {
       <TabsContent value="all">
         <Card>
           <CardHeader>
-            <CardTitle className="font-headline">Orders</CardTitle>
+            <CardTitle className="font-headline">Transactions</CardTitle>
             <CardDescription>
-              A list of all recent orders from your store.
+              A list of all recent transactions from your store.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Order ID</TableHead>
+                  <TableHead>Transaction ID</TableHead>
                   <TableHead>Customer</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
@@ -151,7 +152,7 @@ export default function OrdersPage() {
           </CardContent>
            <CardFooter>
               <div className="text-xs text-muted-foreground">
-                Showing <strong>1-10</strong> of <strong>{orders.length}</strong> orders
+                Showing <strong>1-10</strong> of <strong>{orders.length}</strong> transactions
               </div>
             </CardFooter>
         </Card>
