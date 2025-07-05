@@ -60,6 +60,7 @@ const CustomerDetails = ({ customer, orders }: { customer: Customer, orders: Ord
                   <TableHead>Products</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Affiliate</TableHead>
                   <TableHead>Contact & Shipping</TableHead>
                 </TableRow>
               </TableHeader>
@@ -73,6 +74,7 @@ const CustomerDetails = ({ customer, orders }: { customer: Customer, orders: Ord
                     </TableCell>
                     <TableCell>${order.amount.toFixed(2)}</TableCell>
                     <TableCell><OrderStatusBadge status={order.status}/></TableCell>
+                    <TableCell>{order.affiliateUsername || ""}</TableCell>
                     <TableCell className="text-xs text-muted-foreground">
                       <div>{order.customerPhone}</div>
                       <div>{order.customerAddress}</div>
