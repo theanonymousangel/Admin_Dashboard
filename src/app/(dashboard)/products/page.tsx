@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -141,7 +142,7 @@ export default function ProductsPage() {
                           alt={product.name}
                           className="aspect-square rounded-md object-cover"
                           height="64"
-                          src={product.image}
+                          src={product.image[0]}
                           width="64"
                           data-ai-hint="product image"
                         />
@@ -196,7 +197,7 @@ export default function ProductsPage() {
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent className="sm:max-w-xl">
           <SheetHeader>
-            <SheetTitle>Add New Product</SheetTitle>
+            <SheetTitle className="font-body">Add New Product</SheetTitle>
             <SheetDescription>
               Fill in the details below to add a new product to your store.
             </SheetDescription>
@@ -244,7 +245,7 @@ export default function ProductsPage() {
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">Images</Label>
               <div className="col-span-3">
-                <Input id="picture" type="file" />
+                <Input id="picture" type="file" multiple />
               </div>
             </div>
           </div>

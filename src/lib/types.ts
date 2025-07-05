@@ -4,7 +4,7 @@ export type Product = {
   price: number;
   stock: number;
   status: 'In Stock' | 'Out of Stock' | 'Low Stock';
-  image: string;
+  image: string[];
   category: string;
   tags: string[];
   description: string;
@@ -95,11 +95,13 @@ export type Notification = {
 
 export type Transaction = {
   id: string;
-  type: 'Commission' | 'Payout' | 'Refund';
-  productName: string;
+  type: 'Commission' | 'Payout' | 'Refund' | 'Income';
+  productName?: string;
   amount: number;
   status: 'Completed' | 'Pending' | 'Reversed';
-  saleId: string;
+  saleId?: string;
   customerName?: string;
+  affiliateName?: string;
   date: Date;
+  notes?: string;
 };
