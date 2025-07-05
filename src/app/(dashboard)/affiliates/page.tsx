@@ -267,38 +267,36 @@ export default function AffiliatesPage() {
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {affiliates.map((affiliate) => (
-              <Collapsible key={affiliate.id}>
-                <TableBody>
-                  <TableRow className="group">
-                    <TableCell className="font-medium">{affiliate.name}</TableCell>
-                    <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
-                    <TableCell>{affiliate.commissionRate}%</TableCell>
-                    <TableCell>${affiliate.balance.toFixed(2)}</TableCell>
-                    <TableCell>
-                      <AffiliateStatusBadge status={affiliate.status} />
-                    </TableCell>
-                    <TableCell>
-                      <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
-                          <span className="sr-only">Toggle Payout Details</span>
-                        </Button>
-                      </CollapsibleTrigger>
+          {affiliates.map((affiliate) => (
+            <Collapsible asChild key={affiliate.id}>
+              <tbody>
+                <TableRow className="group border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                  <TableCell className="font-medium">{affiliate.name}</TableCell>
+                  <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
+                  <TableCell>{affiliate.commissionRate}%</TableCell>
+                  <TableCell>${affiliate.balance.toFixed(2)}</TableCell>
+                  <TableCell>
+                    <AffiliateStatusBadge status={affiliate.status} />
+                  </TableCell>
+                  <TableCell>
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
+                        <span className="sr-only">Toggle Payout Details</span>
+                      </Button>
+                    </CollapsibleTrigger>
+                  </TableCell>
+                </TableRow>
+                <CollapsibleContent asChild>
+                  <TableRow className="bg-muted/50 hover:bg-muted/50">
+                    <TableCell colSpan={6}>
+                      <AffiliatePayoutDetails affiliate={affiliate} />
                     </TableCell>
                   </TableRow>
-                  <CollapsibleContent asChild>
-                    <TableRow className="bg-muted/50 hover:bg-muted/50">
-                      <TableCell colSpan={6}>
-                        <AffiliatePayoutDetails affiliate={affiliate} />
-                      </TableCell>
-                    </TableRow>
-                  </CollapsibleContent>
-                </TableBody>
-              </Collapsible>
-            ))}
-          </TableBody>
+                </CollapsibleContent>
+              </tbody>
+            </Collapsible>
+          ))}
         </Table>
       </CardContent>
       <CardFooter>
