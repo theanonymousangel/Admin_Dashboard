@@ -103,6 +103,10 @@ export default function OrdersPage() {
                   <TableHead>Customer</TableHead>
                   <TableHead className="hidden md:table-cell">Email</TableHead>
                   <TableHead className="hidden lg:table-cell">Phone Number</TableHead>
+                  <TableHead className="hidden xl:table-cell">Address</TableHead>
+                  <TableHead className="hidden xl:table-cell">Product(s)</TableHead>
+                  <TableHead className="hidden 2xl:table-cell">Size(s)</TableHead>
+                  <TableHead className="hidden 2xl:table-cell">Qty</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>
@@ -118,6 +122,10 @@ export default function OrdersPage() {
                     <TableCell>{order.customerName}</TableCell>
                     <TableCell className="hidden md:table-cell">{order.customerEmail}</TableCell>
                     <TableCell className="hidden lg:table-cell">{order.customerPhone || 'N/A'}</TableCell>
+                    <TableCell className="hidden xl:table-cell">{order.customerAddress}</TableCell>
+                    <TableCell className="hidden xl:table-cell">{order.products.map(p => p.name).join(', ')}</TableCell>
+                    <TableCell className="hidden 2xl:table-cell">{order.products.map(p => p.size).join(', ')}</TableCell>
+                    <TableCell className="hidden 2xl:table-cell">{order.products.reduce((sum, p) => sum + p.quantity, 0)}</TableCell>
                     <TableCell>${order.amount.toFixed(2)}</TableCell>
                     <TableCell>
                        <Select onValueChange={(value) => handleStatusChange(order.id, value as Order['status'])} defaultValue={order.status}>

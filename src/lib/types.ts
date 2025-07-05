@@ -15,7 +15,8 @@ export type Order = {
   customerName: string;
   customerEmail: string;
   customerPhone?: string;
-  products: { name: string; quantity: number }[];
+  customerAddress: string;
+  products: { name: string; quantity: number; size: string; }[];
   amount: number;
   status: 'Pending' | 'Completed' | 'Shipped' | 'Refunded' | 'Cancelled';
   date: string;
