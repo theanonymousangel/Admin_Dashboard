@@ -1,10 +1,11 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   MoreHorizontal,
-  File
+  File,
+  Search
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -45,6 +46,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { mockOrders } from "@/lib/mock-data";
 import type { Order } from "@/lib/types";
 
@@ -62,12 +64,31 @@ function OrderStatusBadge({ status }: { status: Order["status"] }) {
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>(mockOrders);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleStatusChange = (orderId: string, newStatus: Order['status']) => {
     setOrders(prevOrders => prevOrders.map(order => 
       order.id === orderId ? { ...order, status: newStatus } : order
     ));
   };
+  
+  const filteredOrders = useMemo(() => {
+    if (!searchTerm) {
+      return orders;
+    }
+    const lowercasedTerm = searchTerm.toLowerCase();
+
+    return orders.filter(order => 
+      order.id.toLowerCase().includes(lowercasedTerm) ||
+      order.customerName.toLowerCase().includes(lowercasedTerm) ||
+      order.customerEmail.toLowerCase().includes(lowercasedTerm) ||
+      (order.customerPhone && order.customerPhone.includes(lowercasedTerm)) ||
+      order.customerAddress.toLowerCase().includes(lowercasedTerm) ||
+      order.products.some(p => p.name.toLowerCase().includes(lowercasedTerm)) ||
+      order.amount.toString().includes(lowercasedTerm) ||
+      order.status.toLowerCase().includes(lowercasedTerm)
+    );
+  }, [orders, searchTerm]);
   
   return (
     <Tabs defaultValue="all">
@@ -79,6 +100,16 @@ export default function OrdersPage() {
             <TabsTrigger value="completed">Completed</TabsTrigger>
         </TabsList>
         <div className="ml-auto flex items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search transactions..."
+                className="h-8 w-[150px] pl-8 lg:w-[250px]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
             <Button size="sm" variant="outline" className="h-8 gap-1">
               <File className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
@@ -116,7 +147,7 @@ export default function OrdersPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {orders.map((order) => (
+                {filteredOrders.map((order) => (
                   <TableRow key={order.id}>
                     <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
                     <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
@@ -164,7 +195,7 @@ export default function OrdersPage() {
           </CardContent>
            <CardFooter>
               <div className="text-xs text-muted-foreground">
-                Showing <strong>1-10</strong> of <strong>{orders.length}</strong> transactions
+                Showing <strong>1-{filteredOrders.length}</strong> of <strong>{filteredOrders.length}</strong> transactions
               </div>
             </CardFooter>
         </Card>
