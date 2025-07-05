@@ -17,6 +17,7 @@ import {
   UserX,
   UserCheck,
   Info,
+  Save,
 } from "lucide-react";
 import { addDays, format, isAfter, isBefore, setDate, addMonths } from "date-fns";
 
@@ -68,6 +69,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useToast } from "@/hooks/use-toast";
 
 
 import { mockAffiliates, mockProducts } from "@/lib/mock-data";
@@ -149,6 +151,54 @@ function PayoutStatusBadge({ status }: { status: Payout["status"] }) {
 
   return <Badge variant={variant[status]} className={`border-none ${bgColors[status]}`}>{status}</Badge>;
 }
+
+const PayoutStatusEditor = ({ payout, onStatusChange }: { payout: Payout, onStatusChange: (saleId: string, newStatus: Payout['status']) => void }) => {
+    const [currentStatus, setCurrentStatus] = useState(payout.status);
+    const [isDirty, setIsDirty] = useState(false);
+    const { toast } = useToast();
+
+    useEffect(() => {
+        setCurrentStatus(payout.status);
+        setIsDirty(false);
+    }, [payout.status]);
+
+    const handleSelectChange = (newStatus: Payout['status']) => {
+        setCurrentStatus(newStatus);
+        setIsDirty(newStatus !== payout.status);
+    };
+
+    const handleSave = () => {
+        onStatusChange(payout.saleId, currentStatus);
+        setIsDirty(false);
+        toast({
+            title: "Status Updated",
+            description: `Payout status for sale #${payout.saleId} has been saved.`,
+        });
+    };
+
+    return (
+        <div className="flex items-center gap-2">
+            <Select
+                value={currentStatus}
+                onValueChange={handleSelectChange}
+            >
+                <SelectTrigger className="w-[180px] h-8">
+                    <SelectValue placeholder="Set Status" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="Pending Eligibility">Pending Eligibility</SelectItem>
+                    <SelectItem value="Eligible for Payout">Eligible for Payout</SelectItem>
+                    <SelectItem value="Paid">Paid</SelectItem>
+                </SelectContent>
+            </Select>
+            {isDirty && (
+                <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={handleSave}>
+                    <Save className="h-4 w-4" />
+                </Button>
+            )}
+        </div>
+    );
+};
 
 const PayoutsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
   const { payouts, nextPayoutTotal, nextPayoutDate, totalCommissionPending } = useMemo(
@@ -261,19 +311,7 @@ const PayoutsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                                 <TableCell>${payout.saleAmount.toFixed(2)}</TableCell>
                                 <TableCell>{format(payout.eligibleDate, 'MMM dd, yyyy')}</TableCell>
                                 <TableCell>
-                                  <Select
-                                      value={payout.status}
-                                      onValueChange={(value) => handleStatusChange(payout.saleId, value as Payout['status'])}
-                                  >
-                                      <SelectTrigger className="w-[180px] h-8">
-                                          <SelectValue placeholder="Set Status" />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                          <SelectItem value="Pending Eligibility">Pending Eligibility</SelectItem>
-                                          <SelectItem value="Eligible for Payout">Eligible for Payout</SelectItem>
-                                          <SelectItem value="Paid">Paid</SelectItem>
-                                      </SelectContent>
-                                  </Select>
+                                    <PayoutStatusEditor payout={payout} onStatusChange={handleStatusChange} />
                                 </TableCell>
                             </TableRow>
                         )) : (
