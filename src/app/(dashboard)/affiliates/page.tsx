@@ -30,11 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -227,6 +223,7 @@ const AffiliatePayoutDetails = ({ affiliate }: { affiliate: Affiliate }) => {
 
 export default function AffiliatesPage() {
   const [affiliates, setAffiliates] = useState<Affiliate[]>(mockAffiliates);
+  const [openAffiliateId, setOpenAffiliateId] = useState<string | null>(null);
   
   const handleCommissionChange = (affiliateId: string, newCommission: number) => {
     setAffiliates(prev => prev.map(aff => 
@@ -270,10 +267,14 @@ export default function AffiliatesPage() {
               <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
-          {affiliates.map((affiliate) => (
-            <Collapsible key={affiliate.id} as="tbody" className="border-b">
-              <CollapsibleTrigger asChild>
-                <TableRow className="cursor-pointer data-[state=open]:bg-muted/50">
+          <TableBody>
+            {affiliates.map((affiliate) => (
+              <React.Fragment key={affiliate.id}>
+                <TableRow 
+                  className="cursor-pointer border-b data-[state=open]:bg-muted/50"
+                  onClick={() => setOpenAffiliateId(openAffiliateId === affiliate.id ? null : affiliate.id)}
+                  data-state={openAffiliateId === affiliate.id ? 'open' : 'closed'}
+                >
                   <TableCell className="font-medium">{affiliate.name}</TableCell>
                   <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
                   <TableCell onClick={(e) => e.stopPropagation()}>
@@ -311,16 +312,16 @@ export default function AffiliatesPage() {
                     </Select>
                   </TableCell>
                 </TableRow>
-              </CollapsibleTrigger>
-              <CollapsibleContent asChild>
-                <TableRow className="bg-muted/50 hover:bg-muted/50">
-                  <TableCell colSpan={5}>
-                    <AffiliatePayoutDetails affiliate={affiliate} />
-                  </TableCell>
-                </TableRow>
-              </CollapsibleContent>
-            </Collapsible>
-          ))}
+                {openAffiliateId === affiliate.id && (
+                  <TableRow className="bg-muted/50 hover:bg-muted/50">
+                    <TableCell colSpan={5}>
+                      <AffiliatePayoutDetails affiliate={affiliate} />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </React.Fragment>
+            ))}
+          </TableBody>
         </Table>
       </CardContent>
       <CardFooter>
