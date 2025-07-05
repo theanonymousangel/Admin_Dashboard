@@ -65,3 +65,13 @@ export type Notification = {
   date: string;
   read: boolean;
 };
+
+export type Transaction = {
+  id: string;
+  type: 'Income' | 'Payout';
+  affiliateName: string;
+  amount: number;
+  date: Date;
+  status: 'Completed' | 'Pending';
+  notes: string;
+};
