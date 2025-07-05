@@ -1,4 +1,4 @@
-import type { Product, Order, Customer, Affiliate, Notification, AffiliateSale } from './types';
+import type { Product, Order, Customer, Affiliate, Notification, AffiliateSale, AffiliateDocument } from './types';
 
 export const mockProducts: Product[] = [
   { id: 'prod-001', name: 'Classic White Tee', price: 29.99, stock: 150, status: 'In Stock', image: 'https://placehold.co/80x80.png', category: 'T-Shirts', tags: ['classic', 'white', 'cotton'], description: 'A high-quality classic white t-shirt made from 100% premium cotton.' },
@@ -42,10 +42,13 @@ const salesForAffiliate3: AffiliateSale[] = [];
 const salesForAffiliate4: AffiliateSale[] = [];
 
 export const mockAffiliates: Affiliate[] = [
-  { id: 'aff-01', name: 'Fashionista Blog', email: 'contact@fashionistablog.com', totalSales: 12500, commissionRate: 10, balance: 1250, status: 'Active', sales: salesForAffiliate1 },
-  { id: 'aff-02', name: 'Style Influencer', email: 'style@influencer.com', totalSales: 8200, commissionRate: 12, balance: 984, status: 'Active', sales: salesForAffiliate2 },
-  { id: 'aff-03', name: 'New Trends Co', email: 'trends@newco.com', totalSales: 500, commissionRate: 10, balance: 50, status: 'Inactive', sales: salesForAffiliate3 },
-  { id: 'aff-04', name: 'Urban Stylist', email: 'urban@stylist.com', totalSales: 0, commissionRate: 10, balance: 0, status: 'Pending', sales: salesForAffiliate4 },
+  { id: 'aff-01', username: 'Fashionista Blog', firstName: 'Jane', lastName: 'Doe', email: 'contact@fashionistablog.com', totalSales: 12500, commissionRate: 10, balance: 1250, status: 'Active', sales: salesForAffiliate1, documents: [
+      { id: 'doc-1', name: 'Affiliate Agreement.pdf', url: '#', uploadedAt: '2024-07-01' },
+      { id: 'doc-2', name: 'Tax Form W9.pdf', url: '#', uploadedAt: '2024-07-01' },
+  ] },
+  { id: 'aff-02', username: 'Style Influencer', firstName: 'John', lastName: 'Smith', email: 'style@influencer.com', totalSales: 8200, commissionRate: 12, balance: 984, status: 'Active', sales: salesForAffiliate2, documents: [] },
+  { id: 'aff-03', username: 'New Trends Co', firstName: 'Alice', lastName: 'Johnson', email: 'trends@newco.com', totalSales: 500, commissionRate: 10, balance: 50, status: 'Inactive', sales: salesForAffiliate3, documents: [] },
+  { id: 'aff-04', username: 'Urban Stylist', firstName: 'Bob', lastName: 'Brown', email: 'urban@stylist.com', totalSales: 0, commissionRate: 10, balance: 0, status: 'Pending', sales: salesForAffiliate4, documents: [] },
 ];
 
 export const mockNotifications: Notification[] = [

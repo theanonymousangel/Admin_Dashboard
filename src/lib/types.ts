@@ -46,15 +46,25 @@ export type Payout = {
     status: 'Pending Eligibility' | 'Eligible for Payout' | 'Paid';
 };
 
-export type Affiliate = {
+export type AffiliateDocument = {
   id: string;
   name: string;
+  url: string;
+  uploadedAt: string;
+};
+
+export type Affiliate = {
+  id: string;
+  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
   totalSales: number;
   commissionRate: number;
   balance: number;
   status: 'Active' | 'Inactive' | 'Pending' | 'Rejected';
   sales: AffiliateSale[];
+  documents: AffiliateDocument[];
 };
 
 export type Notification = {

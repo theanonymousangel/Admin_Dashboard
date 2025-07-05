@@ -72,7 +72,7 @@ const processAffiliateData = (affiliates: Affiliate[]) => {
       allTransactions.push({
         id: `${affiliate.id}-${sale.id}-income`,
         type: "Income",
-        affiliateName: affiliate.name,
+        affiliateName: affiliate.username,
         amount: sale.amount,
         date: saleDate,
         status: "Completed",
@@ -83,7 +83,7 @@ const processAffiliateData = (affiliates: Affiliate[]) => {
          allTransactions.push({
             id: `${affiliate.id}-${sale.id}-payout`,
             type: "Payout",
-            affiliateName: affiliate.name,
+            affiliateName: affiliate.username,
             amount: commission,
             date: payoutDate,
             status: "Completed",
@@ -369,7 +369,7 @@ export default function PayoutsPage() {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {Array.from(affiliateDataMap.values()).map(a => (
-                                        <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+                                        <SelectItem key={a.id} value={a.id}>{a.username}</SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
