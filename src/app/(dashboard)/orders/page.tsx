@@ -137,7 +137,7 @@ export default function OrdersPage() {
                   <TableHead className="hidden lg:table-cell">Phone Number</TableHead>
                   <TableHead className="hidden lg:table-cell">Address</TableHead>
                   <TableHead className="hidden xl:table-cell">Product</TableHead>
-                  <TableHead className="hidden xl:table-cell">Sizes</TableHead>
+                  <TableHead className="hidden xl:table-cell">Details</TableHead>
                   <TableHead className="hidden xl:table-cell">Quantity</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
@@ -156,7 +156,7 @@ export default function OrdersPage() {
                     <TableCell className="hidden lg:table-cell">{order.customerPhone || 'N/A'}</TableCell>
                     <TableCell className="hidden lg:table-cell">{order.customerAddress}</TableCell>
                     <TableCell className="hidden xl:table-cell">{order.products[0]?.name}</TableCell>
-                    <TableCell className="hidden xl:table-cell">{order.products[0]?.size}</TableCell>
+                    <TableCell className="hidden xl:table-cell">{[order.products[0]?.size, order.products[0]?.color].filter(Boolean).join(', ')}</TableCell>
                     <TableCell className="hidden xl:table-cell">{order.products.reduce((sum, p) => sum + p.quantity, 0)}</TableCell>
                     <TableCell>${order.amount.toFixed(2)}</TableCell>
                     <TableCell>

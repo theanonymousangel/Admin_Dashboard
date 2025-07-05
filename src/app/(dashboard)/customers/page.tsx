@@ -70,7 +70,10 @@ const CustomerDetails = ({ customer, orders }: { customer: Customer, orders: Ord
                     <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
                     <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
                     <TableCell className="max-w-[200px] truncate">
-                      {order.products.map(p => `${p.quantity}x ${p.name} (${p.size})`).join(', ')}
+                      {order.products.map(p => {
+                          const details = [p.size, p.color].filter(Boolean).join(', ');
+                          return `${p.quantity}x ${p.name} (${details})`;
+                      }).join(', ')}
                     </TableCell>
                     <TableCell>${order.amount.toFixed(2)}</TableCell>
                     <TableCell><OrderStatusBadge status={order.status}/></TableCell>
