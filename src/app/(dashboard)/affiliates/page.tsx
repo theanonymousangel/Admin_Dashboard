@@ -83,7 +83,7 @@ function calculatePayouts(sales: AffiliateSale[], commissionRate: number) {
       nextPayoutDate = payoutDate;
     }
 
-    return { saleId: sale.id, saleAmount: sale.amount, commission, saleDate, eligibleDate, payoutDate, status, customerName: sale.customerName };
+    return { saleId: sale.id, productName: sale.productName, saleAmount: sale.amount, commission, saleDate, eligibleDate, payoutDate, status, customerName: sale.customerName };
   }).sort((a,b) => b.saleDate.getTime() - a.saleDate.getTime());
 
   if (nextPayoutDate) {
@@ -372,6 +372,7 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
         id: `${payout.saleId}-comm`,
         date: payout.saleDate,
         type: 'Commission',
+        productName: payout.productName,
         amount: payout.commission,
         status: payout.status === 'Paid' ? 'Completed' : 'Pending',
         saleId: payout.saleId,
@@ -386,6 +387,7 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
             id: `${saleToRefund.id}-refund`,
             date: addDays(new Date(saleToRefund.date), 5),
             type: 'Refund',
+            productName: saleToRefund.productName,
             amount: -commissionToRefund,
             status: 'Reversed',
             saleId: saleToRefund.id,
@@ -437,7 +439,7 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
                 <TableHead>Transaction ID</TableHead>
                 <TableHead>Customer</TableHead>
                 <TableHead>Date</TableHead>
-                <TableHead>Type</TableHead>
+                <TableHead>Product</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
               </TableRow>
@@ -448,7 +450,7 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
                   <TableCell className="font-mono text-xs">{tx.id}</TableCell>
                   <TableCell>{tx.customerName}</TableCell>
                   <TableCell>{format(new Date(tx.date), 'MMM dd, yyyy')}</TableCell>
-                  <TableCell>{tx.type}</TableCell>
+                  <TableCell>{tx.productName}</TableCell>
                   <TableCell><TransactionBadge status={tx.status} type={tx.type} /></TableCell>
                   <TableCell className={`text-right font-medium ${tx.amount > 0 ? '' : 'text-destructive'}`}>
                     {tx.amount > 0 ? `+$${tx.amount.toFixed(2)}` : `-$${Math.abs(tx.amount).toFixed(2)}`}
@@ -535,9 +537,8 @@ export default function AffiliatesPage() {
             {affiliates.map((affiliate) => (
               <React.Fragment key={affiliate.id}>
                 <TableRow 
-                  className="cursor-pointer border-b data-[state=open]:bg-muted/50"
+                  className="cursor-pointer border-b"
                   onClick={() => setOpenAffiliateId(openAffiliateId === affiliate.id ? null : affiliate.id)}
-                  data-state={openAffiliateId === affiliate.id ? 'open' : 'closed'}
                 >
                   <TableCell className="font-medium">{affiliate.username}</TableCell>
                   <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>

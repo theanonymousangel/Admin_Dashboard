@@ -28,15 +28,15 @@ const lastMonth = new Date();
 lastMonth.setMonth(lastMonth.getMonth() - 1);
 
 const salesForAffiliate1: AffiliateSale[] = [
-    { id: 'sale-01', amount: 150.00, date: new Date(today.getFullYear(), today.getMonth(), 1).toISOString(), customerName: 'Liam Johnson' },
-    { id: 'sale-02', amount: 75.50, date: new Date(today.getFullYear(), today.getMonth(), 6).toISOString(), customerName: 'Olivia Smith' },
-    { id: 'sale-03', amount: 220.00, date: new Date(today.getFullYear(), today.getMonth(), 25).toISOString(), customerName: 'Noah Williams' },
-    { id: 'sale-07', amount: 350.00, date: new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 10).toISOString(), customerName: 'Emma Brown' },
+    { id: 'sale-01', productName: 'Denim Jacket', amount: 150.00, date: new Date(today.getFullYear(), today.getMonth(), 1).toISOString(), customerName: 'Liam Johnson' },
+    { id: 'sale-02', productName: 'Classic White Tee', amount: 75.50, date: new Date(today.getFullYear(), today.getMonth(), 6).toISOString(), customerName: 'Olivia Smith' },
+    { id: 'sale-03', productName: 'Beige Hoodie', amount: 220.00, date: new Date(today.getFullYear(), today.getMonth(), 25).toISOString(), customerName: 'Noah Williams' },
+    { id: 'sale-07', productName: 'Black Skinny Jeans', amount: 350.00, date: new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 10).toISOString(), customerName: 'Emma Brown' },
 ];
 const salesForAffiliate2: AffiliateSale[] = [
-    { id: 'sale-04', amount: 99.99, date: new Date(today.getFullYear(), today.getMonth(), 2).toISOString(), customerName: 'Ava Jones' },
-    { id: 'sale-05', amount: 125.00, date: new Date(today.getFullYear(), today.getMonth(), 20).toISOString(), customerName: 'James Garcia' },
-    { id: 'sale-06', amount: 50.25, date: new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 25).toISOString(), customerName: 'Sophia Miller' },
+    { id: 'sale-04', productName: 'Silk Scarf', amount: 99.99, date: new Date(today.getFullYear(), today.getMonth(), 2).toISOString(), customerName: 'Ava Jones' },
+    { id: 'sale-05', productName: 'Classic White Tee', amount: 125.00, date: new Date(today.getFullYear(), today.getMonth(), 20).toISOString(), customerName: 'James Garcia' },
+    { id: 'sale-06', productName: 'Leather Boots', amount: 50.25, date: new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 25).toISOString(), customerName: 'Sophia Miller' },
 ];
 const salesForAffiliate3: AffiliateSale[] = [];
 const salesForAffiliate4: AffiliateSale[] = [];
