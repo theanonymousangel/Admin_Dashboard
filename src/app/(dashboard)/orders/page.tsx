@@ -104,9 +104,9 @@ export default function OrdersPage() {
                   <TableHead className="hidden md:table-cell">Email</TableHead>
                   <TableHead className="hidden lg:table-cell">Phone Number</TableHead>
                   <TableHead className="hidden xl:table-cell">Address</TableHead>
-                  <TableHead className="hidden xl:table-cell">Product(s)</TableHead>
-                  <TableHead className="hidden 2xl:table-cell">Size(s)</TableHead>
-                  <TableHead className="hidden 2xl:table-cell">Qty</TableHead>
+                  <TableHead className="hidden xl:table-cell">Product</TableHead>
+                  <TableHead className="hidden 2xl:table-cell">Sizes</TableHead>
+                  <TableHead className="hidden 2xl:table-cell">Quantity</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>
