@@ -21,13 +21,29 @@ export type Order = {
 };
 
 export type Customer = {
-  id: string;
+  id:string;
   name: string;
   email: string;
   totalOrders: number;
   totalSpent: number;
   lastPurchaseDate: string;
   avatar: string;
+};
+
+export type AffiliateSale = {
+  id: string;
+  amount: number;
+  date: string; // ISO date string e.g. "2024-07-01T10:00:00Z"
+};
+
+export type Payout = {
+    saleId: string;
+    saleAmount: number;
+    commission: number;
+    saleDate: Date;
+    eligibleDate: Date;
+    payoutDate: Date;
+    status: 'Pending Eligibility' | 'Eligible for Payout' | 'Paid';
 };
 
 export type Affiliate = {
@@ -38,6 +54,7 @@ export type Affiliate = {
   commissionRate: number;
   balance: number;
   status: 'Active' | 'Inactive';
+  sales: AffiliateSale[];
 };
 
 export type Notification = {

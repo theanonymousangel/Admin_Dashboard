@@ -1,4 +1,4 @@
-import type { Product, Order, Customer, Affiliate, Notification } from './types';
+import type { Product, Order, Customer, Affiliate, Notification, AffiliateSale } from './types';
 
 export const mockProducts: Product[] = [
   { id: 'prod-001', name: 'Classic White Tee', price: 29.99, stock: 150, status: 'In Stock', image: 'https://placehold.co/80x80.png', category: 'T-Shirts', tags: ['classic', 'white', 'cotton'], description: 'A high-quality classic white t-shirt made from 100% premium cotton.' },
@@ -23,10 +23,27 @@ export const mockCustomers: Customer[] = [
   { id: 'cust-04', name: 'Bob Brown', email: 'bob.brown@example.com', totalOrders: 2, totalSpent: 180.25, lastPurchaseDate: '2023-09-15', avatar: 'https://placehold.co/40x40.png' },
 ];
 
+const today = new Date();
+const lastMonth = new Date();
+lastMonth.setMonth(lastMonth.getMonth() - 1);
+
+const salesForAffiliate1: AffiliateSale[] = [
+    { id: 'sale-01', amount: 150.00, date: new Date(today.getFullYear(), today.getMonth(), 1).toISOString() },
+    { id: 'sale-02', amount: 75.50, date: new Date(today.getFullYear(), today.getMonth(), 6).toISOString() },
+    { id: 'sale-03', amount: 220.00, date: new Date(today.getFullYear(), today.getMonth(), 25).toISOString() },
+    { id: 'sale-07', amount: 350.00, date: new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 10).toISOString() },
+];
+const salesForAffiliate2: AffiliateSale[] = [
+    { id: 'sale-04', amount: 99.99, date: new Date(today.getFullYear(), today.getMonth(), 2).toISOString() },
+    { id: 'sale-05', amount: 125.00, date: new Date(today.getFullYear(), today.getMonth(), 20).toISOString() },
+    { id: 'sale-06', amount: 50.25, date: new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 25).toISOString() },
+];
+const salesForAffiliate3: AffiliateSale[] = [];
+
 export const mockAffiliates: Affiliate[] = [
-  { id: 'aff-01', name: 'Fashionista Blog', email: 'contact@fashionistablog.com', totalSales: 12500, commissionRate: 10, balance: 1250, status: 'Active' },
-  { id: 'aff-02', name: 'Style Influencer', email: 'style@influencer.com', totalSales: 8200, commissionRate: 12, balance: 984, status: 'Active' },
-  { id: 'aff-03', name: 'New Trends Co', email: 'trends@newco.com', totalSales: 500, commissionRate: 10, balance: 50, status: 'Inactive' },
+  { id: 'aff-01', name: 'Fashionista Blog', email: 'contact@fashionistablog.com', totalSales: 12500, commissionRate: 10, balance: 1250, status: 'Active', sales: salesForAffiliate1 },
+  { id: 'aff-02', name: 'Style Influencer', email: 'style@influencer.com', totalSales: 8200, commissionRate: 12, balance: 984, status: 'Active', sales: salesForAffiliate2 },
+  { id: 'aff-03', name: 'New Trends Co', email: 'trends@newco.com', totalSales: 500, commissionRate: 10, balance: 50, status: 'Inactive', sales: salesForAffiliate3 },
 ];
 
 export const mockNotifications: Notification[] = [
