@@ -102,6 +102,8 @@ export default function OrdersPage() {
                   <TableHead>Date</TableHead>
                   <TableHead>Transaction ID</TableHead>
                   <TableHead>Customer</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone Number</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>
@@ -115,6 +117,8 @@ export default function OrdersPage() {
                     <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
                     <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
                     <TableCell>{order.customerName}</TableCell>
+                    <TableCell>{order.customerEmail}</TableCell>
+                    <TableCell>{order.customerPhone || 'N/A'}</TableCell>
                     <TableCell>${order.amount.toFixed(2)}</TableCell>
                     <TableCell>
                        <Select onValueChange={(value) => handleStatusChange(order.id, value as Order['status'])} defaultValue={order.status}>
