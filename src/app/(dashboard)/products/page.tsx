@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -122,6 +123,7 @@ export default function ProductsPage() {
                       Image
                     </TableHead>
                     <TableHead>Name</TableHead>
+                    <TableHead className="hidden md:table-cell">Category</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="hidden md:table-cell">Price</TableHead>
                     <TableHead className="hidden md:table-cell">
@@ -146,6 +148,7 @@ export default function ProductsPage() {
                         />
                       </TableCell>
                       <TableCell className="font-medium">{product.name}</TableCell>
+                      <TableCell className="hidden md:table-cell">{product.category}</TableCell>
                       <TableCell>
                         <ProductStatusBadge status={product.status} />
                       </TableCell>
