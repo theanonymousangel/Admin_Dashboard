@@ -87,9 +87,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 
 export default function DashboardPage() {
-  const refundedOrCancelledOrders = mockOrders.filter(
-    order => order.status === 'Refunded' || order.status === 'Cancelled'
-  ).length;
+  const totalRefundedAmount = mockOrders
+    .filter(order => order.status === 'Refunded' || order.status === 'Cancelled')
+    .reduce((sum, order) => sum + order.amount, 0);
 
   return (
     <>
@@ -114,8 +114,8 @@ export default function DashboardPage() {
         />
          <StatCard 
             title="Refunds/Cancellations"
-            value={`${refundedOrCancelledOrders}`}
-            description="Total refunded or cancelled orders"
+            value={`$${totalRefundedAmount.toFixed(2)}`}
+            description="Total value of refunded/cancelled orders"
             icon={Ban}
         />
       </div>
