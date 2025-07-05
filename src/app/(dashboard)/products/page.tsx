@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -233,6 +232,14 @@ export default function ProductsPage() {
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="stock" className="text-right">Stock</Label>
               <Input id="stock" type="number" placeholder="150" className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="sizes" className="text-right">Sizes</Label>
+              <Input id="sizes" placeholder="S, M, L, XL" className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="colors" className="text-right">Colors</Label>
+              <Input id="colors" placeholder="White, Black, Blue" className="col-span-3" />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">Images</Label>

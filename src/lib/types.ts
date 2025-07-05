@@ -8,6 +8,8 @@ export type Product = {
   category: string;
   tags: string[];
   description: string;
+  sizes?: string[];
+  colors?: string[];
 };
 
 export type Order = {

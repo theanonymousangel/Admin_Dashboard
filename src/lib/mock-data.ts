@@ -1,12 +1,12 @@
 import type { Product, Order, Customer, Affiliate, Notification, AffiliateSale, AffiliateDocument } from './types';
 
 export const mockProducts: Product[] = [
-  { id: 'prod-001', name: 'Classic White Tee', price: 29.99, stock: 150, status: 'In Stock', image: 'https://placehold.co/80x80.png', category: 'T-Shirts', tags: ['classic', 'white', 'cotton'], description: 'A high-quality classic white t-shirt made from 100% premium cotton.' },
-  { id: 'prod-002', name: 'Denim Jacket', price: 89.99, stock: 5, status: 'Low Stock', image: 'https://placehold.co/80x80.png', category: 'Jackets', tags: ['denim', 'blue', 'outerwear'], description: 'A timeless denim jacket for all seasons.' },
-  { id: 'prod-003', name: 'Black Skinny Jeans', price: 79.99, stock: 75, status: 'In Stock', image: 'https://placehold.co/80x80.png', category: 'Pants', tags: ['jeans', 'black', 'skinny'], description: 'Comfortable and stylish black skinny jeans.' },
-  { id: 'prod-004', name: 'Leather Boots', price: 129.99, stock: 0, status: 'Out of Stock', image: 'https://placehold.co/80x80.png', category: 'Shoes', tags: ['boots', 'leather', 'black'], description: 'Durable and fashionable leather boots.' },
-  { id: 'prod-005', name: 'Beige Hoodie', price: 59.99, stock: 200, status: 'In Stock', image: 'https://placehold.co/80x80.png', category: 'Hoodies', tags: ['hoodie', 'beige', 'casual'], description: 'A cozy beige hoodie perfect for a relaxed look.' },
-  { id: 'prod-006', name: 'Silk Scarf', price: 39.99, stock: 8, status: 'Low Stock', image: 'https://placehold.co/80x80.png', category: 'Accessories', tags: ['scarf', 'silk', 'patterned'], description: 'An elegant silk scarf with a unique pattern.' },
+  { id: 'prod-001', name: 'Classic White Tee', price: 29.99, stock: 150, status: 'In Stock', image: 'https://placehold.co/80x80.png', category: 'T-Shirts', tags: ['classic', 'white', 'cotton'], description: 'A high-quality classic white t-shirt made from 100% premium cotton.', sizes: ['S', 'M', 'L', 'XL'], colors: ['White', 'Black'] },
+  { id: 'prod-002', name: 'Denim Jacket', price: 89.99, stock: 5, status: 'Low Stock', image: 'https://placehold.co/80x80.png', category: 'Jackets', tags: ['denim', 'blue', 'outerwear'], description: 'A timeless denim jacket for all seasons.', sizes: ['M', 'L', 'XL'], colors: ['Blue'] },
+  { id: 'prod-003', name: 'Black Skinny Jeans', price: 79.99, stock: 75, status: 'In Stock', image: 'https://placehold.co/80x80.png', category: 'Pants', tags: ['jeans', 'black', 'skinny'], description: 'Comfortable and stylish black skinny jeans.', sizes: ['28', '30', '32', '34'], colors: ['Black'] },
+  { id: 'prod-004', name: 'Leather Boots', price: 129.99, stock: 0, status: 'Out of Stock', image: 'https://placehold.co/80x80.png', category: 'Shoes', tags: ['boots', 'leather', 'black'], description: 'Durable and fashionable leather boots.', sizes: ['8', '9', '10', '11'], colors: ['Black', 'Brown'] },
+  { id: 'prod-005', name: 'Beige Hoodie', price: 59.99, stock: 200, status: 'In Stock', image: 'https://placehold.co/80x80.png', category: 'Hoodies', tags: ['hoodie', 'beige', 'casual'], description: 'A cozy beige hoodie perfect for a relaxed look.', sizes: ['S', 'M', 'L'], colors: ['Beige', 'Grey'] },
+  { id: 'prod-006', name: 'Silk Scarf', price: 39.99, stock: 8, status: 'Low Stock', image: 'https://placehold.co/80x80.png', category: 'Accessories', tags: ['scarf', 'silk', 'patterned'], description: 'An elegant silk scarf with a unique pattern.', sizes: ['One Size'], colors: ['Red', 'Blue', 'Green'] },
 ];
 
 export const mockOrders: Order[] = [
