@@ -56,7 +56,7 @@ const CustomerDetails = ({ customer, orders }: { customer: Customer, orders: Ord
               <TableHeader>
                 <TableRow>
                   <TableHead>Date</TableHead>
-                  <TableHead>Order ID</TableHead>
+                  <TableHead>Transaction ID</TableHead>
                   <TableHead>Products</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
