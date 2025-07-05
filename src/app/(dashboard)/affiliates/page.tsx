@@ -491,9 +491,9 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
             <TableHeader>
               <TableRow>
                 <TableHead>Transaction ID</TableHead>
+                <TableHead>Date</TableHead>
                 <TableHead>Customer</TableHead>
                 <TableHead>Product</TableHead>
-                <TableHead>Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
               </TableRow>
@@ -502,9 +502,9 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
               {transactions.length > 0 ? transactions.map((tx) => (
                 <TableRow key={tx.id}>
                   <TableCell className="font-mono text-xs">{tx.id}</TableCell>
+                  <TableCell>{format(new Date(tx.date), 'MMM dd, yyyy')}</TableCell>
                   <TableCell>{tx.customerName}</TableCell>
                   <TableCell>{tx.productName}</TableCell>
-                  <TableCell>{format(new Date(tx.date), 'MMM dd, yyyy')}</TableCell>
                   <TableCell><TransactionBadge status={tx.status} type={tx.type} /></TableCell>
                   <TableCell className={`text-right font-medium ${tx.amount > 0 ? '' : 'text-destructive'}`}>
                     {tx.amount > 0 ? `+$${tx.amount.toFixed(2)}` : `-$${Math.abs(tx.amount).toFixed(2)}`}
