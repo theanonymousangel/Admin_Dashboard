@@ -7,7 +7,7 @@ import {
   Users,
   Info
 } from "lucide-react";
-import { Line, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 import {
   Card,
@@ -20,19 +20,19 @@ import { Button } from "@/components/ui/button";
 
 
 const yearlyIncomeData = [
-    { date: 'Jul, 2025', income: 800, goal: 740 },
-    { date: 'Aug, 2025', income: 1600, goal: 1480 },
-    { date: 'Sep, 2025', income: 2500, goal: 2220 },
-    { date: 'Oct, 2025', income: 3300, goal: 2960 },
-    { date: 'Nov, 2025', income: 4100, goal: 3700 },
-    { date: 'Dec, 2025', income: 4900, goal: 4440 },
-    { date: 'Jan, 2026', income: 5900, goal: 5180 },
-    { date: 'Feb, 2026', income: 6900, goal: 5920 },
-    { date: 'Mar, 2026', income: 7900, goal: 6660 },
-    { date: 'Apr, 2026', income: 8900, goal: 7400 },
-    { date: 'May, 2026', income: 9900, goal: 8140 },
-    { date: 'Jun, 2026', income: 9950, goal: 8880 },
-    { date: 'Jul, 2026', income: 10000, goal: 9620 },
+    { date: 'Jul, 2025', income: 800 },
+    { date: 'Aug, 2025', income: 1600 },
+    { date: 'Sep, 2025', income: 2500 },
+    { date: 'Oct, 2025', income: 3300 },
+    { date: 'Nov, 2025', income: 4100 },
+    { date: 'Dec, 2025', income: 4900 },
+    { date: 'Jan, 2026', income: 5900 },
+    { date: 'Feb, 2026', income: 6900 },
+    { date: 'Mar, 2026', income: 7900 },
+    { date: 'Apr, 2026', income: 8900 },
+    { date: 'May, 2026', income: 9900 },
+    { date: 'Jun, 2026', income: 9950 },
+    { date: 'Jul, 2026', income: 10000 },
 ];
 
 
@@ -67,7 +67,6 @@ const StatCard = ({ title, value, description, icon: Icon }: StatCardProps) => (
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const incomePayload = payload.find((p: any) => p.dataKey === 'income');
-    const goalPayload = payload.find((p: any) => p.dataKey === 'goal');
     
     if (!incomePayload) return null;
 
@@ -77,12 +76,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
           <p className="text-sm font-medium">{label}</p>
           <p className="text-sm font-medium">{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(incomePayload.value)}</p>
         </div>
-         {goalPayload &&
-          <div className="flex justify-between items-center mt-1">
-            <p className="text-sm text-muted-foreground">Goal:</p>
-            <p className="text-sm text-muted-foreground">{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(goalPayload.value)}</p>
-          </div>
-        }
       </div>
     );
   }
@@ -124,7 +117,7 @@ export default function DashboardPage() {
         <Card className="col-span-4">
           <CardHeader className="flex flex-row items-center">
             <div className="grid gap-2">
-              <CardTitle>Yearly net income performance</CardTitle>
+              <CardTitle>Sales Performance</CardTitle>
               <CardDescription>July, 2025 - July, 2026</CardDescription>
             </div>
             <Button asChild size="sm" variant="ghost" className="ml-auto gap-1">
@@ -154,23 +147,14 @@ export default function DashboardPage() {
                         tickFormatter={(value) => `$${value / 1000}K`}
                     />
                     <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3' }} />
-                    <Legend iconType="circle" verticalAlign="top" align="right" />
                     <Line 
                       dataKey="income" 
-                      name="Jul, 2025 - Jul, 2026" 
+                      name="Income" 
                       type="monotone" 
                       stroke="hsl(var(--primary))" 
                       strokeWidth={2} 
                       dot={{ r: 4, fill: 'hsl(var(--primary))' }} 
                       activeDot={{ r: 8, strokeWidth: 2 }} />
-                    <Line 
-                      dataKey="goal" 
-                      name="Goal" 
-                      type="monotone" 
-                      stroke="hsl(var(--muted-foreground))" 
-                      strokeWidth={2} 
-                      strokeDasharray="5 5" 
-                      dot={false} />
                 </LineChart>
             </ResponsiveContainer>
           </CardContent>
