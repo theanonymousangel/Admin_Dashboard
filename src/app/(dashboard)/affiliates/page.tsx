@@ -592,6 +592,12 @@ const PromotionsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdat
                                     <div>
                                         <p className="font-medium">{product.name}</p>
                                         <p className="text-sm text-muted-foreground">${product.price.toFixed(2)}</p>
+                                        <div className="text-xs text-muted-foreground mt-1">
+                                            {[
+                                                product.sizes && product.sizes.length > 0 && `Sizes: ${product.sizes.join(', ')}`,
+                                                product.colors && product.colors.length > 0 && `Colors: ${product.colors.join(', ')}`
+                                            ].filter(Boolean).join(' | ')}
+                                        </div>
                                     </div>
                                 </div>
                                 <Checkbox
@@ -617,22 +623,22 @@ const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpd
         <Tabs defaultValue="account" className="w-full">
             <TabsList className="px-6">
                 <TabsTrigger value="account">Account Overview</TabsTrigger>
+                <TabsTrigger value="promotions">Promotions</TabsTrigger>
                 <TabsTrigger value="transactions">Transactions</TabsTrigger>
                 <TabsTrigger value="payouts">Payout Overview</TabsTrigger>
-                <TabsTrigger value="promotions">Promotions</TabsTrigger>
             </TabsList>
             <Separator />
             <TabsContent value="account" className="m-0">
                 <AccountView affiliate={affiliate} onUpdate={onUpdate} />
+            </TabsContent>
+            <TabsContent value="promotions" className="m-0">
+                <PromotionsView affiliate={affiliate} onUpdate={onUpdate} />
             </TabsContent>
             <TabsContent value="transactions" className="m-0">
                 <TransactionsView affiliate={affiliate} />
             </TabsContent>
             <TabsContent value="payouts" className="m-0">
                 <PayoutsView affiliate={affiliate} />
-            </TabsContent>
-            <TabsContent value="promotions" className="m-0">
-                <PromotionsView affiliate={affiliate} onUpdate={onUpdate} />
             </TabsContent>
         </Tabs>
     );
