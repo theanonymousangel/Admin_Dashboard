@@ -62,11 +62,15 @@ const processAffiliateData = (affiliates: Affiliate[]) => {
       const eligibleDate = addDays(saleDate, 14);
       const payoutDate = getNextPayoutDate(eligibleDate);
 
-      let status: Payout["status"] = "Pending Eligibility";
-      if (isAfter(today, payoutDate)) {
-        status = "Paid";
-      } else if (isAfter(today, eligibleDate)) {
-        status = "Eligible for Payout";
+      let status: Payout["status"];
+      if (sale.status) {
+        status = sale.status;
+      } else {
+        if (isAfter(today, eligibleDate)) {
+          status = "Eligible for Payout";
+        } else {
+          status = "Pending Eligibility";
+        }
       }
 
       allTransactions.push({
@@ -238,14 +242,31 @@ const BalanceChartTooltip = ({ active, payload, label }: any) => {
 };
 
 export default function PayoutsPage() {
-    const [affiliates] = useState<Affiliate[]>(mockAffiliates);
+    const [affiliates, setAffiliates] = useState<Affiliate[]>([]);
+    const { toast } = useToast();
+
+    useEffect(() => {
+        try {
+            const storedAffiliates = localStorage.getItem('affiliatesData');
+            if (storedAffiliates) {
+                setAffiliates(JSON.parse(storedAffiliates));
+            } else {
+                const initialAffiliates = mockAffiliates;
+                setAffiliates(initialAffiliates);
+                localStorage.setItem('affiliatesData', JSON.stringify(initialAffiliates));
+            }
+        } catch (error) {
+            console.error("Failed to parse affiliates from localStorage", error);
+            setAffiliates(mockAffiliates);
+        }
+    }, []);
+
     const { globalStats, nextPayoutInfo, allTransactions, chartData } = useMemo(
         () => processAffiliateData(affiliates),
         [affiliates]
     );
     const [editableTransactions, setEditableTransactions] = useState<Transaction[]>([]);
-    const { toast } = useToast();
-
+    
     useEffect(() => {
         setEditableTransactions(allTransactions);
     }, [allTransactions]);

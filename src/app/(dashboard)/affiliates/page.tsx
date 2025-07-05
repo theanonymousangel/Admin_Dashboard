@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import {
   PlusCircle,
@@ -686,7 +686,7 @@ const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpd
 
 
 export default function AffiliatesPage() {
-  const [affiliates, setAffiliates] = useState<Affiliate[]>(mockAffiliates);
+  const [affiliates, setAffiliates] = useState<Affiliate[]>([]);
   const [openAffiliateId, setOpenAffiliateId] = useState<string | null>(null);
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
   const [newAffiliateData, setNewAffiliateData] = useState({
@@ -697,9 +697,32 @@ export default function AffiliatesPage() {
     password: '',
     commissionRate: 10,
   });
+
+  useEffect(() => {
+    try {
+      const storedAffiliates = localStorage.getItem('affiliatesData');
+      if (storedAffiliates) {
+        setAffiliates(JSON.parse(storedAffiliates));
+      } else {
+        setAffiliates(mockAffiliates);
+        localStorage.setItem('affiliatesData', JSON.stringify(mockAffiliates));
+      }
+    } catch (error) {
+      console.error("Failed to parse affiliates from localStorage", error);
+      setAffiliates(mockAffiliates);
+    }
+  }, []);
+
+  const saveAffiliates = (updater: (affs: Affiliate[]) => Affiliate[]) => {
+    setAffiliates(prev => {
+      const updated = updater(prev);
+      localStorage.setItem('affiliatesData', JSON.stringify(updated));
+      return updated;
+    });
+  };
   
   const handleAffiliateUpdate = (affiliateId: string, data: Partial<Affiliate>) => {
-    setAffiliates(prev => prev.map(aff =>
+    saveAffiliates(prev => prev.map(aff =>
       aff.id === affiliateId ? { ...aff, ...data } : aff
     ));
     if (data.status === 'Disabled') {
@@ -708,7 +731,7 @@ export default function AffiliatesPage() {
   };
   
   const handlePermanentDelete = (affiliateId: string) => {
-    setAffiliates(prev => prev.filter(aff => aff.id !== affiliateId));
+    saveAffiliates(prev => prev.filter(aff => aff.id !== affiliateId));
   };
   
   const handleNewAffiliateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -737,7 +760,7 @@ export default function AffiliatesPage() {
           payoutDetails: {},
           promotableProductIds: [],
       };
-      setAffiliates(prev => [newAffiliate, ...prev]);
+      saveAffiliates(prev => [newAffiliate, ...prev]);
       setIsAddSheetOpen(false);
       setNewAffiliateData({
           username: '',
