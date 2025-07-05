@@ -11,7 +11,7 @@ import {
   Search,
   Users,
 } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Line, LineChart, ResponsiveContainer, Tooltip } from "recharts";
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 
 import {
   Card,
@@ -101,24 +101,52 @@ export default function DashboardPage() {
               }}
               className="h-[300px] w-full"
             >
-              <LineChart data={salesData}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
-                <YAxis
-                  tickFormatter={(value) => `$${value / 1000}k`}
+              <AreaChart
+                data={salesData}
+                margin={{
+                  left: 12,
+                  right: 12,
+                }}
+              >
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop
+                      offset="5%"
+                      stopColor="var(--color-revenue)"
+                      stopOpacity={0.8}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor="var(--color-revenue)"
+                      stopOpacity={0.1}
+                    />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="date"
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
+                  tickFormatter={(value) => value.slice(0, 3)}
                 />
-                <Tooltip cursor={false} content={<ChartTooltipContent />} />
-                <Line
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(value) => `$${value / 1000}k`}
+                />
+                <Tooltip cursor={true} content={<ChartTooltipContent />} />
+                <Area
                   dataKey="revenue"
                   type="natural"
                   stroke="var(--color-revenue)"
                   strokeWidth={2}
+                  fill="url(#colorRevenue)"
+                  fillOpacity={1}
                   dot={false}
                 />
-              </LineChart>
+              </AreaChart>
             </ChartContainer>
           </CardContent>
         </Card>
@@ -135,6 +163,13 @@ export default function DashboardPage() {
                 value: {
                   label: "Sales",
                 },
+                ...salesByCategory.reduce((acc, cur) => {
+                  acc[cur.name] = {
+                    label: cur.name,
+                    color: cur.fill
+                  }
+                  return acc
+                }, {} as any)
               }}
               className="h-[300px] w-full"
             >
@@ -142,8 +177,8 @@ export default function DashboardPage() {
                 <CartesianGrid horizontal={false} />
                 <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tickMargin={8} width={80}/>
                 <XAxis dataKey="value" type="number" hide />
-                <Tooltip cursor={false} content={<ChartTooltipContent />} />
-                <Bar dataKey="value" radius={5} />
+                <Tooltip cursor={true} content={<ChartTooltipContent />} />
+                <Bar dataKey="value" radius={5} background={{ fill: 'hsl(var(--muted))', radius: 5 }}/>
               </BarChart>
             </ChartContainer>
           </CardContent>
