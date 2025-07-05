@@ -268,7 +268,7 @@ export default function PayoutsPage() {
                                         content={<PayoutsChartTooltip />}
                                         cursor={{ fill: 'hsl(var(--accent))', radius: 4 }}
                                     />
-                                    <Legend wrapperStyle={{fontSize: "12px", paddingTop: '10px'}}/>
+                                    <Legend wrapperStyle={{fontSize: "12px", paddingTop: '10px'}} formatter={(value) => <span className="text-foreground">{value}</span>}/>
                                     <Bar dataKey="income" fill="hsl(var(--muted))" name="Total Sales" radius={[4, 4, 0, 0]} />
                                     <Bar dataKey="payouts" fill="hsl(var(--primary))" name="Commissions Paid" radius={[4, 4, 0, 0]} />
                                 </BarChart>
