@@ -72,8 +72,8 @@ const CustomerDetails = ({ customer, orders }: { customer: Customer, orders: Ord
                     <TableCell className="max-w-[200px] truncate">
                       {order.products.map(p => {
                           const details = [p.size, p.color].filter(Boolean).join(', ');
-                          return `${p.quantity}x ${p.name} (${details})`;
-                      }).join(', ')}
+                          return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
+                      }).join('; ')}
                     </TableCell>
                     <TableCell>${order.amount.toFixed(2)}</TableCell>
                     <TableCell><OrderStatusBadge status={order.status}/></TableCell>
