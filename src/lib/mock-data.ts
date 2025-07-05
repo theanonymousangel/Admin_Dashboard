@@ -11,16 +11,18 @@ export const mockProducts: Product[] = [
 
 export const mockOrders: Order[] = [
   { id: 'ord-101', customerName: 'Jane Doe', customerEmail: 'jane.doe@example.com', customerPhone: '123-456-7890', customerAddress: '123 Oak St, Anytown, USA', products: [{ name: 'Classic White Tee', quantity: 2, size: 'M' }], amount: 59.98, status: 'Completed', date: '2023-10-26', affiliateUsername: 'fashion_blog' },
-  { id: 'ord-102', customerName: 'John Smith', customerEmail: 'john.smith@example.com', customerPhone: '234-567-8901', customerAddress: '456 Maple Ave, Somecity, USA', products: [{ name: 'Denim Jacket', quantity: 1, size: 'L' }, { name: 'Black Skinny Jeans', quantity: 1, size: 'L' }], amount: 169.98, status: 'Shipped', date: '2023-10-25', affiliateUsername: 'style_influencer' },
+  { id: 'ord-102', customerName: 'John Smith', customerEmail: 'john.smith@example.com', customerPhone: '234-567-8901', customerAddress: '456 Maple Ave, Somecity, USA', products: [{ name: 'Denim Jacket', quantity: 1, size: 'L' }, { name: 'Black Skinny Jeans', quantity: 1, size: '32' }], amount: 169.98, status: 'Shipped', date: '2023-10-25', affiliateUsername: 'style_influencer' },
   { id: 'ord-103', customerName: 'Alice Johnson', customerEmail: 'alice.j@example.com', customerPhone: '345-678-9012', customerAddress: '789 Pine Rd, Otherville, USA', products: [{ name: 'Beige Hoodie', quantity: 1, size: 'S' }], amount: 59.99, status: 'Pending', date: '2023-10-27', affiliateUsername: 'fashion_blog' },
-  { id: 'ord-104', customerName: 'Bob Brown', customerEmail: 'bob.brown@example.com', customerPhone: '456-789-0123', customerAddress: '101 Birch Blvd, Anyplace, USA', products: [{ name: 'Leather Boots', quantity: 1, size: 'M' }], amount: 129.99, status: 'Cancelled', date: '2023-10-24' },
+  { id: 'ord-104', customerName: 'Bob Brown', customerEmail: 'bob.brown@example.com', customerPhone: '456-789-0123', customerAddress: '101 Birch Blvd, Anyplace, USA', products: [{ name: 'Leather Boots', quantity: 1, size: '10' }], amount: 129.99, status: 'Cancelled', date: '2023-10-24' },
+  { id: 'ord-105', customerName: 'Jane Doe', customerEmail: 'jane.doe@example.com', customerPhone: '123-456-7890', customerAddress: '321 Elm St, Anytown, USA', products: [{ name: 'Silk Scarf', quantity: 1, size: 'One Size' }], amount: 39.99, status: 'Completed', date: '2023-09-12' },
+  { id: 'ord-106', customerName: 'Alice Johnson', customerEmail: 'alice.j@example.com', customerPhone: '345-678-9012', customerAddress: '789 Pine Rd, Otherville, USA', products: [{ name: 'Black Skinny Jeans', quantity: 1, size: '30' }], amount: 79.99, status: 'Completed', date: '2023-08-01' },
 ];
 
 export const mockCustomers: Customer[] = [
-  { id: 'cust-01', name: 'Jane Doe', email: 'jane.doe@example.com', totalOrders: 5, totalSpent: 450.50, lastPurchaseDate: '2023-10-26' },
-  { id: 'cust-02', name: 'John Smith', email: 'john.smith@example.com', totalOrders: 3, totalSpent: 320.00, lastPurchaseDate: '2023-10-25' },
-  { id: 'cust-03', name: 'Alice Johnson', email: 'alice.j@example.com', totalOrders: 8, totalSpent: 1200.75, lastPurchaseDate: '2023-10-27' },
-  { id: 'cust-04', name: 'Bob Brown', email: 'bob.brown@example.com', totalOrders: 2, totalSpent: 180.25, lastPurchaseDate: '2023-09-15' },
+  { id: 'cust-01', name: 'Jane Doe', email: 'jane.doe@example.com', totalOrders: 2, totalSpent: 99.97, lastPurchaseDate: '2023-10-26' },
+  { id: 'cust-02', name: 'John Smith', email: 'john.smith@example.com', totalOrders: 1, totalSpent: 169.98, lastPurchaseDate: '2023-10-25' },
+  { id: 'cust-03', name: 'Alice Johnson', email: 'alice.j@example.com', totalOrders: 2, totalSpent: 139.98, lastPurchaseDate: '2023-10-27' },
+  { id: 'cust-04', name: 'Bob Brown', email: 'bob.brown@example.com', totalOrders: 1, totalSpent: 0.00, lastPurchaseDate: '2023-10-24' },
 ];
 
 const today = new Date();

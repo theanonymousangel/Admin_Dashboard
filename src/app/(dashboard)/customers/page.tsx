@@ -3,11 +3,11 @@
 
 import React, { useState, useMemo } from "react";
 import {
-  MoreHorizontal,
   File,
   Search
 } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,13 +18,6 @@ import {
   CardFooter
 } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Table,
   TableBody,
   TableCell,
@@ -33,12 +26,78 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { mockCustomers } from "@/lib/mock-data";
-import type { Customer } from "@/lib/types";
+import { mockCustomers, mockOrders } from "@/lib/mock-data";
+import type { Customer, Order } from "@/lib/types";
+
+function OrderStatusBadge({ status }: { status: Order["status"] }) {
+    const variantMapping: Record<Order['status'], 'default' | 'secondary' | 'outline' | 'destructive'> = {
+        Pending: 'secondary',
+        Completed: 'default',
+        Shipped: 'outline',
+        Refunded: 'destructive',
+        Cancelled: 'destructive'
+    };
+  return <Badge variant={variantMapping[status]}>{status}</Badge>;
+}
+
+const CustomerDetails = ({ customer, orders }: { customer: Customer, orders: Order[] }) => {
+  const customerOrders = useMemo(() => {
+    return orders.filter(order => order.customerEmail === customer.email)
+                 .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [customer.email, orders]);
+
+  return (
+    <div className="p-6 bg-muted/50">
+      <h3 className="text-lg font-semibold mb-4">Transaction History for {customer.name}</h3>
+      {customerOrders.length > 0 ? (
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Order ID</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Products</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Contact & Shipping</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {customerOrders.map(order => (
+                  <TableRow key={order.id}>
+                    <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
+                    <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+                    <TableCell className="max-w-[200px] truncate">
+                      {order.products.map(p => `${p.quantity}x ${p.name} (${p.size})`).join(', ')}
+                    </TableCell>
+                    <TableCell>${order.amount.toFixed(2)}</TableCell>
+                    <TableCell><OrderStatusBadge status={order.status}/></TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      <div>{order.customerPhone}</div>
+                      <div>{order.customerAddress}</div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="text-center text-muted-foreground py-8">
+          This customer has no transaction history.
+        </div>
+      )}
+    </div>
+  );
+};
+
 
 export default function CustomersPage() {
   const [customers] = useState<Customer[]>(mockCustomers);
+  const [orders] = useState<Order[]>(mockOrders);
   const [searchTerm, setSearchTerm] = useState("");
+  const [openCustomerId, setOpenCustomerId] = useState<string | null>(null);
 
   const filteredCustomers = useMemo(() => {
     if (!searchTerm) {
@@ -90,36 +149,33 @@ export default function CustomersPage() {
               <TableHead>Total Orders</TableHead>
               <TableHead>Total Spent</TableHead>
               <TableHead>Last Purchase</TableHead>
-              <TableHead>
-                <span className="sr-only">Actions</span>
-              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredCustomers.map((customer) => (
-              <TableRow key={customer.id}>
-                <TableCell>
-                  <div className="font-medium">{customer.name}</div>
-                </TableCell>
-                <TableCell>{customer.totalOrders}</TableCell>
-                <TableCell>${customer.totalSpent.toFixed(2)}</TableCell>
-                <TableCell>{new Date(customer.lastPurchaseDate).toLocaleDateString()}</TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button aria-haspopup="true" size="icon" variant="ghost">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Toggle menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>View Profile</DropdownMenuItem>
-                      <DropdownMenuItem>View Order History</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
+              <React.Fragment key={customer.id}>
+                <TableRow 
+                  className="cursor-pointer"
+                  onClick={() => setOpenCustomerId(openCustomerId === customer.id ? null : customer.id)}
+                >
+                  <TableCell>
+                    <div className="font-medium">{customer.name}</div>
+                    <div className="hidden text-sm text-muted-foreground md:inline">
+                      {customer.email}
+                    </div>
+                  </TableCell>
+                  <TableCell>{customer.totalOrders}</TableCell>
+                  <TableCell>${customer.totalSpent.toFixed(2)}</TableCell>
+                  <TableCell>{new Date(customer.lastPurchaseDate).toLocaleDateString()}</TableCell>
+                </TableRow>
+                {openCustomerId === customer.id && (
+                  <TableRow className="bg-muted/50 hover:bg-muted/50">
+                    <TableCell colSpan={4} className="p-0">
+                      <CustomerDetails customer={customer} orders={orders} />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </React.Fragment>
             ))}
           </TableBody>
         </Table>
