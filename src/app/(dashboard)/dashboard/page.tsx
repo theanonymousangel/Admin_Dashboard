@@ -93,6 +93,7 @@ export default function DashboardPage() {
 
   return (
     <>
+      <h1 className="text-3xl font-bold font-headline">Dashboard</h1>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard 
             title="Revenue"
