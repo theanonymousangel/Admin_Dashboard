@@ -270,12 +270,14 @@ export default function AffiliatesPage() {
               <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
-          {affiliates.map((affiliate) => (
-            <Collapsible asChild key={affiliate.id}>
-              <tbody className="group">
-                <CollapsibleTrigger asChild>
-                  <TableRow className="cursor-pointer">
-                    <TableCell className="font-medium">{affiliate.name}</TableCell>
+          <TableBody>
+            {affiliates.map((affiliate) => (
+              <Collapsible asChild key={affiliate.id}>
+                <>
+                  <TableRow className="group">
+                    <CollapsibleTrigger asChild>
+                      <td className="font-medium p-4 align-middle cursor-pointer">{affiliate.name}</td>
+                    </CollapsibleTrigger>
                     <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
@@ -283,10 +285,8 @@ export default function AffiliatesPage() {
                           type="number"
                           value={affiliate.commissionRate}
                           onChange={(e) => {
-                              e.stopPropagation();
                               handleCommissionChange(affiliate.id, Number(e.target.value))
                           }}
-                          onClick={(e) => e.stopPropagation()}
                           className="w-20 h-8"
                         />
                          <span className="text-muted-foreground">%</span>
@@ -302,7 +302,6 @@ export default function AffiliatesPage() {
                        >
                         <SelectTrigger
                             className="w-[120px] h-8"
-                            onClick={(e) => e.stopPropagation()}
                         >
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
@@ -310,21 +309,22 @@ export default function AffiliatesPage() {
                             <SelectItem value="Active">Active</SelectItem>
                             <SelectItem value="Inactive">Inactive</SelectItem>
                             <SelectItem value="Pending">Pending</SelectItem>
+                            <SelectItem value="Rejected">Rejected</SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>
                   </TableRow>
-                </CollapsibleTrigger>
-                <CollapsibleContent asChild>
-                  <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    <TableCell colSpan={5}>
-                      <AffiliatePayoutDetails affiliate={affiliate} />
-                    </TableCell>
-                  </TableRow>
-                </CollapsibleContent>
-              </tbody>
-            </Collapsible>
-          ))}
+                  <CollapsibleContent asChild>
+                    <TableRow className="bg-muted/50 hover:bg-muted/50">
+                      <TableCell colSpan={5}>
+                        <AffiliatePayoutDetails affiliate={affiliate} />
+                      </TableCell>
+                    </TableRow>
+                  </CollapsibleContent>
+                </>
+              </Collapsible>
+            ))}
+          </TableBody>
         </Table>
       </CardContent>
       <CardFooter>
