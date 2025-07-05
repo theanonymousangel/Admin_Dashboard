@@ -384,17 +384,6 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
         status: payout.status === 'Paid' ? 'Completed' : 'Pending',
         saleId: payout.saleId,
       });
-
-      if (payout.status === 'Paid') {
-        generatedTransactions.push({
-          id: `${payout.saleId}-payout`,
-          date: payout.payoutDate,
-          type: 'Payout',
-          amount: -payout.commission,
-          status: 'Completed',
-          saleId: payout.saleId,
-        });
-      }
     });
     
     if (affiliate.id === 'aff-01' && affiliate.sales.length > 0) {
@@ -445,7 +434,7 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
       <Card>
         <CardHeader>
           <CardTitle>Transaction History</CardTitle>
-          <CardDescription>A log of all commissions, payouts, and refunds for this affiliate.</CardDescription>
+          <CardDescription>A log of all sales commissions and refunds for this affiliate.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
