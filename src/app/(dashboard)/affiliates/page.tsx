@@ -698,6 +698,7 @@ export default function AffiliatesPage() {
           email: newAffiliateData.email,
           commissionRate: Number(newAffiliateData.commissionRate),
           totalSales: 0,
+          totalClicks: 0,
           balance: 0,
           status: 'Pending',
           sales: [],
@@ -755,6 +756,7 @@ export default function AffiliatesPage() {
                 <TableHead>Balance</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Total Sales</TableHead>
+                <TableHead>Total Clicks</TableHead>
                 <TableHead><span className="sr-only">Actions</span></TableHead>
               </TableRow>
             </TableHeader>
@@ -805,6 +807,7 @@ export default function AffiliatesPage() {
                       </Select>
                     </TableCell>
                     <TableCell>{affiliate.sales.length}</TableCell>
+                    <TableCell>{affiliate.totalClicks?.toLocaleString() || 0}</TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -877,7 +880,7 @@ export default function AffiliatesPage() {
                   </TableRow>
                   {openAffiliateId === affiliate.id && (
                     <TableRow className="bg-muted/50 hover:bg-muted/50">
-                      <TableCell colSpan={7} className="p-0">
+                      <TableCell colSpan={8} className="p-0">
                         <AffiliateDetails affiliate={affiliate} onUpdate={handleAffiliateUpdate} />
                       </TableCell>
                     </TableRow>

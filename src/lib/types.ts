@@ -80,6 +80,7 @@ export type Affiliate = {
   lastName: string;
   email: string;
   totalSales: number;
+  totalClicks?: number;
   commissionRate: number;
   balance: number;
   status: 'Active' | 'Pending' | 'Rejected' | 'Disabled';
