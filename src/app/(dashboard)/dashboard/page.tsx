@@ -6,7 +6,8 @@ import {
   CreditCard,
   DollarSign,
   Users,
-  Info
+  Info,
+  TrendingUp
 } from "lucide-react";
 import { Line, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
@@ -95,10 +96,10 @@ export default function DashboardPage() {
             icon={DollarSign}
         />
         <StatCard 
-            title="Subscriptions"
-            value="+2350"
-            description="+180.1% from last month"
-            icon={Users}
+            title="Platform Earnings"
+            value="$1,356.96"
+            description="3% of total monthly revenue"
+            icon={TrendingUp}
         />
         <StatCard 
             title="Sales"
