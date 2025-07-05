@@ -12,7 +12,6 @@ import {
   Menu,
   ChevronDown,
   Receipt,
-  TrendingUp,
   Landmark,
 } from "lucide-react";
 
@@ -34,7 +33,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const operationsNavItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/performance", icon: TrendingUp, label: "Performance" },
   { href: "/products", icon: Box, label: "Products" },
   { href: "/orders", icon: Receipt, label: "Sales" },
   { href: "/customers", icon: Users, label: "Customers" },
