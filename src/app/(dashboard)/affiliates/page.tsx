@@ -362,6 +362,41 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                 </Card>
             </div>
             <div className="lg:col-span-1 space-y-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Payout Information</CardTitle>
+                        <CardDescription>Banking or PayPal details for sending payouts.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="paypalEmail">PayPal Email</Label>
+                            <Input id="paypalEmail" value={formData.paypalEmail} onChange={handleInputChange} placeholder="affiliate@paypal.com" disabled={isDeleted} />
+                        </div>
+                        <div className="relative my-4">
+                            <Separator />
+                            <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 bg-background px-2 text-sm text-muted-foreground">OR</span>
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="accountHolder">Account Holder Name</Label>
+                            <Input id="accountHolder" value={formData.accountHolder} onChange={handleInputChange} placeholder="Jane Doe" disabled={isDeleted} />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="bankName">Bank Name</Label>
+                            <Input id="bankName" value={formData.bankName} onChange={handleInputChange} placeholder="Global Bank" disabled={isDeleted} />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="accountNumber">Account Number</Label>
+                            <Input id="accountNumber" value={formData.accountNumber} onChange={handleInputChange} placeholder="**** **** **** 1234" disabled={isDeleted} />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="routingNumber">Routing Number</Label>
+                            <Input id="routingNumber" value={formData.routingNumber} onChange={handleInputChange} placeholder="123456789" disabled={isDeleted} />
+                        </div>
+                    </CardContent>
+                    <CardFooter>
+                        <Button onClick={handleSavePayoutDetails} disabled={isDeleted}>Save Payout Info</Button>
+                    </CardFooter>
+                </Card>
                  <Card>
                     <CardHeader>
                         <CardTitle>Affiliate Documents</CardTitle>
@@ -403,41 +438,6 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                             <Input id="file-upload" type="file" multiple className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={handleFileUpload} disabled={isDeleted}/>
                         </div>
                     </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Payout Information</CardTitle>
-                        <CardDescription>Banking or PayPal details for sending payouts.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="paypalEmail">PayPal Email</Label>
-                            <Input id="paypalEmail" value={formData.paypalEmail} onChange={handleInputChange} placeholder="affiliate@paypal.com" disabled={isDeleted} />
-                        </div>
-                        <div className="relative my-4">
-                            <Separator />
-                            <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 bg-background px-2 text-sm text-muted-foreground">OR</span>
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="accountHolder">Account Holder Name</Label>
-                            <Input id="accountHolder" value={formData.accountHolder} onChange={handleInputChange} placeholder="Jane Doe" disabled={isDeleted} />
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="bankName">Bank Name</Label>
-                            <Input id="bankName" value={formData.bankName} onChange={handleInputChange} placeholder="Global Bank" disabled={isDeleted} />
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="accountNumber">Account Number</Label>
-                            <Input id="accountNumber" value={formData.accountNumber} onChange={handleInputChange} placeholder="**** **** **** 1234" disabled={isDeleted} />
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="routingNumber">Routing Number</Label>
-                            <Input id="routingNumber" value={formData.routingNumber} onChange={handleInputChange} placeholder="123456789" disabled={isDeleted} />
-                        </div>
-                    </CardContent>
-                    <CardFooter>
-                        <Button onClick={handleSavePayoutDetails} disabled={isDeleted}>Save Payout Info</Button>
-                    </CardFooter>
                 </Card>
             </div>
         </div>
