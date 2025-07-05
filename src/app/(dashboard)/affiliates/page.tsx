@@ -526,11 +526,11 @@ export default function AffiliatesPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Username</TableHead>
-              <TableHead>Total Sales</TableHead>
+              <TableHead>Sales Value</TableHead>
               <TableHead>Commission Rate</TableHead>
               <TableHead>Balance</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Date Joined</TableHead>
+              <TableHead>Total Sales</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -576,7 +576,7 @@ export default function AffiliatesPage() {
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell>{new Date(affiliate.dateJoined).toLocaleDateString()}</TableCell>
+                  <TableCell>{affiliate.sales.length}</TableCell>
                 </TableRow>
                 {openAffiliateId === affiliate.id && (
                   <TableRow className="bg-muted/50 hover:bg-muted/50">

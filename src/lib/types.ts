@@ -69,7 +69,6 @@ export type Affiliate = {
   status: 'Active' | 'Inactive' | 'Pending' | 'Rejected';
   sales: AffiliateSale[];
   documents: AffiliateDocument[];
-  dateJoined: string;
 };
 
 export type Notification = {
@@ -89,4 +88,5 @@ export type Transaction = {
   status: 'Completed' | 'Pending' | 'Reversed';
   saleId: string;
   customerName?: string;
+  date: Date;
 };
