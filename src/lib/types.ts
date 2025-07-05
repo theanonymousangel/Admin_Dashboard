@@ -86,6 +86,7 @@ export type Affiliate = {
   sales: AffiliateSale[];
   documents: AffiliateDocument[];
   payoutDetails?: Partial<PayoutDetails>;
+  promotableProductIds?: string[];
 };
 
 export type Notification = {

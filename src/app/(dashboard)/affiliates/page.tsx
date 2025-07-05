@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Image from "next/image";
 import {
   PlusCircle,
   Download,
@@ -50,10 +51,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
 
 
-import { mockAffiliates } from "@/lib/mock-data";
-import type { Affiliate, AffiliateSale, Payout, AffiliateDocument, Transaction, PayoutDetails } from "@/lib/types";
+import { mockAffiliates, mockProducts } from "@/lib/mock-data";
+import type { Affiliate, AffiliateSale, Payout, AffiliateDocument, Transaction, PayoutDetails, Product } from "@/lib/types";
 
 function getNextPayoutDate(eligibleDate: Date): Date {
   const payoutDays = [7, 14, 21, 28];
@@ -552,6 +554,64 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
   );
 };
 
+const PromotionsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
+    const products = mockProducts; 
+
+    const handleProductToggle = (productId: string) => {
+        const currentPromotableIds = affiliate.promotableProductIds || [];
+        const isPromotable = currentPromotableIds.includes(productId);
+        let updatedIds;
+        if (isPromotable) {
+            updatedIds = currentPromotableIds.filter(id => id !== productId);
+        } else {
+            updatedIds = [...currentPromotableIds, productId];
+        }
+        onUpdate(affiliate.id, { promotableProductIds: updatedIds });
+    }
+
+    return (
+        <div className="p-6 bg-background">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Promotable Products</CardTitle>
+                    <CardDescription>Select which products this affiliate is allowed to promote and generate links for.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-4">
+                        {products.map((product: Product) => (
+                            <div key={product.id} className="flex items-center justify-between p-3 rounded-md border">
+                                <div className="flex items-center gap-4">
+                                     <Image
+                                        alt={product.name}
+                                        className="aspect-square rounded-md object-cover"
+                                        height="40"
+                                        src={product.image[0]}
+                                        width="40"
+                                        data-ai-hint="product image"
+                                    />
+                                    <div>
+                                        <p className="font-medium">{product.name}</p>
+                                        <p className="text-sm text-muted-foreground">${product.price.toFixed(2)}</p>
+                                    </div>
+                                </div>
+                                <Checkbox
+                                    id={`product-${product.id}`}
+                                    checked={(affiliate.promotableProductIds || []).includes(product.id)}
+                                    onCheckedChange={() => handleProductToggle(product.id)}
+                                    disabled={affiliate.status === 'Deleted'}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+                 <CardFooter>
+                    <p className="text-xs text-muted-foreground">Changes are saved automatically.</p>
+                 </CardFooter>
+            </Card>
+        </div>
+    );
+};
+
 const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
     return (
         <Tabs defaultValue="account" className="w-full">
@@ -559,6 +619,7 @@ const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpd
                 <TabsTrigger value="account">Account Overview</TabsTrigger>
                 <TabsTrigger value="transactions">Transactions</TabsTrigger>
                 <TabsTrigger value="payouts">Payout Overview</TabsTrigger>
+                <TabsTrigger value="promotions">Promotions</TabsTrigger>
             </TabsList>
             <Separator />
             <TabsContent value="account" className="m-0">
@@ -569,6 +630,9 @@ const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpd
             </TabsContent>
             <TabsContent value="payouts" className="m-0">
                 <PayoutsView affiliate={affiliate} />
+            </TabsContent>
+            <TabsContent value="promotions" className="m-0">
+                <PromotionsView affiliate={affiliate} onUpdate={onUpdate} />
             </TabsContent>
         </Tabs>
     );
