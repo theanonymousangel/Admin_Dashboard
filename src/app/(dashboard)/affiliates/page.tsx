@@ -536,6 +536,10 @@ export default function AffiliatesPage() {
     setAffiliates(prev => prev.map(aff =>
       aff.id === affiliateId ? { ...aff, ...data } : aff
     ));
+    // If status is changed to 'Deleted', close the details view
+    if (data.status === 'Deleted' && openAffiliateId === affiliateId) {
+        // setOpenAffiliateId(null);
+    }
   };
   
   const handlePermanentDelete = (affiliateId: string) => {
@@ -624,6 +628,7 @@ export default function AffiliatesPage() {
                   </TableCell>
                   <TableCell>{affiliate.sales.length}</TableCell>
                   <TableCell>
+                    {affiliate.status === 'Deleted' && (
                      <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
@@ -645,6 +650,7 @@ export default function AffiliatesPage() {
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
+                    )}
                   </TableCell>
                 </TableRow>
                 {openAffiliateId === affiliate.id && (
