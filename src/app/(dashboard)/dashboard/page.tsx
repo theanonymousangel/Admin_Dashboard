@@ -109,7 +109,7 @@ export default function DashboardPage() {
         <StatCard 
             title="Sales"
             value="+12,234"
-            description="+19% from last month"
+            description="Total sales transactions this month"
             icon={CreditCard}
         />
          <StatCard 
