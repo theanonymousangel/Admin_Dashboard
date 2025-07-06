@@ -694,10 +694,15 @@ const DocumentStatusBadge = ({ status }: { status: AffiliateDocument['status'] }
 const DocumentsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
     const [documents, setDocuments] = useState<AffiliateDocument[]>(affiliate.documents);
     const isDisabled = affiliate.status === 'Disabled';
+    const { toast } = useToast();
 
     useEffect(() => {
         setDocuments(affiliate.documents);
     }, [affiliate.documents]);
+    
+    const affiliateDocuments = useMemo(() => documents.filter(d => d.uploadedBy === 'affiliate'), [documents]);
+    const adminDocuments = useMemo(() => documents.filter(d => d.uploadedBy === 'admin'), [documents]);
+
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -707,12 +712,16 @@ const DocumentsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate
                 url: '#', // Use a placeholder to prevent localStorage quota errors
                 uploadedAt: new Date().toISOString(),
                 uploadedBy: 'admin' as const,
-                status: 'Approved' as const,
+                status: 'Approved' as const, // Admin docs are auto-approved for download
             }));
             
             const updatedDocuments = [...documents, ...newFiles];
             setDocuments(updatedDocuments);
             onUpdate(affiliate.id, { documents: updatedDocuments });
+            toast({
+                title: "Documents Uploaded",
+                description: `${newFiles.length} document(s) have been shared with the affiliate.`,
+            });
         }
     };
 
@@ -720,104 +729,163 @@ const DocumentsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate
         const updatedDocuments = documents.filter(doc => doc.id !== docId);
         setDocuments(updatedDocuments);
         onUpdate(affiliate.id, { documents: updatedDocuments });
+        toast({
+            title: "Document Deleted",
+            description: `The document has been removed.`,
+        });
     };
 
     const handleDocumentStatusChange = (docId: string, newStatus: AffiliateDocument['status']) => {
         const updatedDocuments = documents.map(doc => doc.id === docId ? {...doc, status: newStatus} : doc);
         setDocuments(updatedDocuments);
         onUpdate(affiliate.id, { documents: updatedDocuments });
+        toast({
+            title: "Status Updated",
+            description: `The document status has been changed to "${newStatus}".`,
+        });
     };
-
+    
     return (
-        <div className="p-6 bg-background">
+         <div className="p-6 bg-background grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            {/* Affiliate Documents Card */}
             <Card>
                 <CardHeader>
                     <CardTitle>Affiliate Documents</CardTitle>
-                    <CardDescription>Upload or manage documents. Documents you upload are sent to the affiliate.</CardDescription>
+                    <CardDescription>Review and manage documents submitted by the affiliate.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                        {documents.length > 0 ? (
-                            <ul className="space-y-2">
-                                {documents.map(doc => (
-                                    <li key={doc.id} className="flex items-center justify-between text-sm p-3 rounded-md border">
-                                        <div className="flex items-center gap-3 overflow-hidden">
-                                            <File className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                                            <div className="flex-grow overflow-hidden">
-                                                <p className="font-medium truncate" title={doc.name}>{doc.name}</p>
-                                                <p className="text-xs text-muted-foreground">
-                                                    Uploaded by {doc.uploadedBy === 'admin' ? 'You' : 'Affiliate'} on {format(new Date(doc.uploadedAt), 'MMM dd, yyyy')}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <DocumentStatusBadge status={doc.status} />
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-7 w-7">
-                                                        <MoreHorizontal className="h-4 w-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    {doc.uploadedBy !== 'admin' && !isDisabled && (
-                                                        <>
-                                                          <DropdownMenuSub>
-                                                              <DropdownMenuSubTrigger>
-                                                                  <Pencil className="mr-2 h-4 w-4" />
-                                                                  <span>Change Status</span>
-                                                              </DropdownMenuSubTrigger>
-                                                              <DropdownMenuPortal>
-                                                                  <DropdownMenuSubContent>
-                                                                      <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Approved')}>
-                                                                          <CheckCircle2 className="mr-2 h-4 w-4 text-green-600"/>
-                                                                          <span>Approved</span>
-                                                                      </DropdownMenuItem>
-                                                                      <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Pending')}>
-                                                                          <Info className="mr-2 h-4 w-4 text-yellow-600"/>
-                                                                          <span>Pending</span>
-                                                                      </DropdownMenuItem>
-                                                                      <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Rejected')}>
-                                                                          <XCircle className="mr-2 h-4 w-4 text-red-600"/>
-                                                                          <span>Rejected</span>
-                                                                      </DropdownMenuItem>
-                                                                  </DropdownMenuSubContent>
-                                                              </DropdownMenuPortal>
-                                                          </DropdownMenuSub>
-                                                          <DropdownMenuSeparator />
-                                                        </>
-                                                    )}
-                                                    <DropdownMenuItem asChild>
-                                                        <a href={doc.url} download={doc.name}>
-                                                            <Download className="mr-2 h-4 w-4"/>
-                                                            <span>Download</span>
-                                                        </a>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        className="text-destructive focus:text-destructive"
-                                                        onClick={() => handleRemoveDocument(doc.id)}
-                                                        disabled={isDisabled}
-                                                    >
-                                                        <Trash2 className="mr-2 h-4 w-4"/>
-                                                        <span>Delete</span>
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <div className="text-center text-sm text-muted-foreground py-4">
-                                No documents uploaded.
+                <CardContent>
+                    <ul className="space-y-2">
+                        {affiliateDocuments.length > 0 ? affiliateDocuments.map(doc => (
+                            <li key={doc.id} className="flex items-center justify-between text-sm p-3 rounded-md border">
+                                <div className="flex items-center gap-3 overflow-hidden">
+                                    <File className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                                    <div className="flex-grow overflow-hidden">
+                                        <p className="font-medium truncate" title={doc.name}>{doc.name}</p>
+                                        <p className="text-xs text-muted-foreground">
+                                            Uploaded on {format(new Date(doc.uploadedAt), 'MMM dd, yyyy')}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <DocumentStatusBadge status={doc.status} />
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="icon" className="h-7 w-7" disabled={isDisabled}>
+                                                <MoreHorizontal className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            {!isDisabled && (
+                                                <>
+                                                  <DropdownMenuSub>
+                                                      <DropdownMenuSubTrigger>
+                                                          <Pencil className="mr-2 h-4 w-4" />
+                                                          <span>Change Status</span>
+                                                      </DropdownMenuSubTrigger>
+                                                      <DropdownMenuPortal>
+                                                          <DropdownMenuSubContent>
+                                                              <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Approved')}>
+                                                                  <CheckCircle2 className="mr-2 h-4 w-4 text-green-600"/>
+                                                                  <span>Approved</span>
+                                                              </DropdownMenuItem>
+                                                              <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Pending')}>
+                                                                  <Info className="mr-2 h-4 w-4 text-yellow-600"/>
+                                                                  <span>Pending</span>
+                                                              </DropdownMenuItem>
+                                                              <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Rejected')}>
+                                                                  <XCircle className="mr-2 h-4 w-4 text-red-600"/>
+                                                                  <span>Rejected</span>
+                                                              </DropdownMenuItem>
+                                                          </DropdownMenuSubContent>
+                                                      </DropdownMenuPortal>
+                                                  </DropdownMenuSub>
+                                                  <DropdownMenuSeparator />
+                                                </>
+                                            )}
+                                            <DropdownMenuItem asChild>
+                                                <a href={doc.url} download={doc.name}>
+                                                    <Download className="mr-2 h-4 w-4"/>
+                                                    <span>Download</span>
+                                                </a>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem
+                                                className="text-destructive focus:text-destructive"
+                                                onClick={() => handleRemoveDocument(doc.id)}
+                                                disabled={isDisabled}
+                                            >
+                                                <Trash2 className="mr-2 h-4 w-4"/>
+                                                <span>Delete</span>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                            </li>
+                        )) : (
+                            <div className="text-center text-sm text-muted-foreground py-8 border-2 border-dashed rounded-lg">
+                                No documents submitted by this affiliate.
                             </div>
                         )}
-                    </div>
-                    <div className="relative border-2 border-dashed border-muted-foreground/20 rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
+                    </ul>
+                </CardContent>
+            </Card>
+
+            {/* Documents for Affiliate Card */}
+            <Card>
+                <CardHeader>
+                    <CardTitle>Available for Download</CardTitle>
+                    <CardDescription>Upload documents to make them available for the affiliate.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <ul className="space-y-2">
+                        {adminDocuments.length > 0 ? adminDocuments.map(doc => (
+                           <li key={doc.id} className="flex items-center justify-between text-sm p-3 rounded-md border">
+                                <div className="flex items-center gap-3 overflow-hidden">
+                                    <File className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                                    <div className="flex-grow overflow-hidden">
+                                        <p className="font-medium truncate" title={doc.name}>{doc.name}</p>
+                                        <p className="text-xs text-muted-foreground">
+                                            Uploaded on {format(new Date(doc.uploadedAt), 'MMM dd, yyyy')}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="icon" className="h-7 w-7" disabled={isDisabled}>
+                                                <MoreHorizontal className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem asChild>
+                                                <a href={doc.url} download={doc.name}>
+                                                    <Download className="mr-2 h-4 w-4"/>
+                                                    <span>Download</span>
+                                                </a>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem
+                                                className="text-destructive focus:text-destructive"
+                                                onClick={() => handleRemoveDocument(doc.id)}
+                                                disabled={isDisabled}
+                                            >
+                                                <Trash2 className="mr-2 h-4 w-4"/>
+                                                <span>Delete</span>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                            </li>
+                        )) : (
+                           <div className="text-center text-sm text-muted-foreground py-8">
+                                No documents shared with this affiliate yet.
+                            </div>
+                        )}
+                    </ul>
+                     <div className="relative border-2 border-dashed border-muted-foreground/20 rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
                         <UploadCloud className="mx-auto h-10 w-10 text-muted-foreground mb-2"/>
                         <Label htmlFor="file-upload" className={`font-semibold ${isDisabled ? 'cursor-not-allowed text-muted-foreground' : 'text-primary cursor-pointer'}`}>
-                            Upload Documents
+                            Upload New Document
                         </Label>
-                        <p className="text-xs text-muted-foreground mt-1">Select one or more files to upload.</p>
+                        <p className="text-xs text-muted-foreground mt-1">Select files to share with the affiliate.</p>
                         <Input id="file-upload" type="file" multiple className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={handleFileUpload} disabled={isDisabled}/>
                     </div>
                 </CardContent>
