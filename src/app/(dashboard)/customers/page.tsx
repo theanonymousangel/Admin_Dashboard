@@ -94,10 +94,11 @@ export default function CustomersPage() {
             {filteredCustomers.map((customer) => (
               <TableRow 
                 key={customer.id}
-                className="cursor-pointer"
-                onClick={() => router.push(`/customers/${customer.id}`)}
               >
-                <TableCell>
+                <TableCell 
+                  className="cursor-pointer"
+                  onClick={() => router.push(`/customers/${customer.id}`)}
+                >
                   <div className="font-medium">{customer.name}</div>
                   <div className="text-sm text-muted-foreground">
                     {customer.email}
