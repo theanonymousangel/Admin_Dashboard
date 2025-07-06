@@ -91,7 +91,7 @@ const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusCh
               <TableHead className="hidden lg:table-cell">Address</TableHead>
               <TableHead className="hidden xl:table-cell">Products</TableHead>
               <TableHead>Amount</TableHead>
-              <TableHead className="text-right">Platform Earnings</TableHead>
+              <TableHead className="text-right">Platform Commission</TableHead>
               <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
