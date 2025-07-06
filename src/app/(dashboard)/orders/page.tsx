@@ -8,7 +8,6 @@ import {
   Search
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -32,29 +31,11 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { mockOrders, mockCustomers, mockAffiliates } from "@/lib/mock-data";
 import type { Order, Affiliate } from "@/lib/types";
 
-function OrderStatusBadge({ status }: { status: Order["status"] }) {
-    const variantMapping: Record<Order['status'], 'default' | 'secondary' | 'outline' | 'destructive'> = {
-        Pending: 'secondary',
-        Completed: 'default',
-        Shipped: 'outline',
-        Refunded: 'destructive',
-        Cancelled: 'destructive'
-    };
-  return <Badge variant={variantMapping[status]}>{status}</Badge>;
-}
-
-const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusChange: (orderId: string, newStatus: Order['status']) => void; }) => {
+const OrdersDisplay = ({ orders }: { orders: Order[] }) => {
     const customerIdMap = useMemo(() => {
         const map = new Map<string, string>();
         mockCustomers.forEach(customer => {
@@ -92,7 +73,6 @@ const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusCh
               <TableHead className="hidden xl:table-cell">Products</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead className="text-right">Platform Commission</TableHead>
-              <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -137,20 +117,6 @@ const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusCh
                   <TableCell className="text-right font-medium">
                     ${platformEarnings.toFixed(2)}
                   </TableCell>
-                  <TableCell>
-                    <Select onValueChange={(value) => onStatusChange(order.id, value as Order['status'])} defaultValue={order.status}>
-                          <SelectTrigger className="w-[120px] h-8">
-                              <SelectValue placeholder="Status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                              <SelectItem value="Pending">Pending</SelectItem>
-                              <SelectItem value="Shipped">Shipped</SelectItem>
-                              <SelectItem value="Completed">Completed</SelectItem>
-                              <SelectItem value="Refunded">Refunded</SelectItem>
-                              <SelectItem value="Cancelled">Cancelled</SelectItem>
-                          </SelectContent>
-                      </Select>
-                  </TableCell>
                 </TableRow>
               );
             })}
@@ -167,15 +133,9 @@ const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusCh
 };
 
 export default function OrdersPage() {
-  const [orders, setOrders] = useState<Order[]>(mockOrders);
+  const [orders] = useState<Order[]>(mockOrders);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
-
-  const handleStatusChange = (orderId: string, newStatus: Order['status']) => {
-    setOrders(prevOrders => prevOrders.map(order => 
-      order.id === orderId ? { ...order, status: newStatus } : order
-    ));
-  };
   
   const filteredOrders = useMemo(() => {
     let results = orders;
@@ -201,7 +161,7 @@ export default function OrdersPage() {
     );
   }, [orders, searchTerm, activeTab]);
   
-  const tableContent = <OrdersDisplay orders={filteredOrders} onStatusChange={handleStatusChange} />;
+  const tableContent = <OrdersDisplay orders={filteredOrders} />;
 
   return (
     <Tabs defaultValue="all" onValueChange={setActiveTab}>
