@@ -129,14 +129,16 @@ const TransactionsView = ({ orders, searchTerm, setSearchTerm }: { orders: Order
                   <TableCell className="hidden md:table-cell">{order.affiliateUsername || ""}</TableCell>
                   <TableCell className="hidden lg:table-cell">{order.customerPhone || 'N/A'}</TableCell>
                   <TableCell className="hidden lg:table-cell">{order.customerAddress}</TableCell>
-                  <TableCell className="hidden xl:table-cell max-w-[300px] truncate" title={order.products.map(p => {
-                        const details = [p.size, p.color].filter(Boolean).join(', ');
-                        return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
-                    }).join('; ')}>
-                      {order.products.map(p => {
-                          const details = [p.size, p.color].filter(Boolean).join(', ');
-                          return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
-                      }).join('; ')}
+                  <TableCell className="hidden xl:table-cell">
+                    {order.products.map((p, index) => {
+                        const details = [`Qty: ${p.quantity}`, p.size, p.color].filter(Boolean).join(' | ');
+                        return (
+                            <div key={index} className={index > 0 ? "mt-2" : ""}>
+                                <div className="font-medium">{p.name}</div>
+                                <div className="text-xs text-muted-foreground">{details}</div>
+                            </div>
+                        )
+                    })}
                   </TableCell>
                   <TableCell>${orderAmountInDollars.toFixed(2)}</TableCell>
                   <TableCell className="text-right font-medium">
@@ -228,14 +230,16 @@ const DeliveriesView = ({ orders, onStatusChange, searchTerm, setSearchTerm }: {
                                 <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
                                 <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
                                 <TableCell>{order.customerName}</TableCell>
-                                <TableCell className="hidden sm:table-cell max-w-[200px] truncate" title={order.products.map(p => {
-                                        const details = [p.size, p.color].filter(Boolean).join(', ');
-                                        return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
-                                    }).join('; ')}>
-                                    {order.products.map(p => {
-                                        const details = [p.size, p.color].filter(Boolean).join(', ');
-                                        return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
-                                    }).join('; ')}
+                                <TableCell className="hidden sm:table-cell">
+                                    {order.products.map((p, index) => {
+                                        const details = [`Qty: ${p.quantity}`, p.size, p.color].filter(Boolean).join(' | ');
+                                        return (
+                                            <div key={index} className={index > 0 ? "mt-2" : ""}>
+                                                <div className="font-medium">{p.name}</div>
+                                                <div className="text-xs text-muted-foreground">{details}</div>
+                                            </div>
+                                        )
+                                    })}
                                 </TableCell>
                                 <TableCell className="hidden md:table-cell">{order.affiliateUsername || 'N/A'}</TableCell>
                                 <TableCell className="hidden lg:table-cell">{order.customerPhone || 'N/A'}</TableCell>
