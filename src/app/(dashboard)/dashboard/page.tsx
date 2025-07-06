@@ -176,7 +176,7 @@ export default function DashboardPage() {
   const timeRangeDescriptions: Record<string, string> = {
     last30days: 'Showing data for the last 30 days',
     last6months: 'Showing data for the last 6 months',
-    last12months: 'Showing data for the last 12 months',
+    last12months: 'Showing data for the last 1 year',
   };
 
 
@@ -231,7 +231,7 @@ export default function DashboardPage() {
                 <SelectContent>
                     <SelectItem value="last30days">Last 30 Days</SelectItem>
                     <SelectItem value="last6months">Last 6 Months</SelectItem>
-                    <SelectItem value="last12months">Last 12 Months</SelectItem>
+                    <SelectItem value="last12months">Last 1 Year</SelectItem>
                 </SelectContent>
             </Select>
           </CardHeader>
