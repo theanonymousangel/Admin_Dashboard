@@ -148,6 +148,10 @@ export default function SettingsPage() {
                       <Checkbox id="terms-visibility-checkout" />
                       <Label htmlFor="terms-visibility-checkout" className="font-normal text-sm">Checkout Page</Label>
                     </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="terms-visibility-affiliate" />
+                      <Label htmlFor="terms-visibility-affiliate" className="font-normal text-sm">Affiliate Application Page</Label>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -171,6 +175,10 @@ export default function SettingsPage() {
                     <div className="flex items-center space-x-2">
                       <Checkbox id="privacy-visibility-checkout" />
                       <Label htmlFor="privacy-visibility-checkout" className="font-normal text-sm">Checkout Page</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="privacy-visibility-affiliate" />
+                      <Label htmlFor="privacy-visibility-affiliate" className="font-normal text-sm">Affiliate Application Page</Label>
                     </div>
                   </div>
                 </div>
@@ -196,6 +204,10 @@ export default function SettingsPage() {
                       <Checkbox id="refund-visibility-checkout" />
                       <Label htmlFor="refund-visibility-checkout" className="font-normal text-sm">Checkout Page</Label>
                     </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="refund-visibility-affiliate" />
+                      <Label htmlFor="refund-visibility-affiliate" className="font-normal text-sm">Affiliate Application Page</Label>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -209,8 +221,20 @@ export default function SettingsPage() {
                   <Label className="text-sm font-medium">Visibility</Label>
                   <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-1">
                     <div className="flex items-center space-x-2">
-                      <Checkbox id="affiliate-visibility-page" />
-                      <Label htmlFor="affiliate-visibility-page" className="font-normal text-sm">Affiliate Application Page</Label>
+                      <Checkbox id="affiliate-agreement-visibility-main" />
+                      <Label htmlFor="affiliate-agreement-visibility-main" className="font-normal text-sm">Main Page (Footer)</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="affiliate-agreement-visibility-product" />
+                      <Label htmlFor="affiliate-agreement-visibility-product" className="font-normal text-sm">Product Pages</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="affiliate-agreement-visibility-checkout" />
+                      <Label htmlFor="affiliate-agreement-visibility-checkout" className="font-normal text-sm">Checkout Page</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="affiliate-agreement-visibility-affiliate" />
+                      <Label htmlFor="affiliate-agreement-visibility-affiliate" className="font-normal text-sm">Affiliate Application Page</Label>
                     </div>
                   </div>
                 </div>
