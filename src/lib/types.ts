@@ -20,7 +20,7 @@ export type Order = {
   customerAddress: string;
   products: { name: string; quantity: number; size?: string; color?: string }[];
   amount: number;
-  status: 'Pending' | 'Completed' | 'Shipped' | 'Refunded' | 'Cancelled';
+  status: 'Pending' | 'Completed' | 'Shipped' | 'Refunded' | 'Cancelled' | 'Rejected';
   date: string;
   affiliateUsername?: string;
 };
