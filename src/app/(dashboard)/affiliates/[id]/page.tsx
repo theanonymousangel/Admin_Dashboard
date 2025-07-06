@@ -687,12 +687,17 @@ const DocumentStatusBadge = ({ status }: { status: AffiliateDocument['status'] }
     'Approved': 'bg-green-100 text-green-800',
     'Rejected': 'bg-red-100 text-red-800',
   };
-  return <Badge className={`border-none text-xs font-normal ${styles[status]}`}>{status}</Badge>;
+  const currentStatus = status || 'Pending';
+  return <Badge className={`border-none text-xs font-normal ${styles[currentStatus]}`}>{currentStatus}</Badge>;
 };
 
 const DocumentsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
     const [documents, setDocuments] = useState<AffiliateDocument[]>(affiliate.documents);
     const isDisabled = affiliate.status === 'Disabled';
+
+    useEffect(() => {
+        setDocuments(affiliate.documents);
+    }, [affiliate.documents]);
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -754,7 +759,7 @@ const DocumentsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
-                                                    {doc.uploadedBy === 'affiliate' && !isDisabled && (
+                                                    {doc.uploadedBy !== 'admin' && !isDisabled && (
                                                         <>
                                                           <DropdownMenuSub>
                                                               <DropdownMenuSubTrigger>
