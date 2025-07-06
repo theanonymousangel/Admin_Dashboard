@@ -44,7 +44,7 @@ export type AffiliateSale = {
   amount: number;
   date: string; // ISO date string e.g. "2024-07-01T10:00:00Z"
   customerName: string;
-  status?: 'Pending Eligibility' | 'Eligible for Payout' | 'Paid';
+  status?: 'Pending Payout' | 'Eligible for Payout' | 'Paid';
 };
 
 export type Payout = {
@@ -57,7 +57,7 @@ export type Payout = {
     saleDate: Date;
     eligibleDate: Date;
     payoutDate: Date;
-    status: 'Pending Eligibility' | 'Eligible for Payout' | 'Paid';
+    status: 'Pending Payout' | 'Eligible for Payout' | 'Paid';
     customerName: string;
 };
 
@@ -66,6 +66,8 @@ export type AffiliateDocument = {
   name: string;
   url: string;
   uploadedAt: string;
+  status: 'Pending' | 'Approved' | 'Rejected';
+  uploadedBy: 'admin' | 'affiliate';
 };
 
 export type PayoutDetails = {
