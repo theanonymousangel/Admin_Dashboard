@@ -216,6 +216,7 @@ const DeliveriesView = ({ orders, onStatusChange, searchTerm, setSearchTerm }: {
                             <TableHead>Date</TableHead>
                             <TableHead className="hidden sm:table-cell">Products</TableHead>
                             <TableHead className="hidden md:table-cell">Affiliate</TableHead>
+                            <TableHead className="hidden lg:table-cell">Phone Number</TableHead>
                             <TableHead className="hidden lg:table-cell">Address</TableHead>
                             <TableHead>Current Status</TableHead>
                             <TableHead className="w-[180px]">Update Status</TableHead>
@@ -237,6 +238,7 @@ const DeliveriesView = ({ orders, onStatusChange, searchTerm, setSearchTerm }: {
                                     }).join('; ')}
                                 </TableCell>
                                 <TableCell className="hidden md:table-cell">{order.affiliateUsername || 'N/A'}</TableCell>
+                                <TableCell className="hidden lg:table-cell">{order.customerPhone || 'N/A'}</TableCell>
                                 <TableCell className="hidden lg:table-cell">{order.customerAddress}</TableCell>
                                 <TableCell><StatusBadge status={order.status} /></TableCell>
                                 <TableCell>
