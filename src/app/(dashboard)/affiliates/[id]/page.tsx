@@ -696,28 +696,18 @@ const DocumentsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-             const newFilePromises = Array.from(e.target.files).map(file => {
-                return new Promise<AffiliateDocument>((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        resolve({
-                            id: `doc-${Date.now()}-${Math.random()}`,
-                            name: file.name,
-                            url: event.target?.result as string ?? '#',
-                            uploadedAt: new Date().toISOString(),
-                            uploadedBy: 'admin' as const,
-                            status: 'Approved' as const,
-                        });
-                    };
-                    reader.readAsDataURL(file);
-                });
-            });
+            const newFiles: AffiliateDocument[] = Array.from(e.target.files).map(file => ({
+                id: `doc-${Date.now()}-${Math.random()}`,
+                name: file.name,
+                url: '#', // Use a placeholder to prevent localStorage quota errors
+                uploadedAt: new Date().toISOString(),
+                uploadedBy: 'admin' as const,
+                status: 'Approved' as const,
+            }));
             
-            Promise.all(newFilePromises).then(newFiles => {
-                const updatedDocuments = [...documents, ...newFiles];
-                setDocuments(updatedDocuments);
-                onUpdate(affiliate.id, { documents: updatedDocuments });
-            });
+            const updatedDocuments = [...documents, ...newFiles];
+            setDocuments(updatedDocuments);
+            onUpdate(affiliate.id, { documents: updatedDocuments });
         }
     };
 
@@ -891,7 +881,17 @@ export default function AffiliateDetailPage() {
             aff.id === affiliateId ? { ...aff, ...data } : aff
         );
         setAffiliates(updatedAffiliates);
-        localStorage.setItem('affiliatesData', JSON.stringify(updatedAffiliates));
+        try {
+            localStorage.setItem('affiliatesData', JSON.stringify(updatedAffiliates));
+        } catch (error) {
+            toast({
+                variant: "destructive",
+                title: "Failed to save data",
+                description: "Could not save affiliate data. Storage might be full."
+            });
+            console.error("Error saving to localStorage:", error);
+        }
+
 
         toast({
             title: "Affiliate Updated",
