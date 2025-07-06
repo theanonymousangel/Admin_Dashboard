@@ -9,6 +9,7 @@ import {
   CardTitle,
   CardFooter
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -137,6 +138,26 @@ export default function SettingsPage() {
                <div className="space-y-2">
                 <Label htmlFor="refund-policy">Refund Policy</Label>
                 <Textarea id="refund-policy" placeholder="Enter your refund policy..." rows={8} />
+              </div>
+              <div className="space-y-2">
+                <Label>Policy Visibility</Label>
+                <p className="text-sm text-muted-foreground">
+                  Select where to display links to these policies on your sales website.
+                </p>
+                <div className="space-y-2 rounded-lg border p-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="visibility-main" />
+                    <Label htmlFor="visibility-main" className="font-normal">Main Sales Page (Footer)</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="visibility-product" />
+                    <Label htmlFor="visibility-product" className="font-normal">Product Pages</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="visibility-checkout" />
+                    <Label htmlFor="visibility-checkout" className="font-normal">Checkout Page</Label>
+                  </div>
+                </div>
               </div>
             </CardContent>
             <CardFooter>
