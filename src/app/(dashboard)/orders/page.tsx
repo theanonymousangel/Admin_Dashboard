@@ -91,8 +91,8 @@ const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusCh
               <TableHead className="hidden lg:table-cell">Address</TableHead>
               <TableHead className="hidden xl:table-cell">Products</TableHead>
               <TableHead>Amount</TableHead>
-              <TableHead>Status</TableHead>
               <TableHead className="text-right">Platform Earnings</TableHead>
+              <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -134,6 +134,9 @@ const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusCh
                       }).join('; ')}
                   </TableCell>
                   <TableCell>${orderAmountInDollars.toFixed(2)}</TableCell>
+                  <TableCell className="text-right font-medium">
+                    ${platformEarnings.toFixed(2)}
+                  </TableCell>
                   <TableCell>
                     <Select onValueChange={(value) => onStatusChange(order.id, value as Order['status'])} defaultValue={order.status}>
                           <SelectTrigger className="w-[120px] h-8">
@@ -147,9 +150,6 @@ const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusCh
                               <SelectItem value="Cancelled">Cancelled</SelectItem>
                           </SelectContent>
                       </Select>
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    ${platformEarnings.toFixed(2)}
                   </TableCell>
                 </TableRow>
               );
