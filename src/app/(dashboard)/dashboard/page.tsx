@@ -125,6 +125,28 @@ export default function DashboardPage() {
         };
       });
     }
+    
+    if (timeRange === "last6months") {
+      const sixMonthsAgo = subMonths(now, 5);
+      const interval = { start: startOfMonth(sixMonthsAgo), end: endOfMonth(now) };
+      const months = eachMonthOfInterval(interval);
+      
+      return months.map(month => {
+        const monthStart = startOfMonth(month);
+        const monthEnd = endOfMonth(month);
+        const monthlyRevenue = completedOrders
+          .filter(order => {
+            const orderDate = parseISO(order.date);
+            return orderDate >= monthStart && orderDate <= monthEnd;
+          })
+          .reduce((sum, order) => sum + order.amount, 0);
+
+        return {
+          date: format(month, 'MMM'),
+          income: monthlyRevenue,
+        };
+      });
+    }
 
     if (timeRange === "last12months") {
       const twelveMonthsAgo = subMonths(now, 11);
@@ -150,6 +172,12 @@ export default function DashboardPage() {
 
     return [];
   }, [timeRange]);
+  
+  const timeRangeDescriptions: Record<string, string> = {
+    last30days: 'Showing data for the last 30 days',
+    last6months: 'Showing data for the last 6 months',
+    last12months: 'Showing data for the last 12 months',
+  };
 
 
   return (
@@ -193,7 +221,7 @@ export default function DashboardPage() {
             <div className="grid gap-2">
               <CardTitle>Sales Performance</CardTitle>
               <CardDescription>
-                {timeRange === 'last12months' ? 'Showing data for the last 12 months' : 'Showing data for the last 30 days'}
+                {timeRangeDescriptions[timeRange]}
               </CardDescription>
             </div>
             <Select value={timeRange} onValueChange={setTimeRange}>
@@ -202,6 +230,7 @@ export default function DashboardPage() {
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="last30days">Last 30 Days</SelectItem>
+                    <SelectItem value="last6months">Last 6 Months</SelectItem>
                     <SelectItem value="last12months">Last 12 Months</SelectItem>
                 </SelectContent>
             </Select>
