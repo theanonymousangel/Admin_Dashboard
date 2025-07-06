@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Link from "next/link";
 import {
   MoreHorizontal,
   File,
@@ -47,7 +48,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { mockOrders } from "@/lib/mock-data";
+import { mockOrders, mockCustomers } from "@/lib/mock-data";
 import type { Order } from "@/lib/types";
 
 function OrderStatusBadge({ status }: { status: Order["status"] }) {
@@ -61,7 +62,16 @@ function OrderStatusBadge({ status }: { status: Order["status"] }) {
   return <Badge variant={variantMapping[status]}>{status}</Badge>;
 }
 
-const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusChange: (orderId: string, newStatus: Order['status']) => void; }) => (
+const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusChange: (orderId: string, newStatus: Order['status']) => void; }) => {
+    const customerIdMap = useMemo(() => {
+        const map = new Map<string, string>();
+        mockCustomers.forEach(customer => {
+            map.set(customer.email, customer.id);
+        });
+        return map;
+    }, []);
+
+    return (
     <Card>
       <CardHeader>
         <CardTitle className="font-headline">Transactions</CardTitle>
@@ -88,55 +98,66 @@ const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusCh
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
-                <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
-                <TableCell>{order.customerName}</TableCell>
-                <TableCell className="hidden md:table-cell">{order.affiliateUsername || ""}</TableCell>
-                <TableCell className="hidden lg:table-cell">{order.customerPhone || 'N/A'}</TableCell>
-                <TableCell className="hidden lg:table-cell">{order.customerAddress}</TableCell>
-                <TableCell className="hidden xl:table-cell max-w-[300px] truncate" title={order.products.map(p => {
-                      const details = [p.size, p.color].filter(Boolean).join(', ');
-                      return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
-                  }).join('; ')}>
-                    {order.products.map(p => {
+            {orders.map((order) => {
+              const customerId = customerIdMap.get(order.customerEmail);
+              return (
+                <TableRow key={order.id}>
+                  <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+                  <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
+                  <TableCell>
+                    {customerId ? (
+                        <Link href={`/customers/${customerId}`} className="hover:underline">
+                            {order.customerName}
+                        </Link>
+                    ) : (
+                        order.customerName
+                    )}
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">{order.affiliateUsername || ""}</TableCell>
+                  <TableCell className="hidden lg:table-cell">{order.customerPhone || 'N/A'}</TableCell>
+                  <TableCell className="hidden lg:table-cell">{order.customerAddress}</TableCell>
+                  <TableCell className="hidden xl:table-cell max-w-[300px] truncate" title={order.products.map(p => {
                         const details = [p.size, p.color].filter(Boolean).join(', ');
                         return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
-                    }).join('; ')}
-                </TableCell>
-                <TableCell>${order.amount.toFixed(2)}</TableCell>
-                <TableCell>
-                   <Select onValueChange={(value) => onStatusChange(order.id, value as Order['status'])} defaultValue={order.status}>
-                        <SelectTrigger className="w-[120px] h-8">
-                            <SelectValue placeholder="Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Pending">Pending</SelectItem>
-                            <SelectItem value="Shipped">Shipped</SelectItem>
-                            <SelectItem value="Completed">Completed</SelectItem>
-                            <SelectItem value="Refunded">Refunded</SelectItem>
-                            <SelectItem value="Cancelled">Cancelled</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button aria-haspopup="true" size="icon" variant="ghost">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Toggle menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>View Details</DropdownMenuItem>
-                      <DropdownMenuItem>Customer History</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
+                    }).join('; ')}>
+                      {order.products.map(p => {
+                          const details = [p.size, p.color].filter(Boolean).join(', ');
+                          return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
+                      }).join('; ')}
+                  </TableCell>
+                  <TableCell>${order.amount.toFixed(2)}</TableCell>
+                  <TableCell>
+                    <Select onValueChange={(value) => onStatusChange(order.id, value as Order['status'])} defaultValue={order.status}>
+                          <SelectTrigger className="w-[120px] h-8">
+                              <SelectValue placeholder="Status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                              <SelectItem value="Pending">Pending</SelectItem>
+                              <SelectItem value="Shipped">Shipped</SelectItem>
+                              <SelectItem value="Completed">Completed</SelectItem>
+                              <SelectItem value="Refunded">Refunded</SelectItem>
+                              <SelectItem value="Cancelled">Cancelled</SelectItem>
+                          </SelectContent>
+                      </Select>
+                  </TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button aria-haspopup="true" size="icon" variant="ghost">
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Toggle menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem>View Details</DropdownMenuItem>
+                        <DropdownMenuItem>Customer History</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </CardContent>
@@ -146,7 +167,8 @@ const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusCh
           </div>
         </CardFooter>
     </Card>
-);
+    );
+};
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>(mockOrders);
