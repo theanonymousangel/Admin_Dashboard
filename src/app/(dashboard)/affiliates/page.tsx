@@ -80,6 +80,7 @@ import {
 
 const CommissionRateEditor = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpdate: (id: string, data: Partial<Affiliate>) => void; }) => {
     const [rate, setRate] = useState<string>(affiliate.commissionRate.toString());
+    const isDisabled = affiliate.status === 'Disabled';
 
     useEffect(() => {
         setRate(affiliate.commissionRate.toString());
@@ -96,9 +97,10 @@ const CommissionRateEditor = ({ affiliate, onUpdate }: { affiliate: Affiliate; o
                 value={rate}
                 onChange={(e) => setRate(e.target.value)}
                 className="w-16 h-8"
+                disabled={isDisabled}
             />
             <span>%</span>
-            {Number(rate) !== affiliate.commissionRate && (
+            {Number(rate) !== affiliate.commissionRate && !isDisabled && (
                 <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={handleSave}>
                     <Save className="h-4 w-4" />
                     <span className="sr-only">Save</span>
@@ -113,6 +115,7 @@ const AffiliateStatusEditor = ({ affiliate, onUpdate }: { affiliate: Affiliate; 
         <Select
             value={affiliate.status}
             onValueChange={(newStatus) => onUpdate(affiliate.id, { status: newStatus as Affiliate['status'] })}
+            disabled={affiliate.status === 'Disabled'}
         >
             <SelectTrigger className="w-[130px] h-8">
                 <SelectValue placeholder="Set Status" />
@@ -282,7 +285,10 @@ export default function AffiliatesPage() {
             </TableHeader>
             <TableBody>
               {affiliates.map((affiliate) => (
-                  <TableRow key={affiliate.id}>
+                  <TableRow
+                    key={affiliate.id}
+                    className={affiliate.status === 'Disabled' ? 'opacity-60' : ''}
+                  >
                     <TableCell>
                       <Link
                         href={`/affiliates/${affiliate.id}`}
@@ -479,5 +485,3 @@ export default function AffiliatesPage() {
     </>
   );
 }
-
-    
