@@ -900,13 +900,16 @@ const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpd
         <Tabs defaultValue="account" className="w-full">
             <TabsList className="px-6 border-b w-full justify-start rounded-none bg-background">
                 <TabsTrigger value="account">Account Overview</TabsTrigger>
+                <TabsTrigger value="documents">Documents</TabsTrigger>
                 <TabsTrigger value="promotions">Promotions</TabsTrigger>
                 <TabsTrigger value="transactions">Transactions</TabsTrigger>
                 <TabsTrigger value="payouts">Payout Overview</TabsTrigger>
-                <TabsTrigger value="documents">Documents</TabsTrigger>
             </TabsList>
             <TabsContent value="account" className="m-0">
                 <AccountView affiliate={affiliate} onUpdate={onUpdate} />
+            </TabsContent>
+            <TabsContent value="documents" className="m-0">
+                <DocumentsView affiliate={affiliate} onUpdate={onUpdate} />
             </TabsContent>
             <TabsContent value="promotions" className="m-0">
                 <PromotionsView affiliate={affiliate} onUpdate={onUpdate} />
@@ -916,9 +919,6 @@ const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpd
             </TabsContent>
             <TabsContent value="payouts" className="m-0">
                 <PayoutsView affiliate={affiliate} onUpdate={onUpdate} />
-            </TabsContent>
-            <TabsContent value="documents" className="m-0">
-                <DocumentsView affiliate={affiliate} onUpdate={onUpdate} />
             </TabsContent>
         </Tabs>
     );
@@ -999,5 +999,7 @@ export default function AffiliateDetailPage() {
         </div>
     );
 }
+
+    
 
     
