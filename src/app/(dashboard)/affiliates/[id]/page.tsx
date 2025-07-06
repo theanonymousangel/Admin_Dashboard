@@ -696,17 +696,28 @@ const DocumentsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            const newFiles = Array.from(e.target.files).map(file => ({
-                id: `doc-${Date.now()}-${Math.random()}`,
-                name: file.name,
-                url: '#', // Placeholder URL
-                uploadedAt: new Date().toISOString(),
-                uploadedBy: 'admin' as const,
-                status: 'Approved' as const,
-            }));
-            const updatedDocuments = [...documents, ...newFiles];
-            setDocuments(updatedDocuments);
-            onUpdate(affiliate.id, { documents: updatedDocuments });
+             const newFilePromises = Array.from(e.target.files).map(file => {
+                return new Promise<AffiliateDocument>((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        resolve({
+                            id: `doc-${Date.now()}-${Math.random()}`,
+                            name: file.name,
+                            url: event.target?.result as string ?? '#',
+                            uploadedAt: new Date().toISOString(),
+                            uploadedBy: 'admin' as const,
+                            status: 'Approved' as const,
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+            
+            Promise.all(newFilePromises).then(newFiles => {
+                const updatedDocuments = [...documents, ...newFiles];
+                setDocuments(updatedDocuments);
+                onUpdate(affiliate.id, { documents: updatedDocuments });
+            });
         }
     };
 
@@ -780,9 +791,11 @@ const DocumentsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate
                                                           <DropdownMenuSeparator />
                                                         </>
                                                     )}
-                                                    <DropdownMenuItem>
-                                                        <Download className="mr-2 h-4 w-4"/>
-                                                        <span>Download</span>
+                                                    <DropdownMenuItem asChild>
+                                                        <a href={doc.url} download={doc.name}>
+                                                            <Download className="mr-2 h-4 w-4"/>
+                                                            <span>Download</span>
+                                                        </a>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
                                                         className="text-destructive focus:text-destructive"
