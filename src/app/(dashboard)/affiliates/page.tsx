@@ -7,6 +7,7 @@ import {
   PlusCircle,
   Download,
   File,
+  Save,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -36,20 +37,65 @@ import {
   SheetFooter,
   SheetClose,
 } from "@/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { mockAffiliates } from "@/lib/mock-data";
 import type { Affiliate } from "@/lib/types";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 
-const AffiliateStatusBadge = ({ status }: { status: Affiliate['status'] }) => {
-  const styles: Record<Affiliate['status'], string> = {
-    'Active': 'bg-green-100 text-green-800',
-    'Pending': 'bg-yellow-100 text-yellow-800',
-    'Rejected': 'bg-red-100 text-red-800',
-    'Disabled': 'bg-zinc-200 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-200',
-  };
-  return <Badge className={`border-none ${styles[status]}`}>{status}</Badge>;
+const CommissionRateEditor = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpdate: (id: string, data: Partial<Affiliate>) => void; }) => {
+    const [rate, setRate] = useState<string>(affiliate.commissionRate.toString());
+
+    useEffect(() => {
+        setRate(affiliate.commissionRate.toString());
+    }, [affiliate.commissionRate]);
+
+    const handleSave = () => {
+        onUpdate(affiliate.id, { commissionRate: Number(rate) });
+    };
+
+    return (
+        <div className="flex items-center gap-2 w-[150px]">
+            <Input
+                type="number"
+                value={rate}
+                onChange={(e) => setRate(e.target.value)}
+                className="w-16 h-8"
+            />
+            <span>%</span>
+            {Number(rate) !== affiliate.commissionRate && (
+                <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={handleSave}>
+                    <Save className="h-4 w-4" />
+                    <span className="sr-only">Save</span>
+                </Button>
+            )}
+        </div>
+    );
+};
+
+const AffiliateStatusEditor = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpdate: (id: string, data: Partial<Affiliate>) => void; }) => {
+    return (
+        <Select
+            value={affiliate.status}
+            onValueChange={(newStatus) => onUpdate(affiliate.id, { status: newStatus as Affiliate['status'] })}
+        >
+            <SelectTrigger className="w-[130px] h-8">
+                <SelectValue placeholder="Set Status" />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="Active">Active</SelectItem>
+                <SelectItem value="Pending">Pending</SelectItem>
+                <SelectItem value="Rejected">Rejected</SelectItem>
+                <SelectItem value="Disabled">Disabled</SelectItem>
+            </SelectContent>
+        </Select>
+    );
 };
 
 export default function AffiliatesPage() {
@@ -85,6 +131,18 @@ export default function AffiliatesPage() {
       const updated = updater(prev);
       localStorage.setItem("affiliatesData", JSON.stringify(updated));
       return updated;
+    });
+  };
+
+  const handleAffiliateUpdate = (affiliateId: string, data: Partial<Affiliate>) => {
+    saveAffiliates(prev => 
+      prev.map(aff => 
+        aff.id === affiliateId ? { ...aff, ...data } : aff
+      )
+    );
+    toast({
+        title: "Affiliate Updated",
+        description: "The affiliate's details have been saved.",
     });
   };
 
@@ -197,10 +255,12 @@ export default function AffiliatesPage() {
                     <TableCell>
                       ${affiliate.totalSales.toLocaleString()}
                     </TableCell>
-                    <TableCell>{affiliate.commissionRate}%</TableCell>
+                    <TableCell>
+                      <CommissionRateEditor affiliate={affiliate} onUpdate={handleAffiliateUpdate} />
+                    </TableCell>
                     <TableCell>${affiliate.balance.toFixed(2)}</TableCell>
                     <TableCell>
-                      <AffiliateStatusBadge status={affiliate.status} />
+                      <AffiliateStatusEditor affiliate={affiliate} onUpdate={handleAffiliateUpdate} />
                     </TableCell>
                     <TableCell>{affiliate.sales.length}</TableCell>
                     <TableCell>
