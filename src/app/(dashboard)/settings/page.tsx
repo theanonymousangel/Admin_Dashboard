@@ -123,47 +123,95 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle>Legal Policies</CardTitle>
               <CardDescription>
-                Manage your store's legal policies. The content you enter here will be displayed on your sales website.
+                Manage your store's legal policies and where they are displayed on your sales website.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="terms-of-service">Terms of Service</Label>
-                <Textarea id="terms-of-service" placeholder="Enter your terms of service..." rows={8} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="privacy-policy">Privacy Policy</Label>
-                <Textarea id="privacy-policy" placeholder="Enter your privacy policy..." rows={8} />
-              </div>
-               <div className="space-y-2">
-                <Label htmlFor="refund-policy">Refund Policy</Label>
-                <Textarea id="refund-policy" placeholder="Enter your refund policy..." rows={8} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="affiliate-agreement">Affiliate Agreement</Label>
-                <Textarea id="affiliate-agreement" placeholder="Enter your affiliate agreement..." rows={8} />
-              </div>
-              <div className="space-y-2">
-                <Label>Policy Visibility</Label>
-                <p className="text-sm text-muted-foreground">
-                  Select where to display links to these policies on your sales website.
-                </p>
-                <div className="space-y-2 rounded-lg border p-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="visibility-main" />
-                    <Label htmlFor="visibility-main" className="font-normal">Main Sales Page (Footer)</Label>
+              {/* Terms of Service */}
+              <div className="space-y-4 rounded-lg border p-4">
+                <div className="space-y-2">
+                  <Label htmlFor="terms-of-service" className="text-base font-semibold">Terms of Service</Label>
+                  <Textarea id="terms-of-service" placeholder="Enter your terms of service..." rows={6} />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Visibility</Label>
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-1">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="terms-visibility-main" />
+                      <Label htmlFor="terms-visibility-main" className="font-normal text-sm">Main Page (Footer)</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="terms-visibility-product" />
+                      <Label htmlFor="terms-visibility-product" className="font-normal text-sm">Product Pages</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="terms-visibility-checkout" />
+                      <Label htmlFor="terms-visibility-checkout" className="font-normal text-sm">Checkout Page</Label>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="visibility-product" />
-                    <Label htmlFor="visibility-product" className="font-normal">Product Pages</Label>
+                </div>
+              </div>
+              {/* Privacy Policy */}
+              <div className="space-y-4 rounded-lg border p-4">
+                <div className="space-y-2">
+                  <Label htmlFor="privacy-policy" className="text-base font-semibold">Privacy Policy</Label>
+                  <Textarea id="privacy-policy" placeholder="Enter your privacy policy..." rows={6} />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Visibility</Label>
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-1">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="privacy-visibility-main" />
+                      <Label htmlFor="privacy-visibility-main" className="font-normal text-sm">Main Page (Footer)</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="privacy-visibility-product" />
+                      <Label htmlFor="privacy-visibility-product" className="font-normal text-sm">Product Pages</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="privacy-visibility-checkout" />
+                      <Label htmlFor="privacy-visibility-checkout" className="font-normal text-sm">Checkout Page</Label>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="visibility-checkout" />
-                    <Label htmlFor="visibility-checkout" className="font-normal">Checkout Page</Label>
+                </div>
+              </div>
+              {/* Refund Policy */}
+              <div className="space-y-4 rounded-lg border p-4">
+                <div className="space-y-2">
+                  <Label htmlFor="refund-policy" className="text-base font-semibold">Refund Policy</Label>
+                  <Textarea id="refund-policy" placeholder="Enter your refund policy..." rows={6} />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Visibility</Label>
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-1">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="refund-visibility-main" />
+                      <Label htmlFor="refund-visibility-main" className="font-normal text-sm">Main Page (Footer)</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="refund-visibility-product" />
+                      <Label htmlFor="refund-visibility-product" className="font-normal text-sm">Product Pages</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="refund-visibility-checkout" />
+                      <Label htmlFor="refund-visibility-checkout" className="font-normal text-sm">Checkout Page</Label>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="visibility-affiliate" />
-                    <Label htmlFor="visibility-affiliate" className="font-normal">Affiliate Application Page</Label>
+                </div>
+              </div>
+              {/* Affiliate Agreement */}
+              <div className="space-y-4 rounded-lg border p-4">
+                <div className="space-y-2">
+                  <Label htmlFor="affiliate-agreement" className="text-base font-semibold">Affiliate Agreement</Label>
+                  <Textarea id="affiliate-agreement" placeholder="Enter your affiliate agreement..." rows={6} />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Visibility</Label>
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-1">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="affiliate-visibility-page" />
+                      <Label htmlFor="affiliate-visibility-page" className="font-normal text-sm">Affiliate Application Page</Label>
+                    </div>
                   </div>
                 </div>
               </div>
