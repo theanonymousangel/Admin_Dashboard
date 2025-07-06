@@ -211,9 +211,9 @@ const DeliveriesView = ({ orders, onStatusChange, searchTerm, setSearchTerm }: {
                 <Table>
                     <TableHeader>
                         <TableRow>
+                            <TableHead>Date</TableHead>
                             <TableHead>Order ID</TableHead>
                             <TableHead>Customer</TableHead>
-                            <TableHead>Date</TableHead>
                             <TableHead className="hidden sm:table-cell">Products</TableHead>
                             <TableHead className="hidden md:table-cell">Affiliate</TableHead>
                             <TableHead className="hidden lg:table-cell">Phone Number</TableHead>
@@ -225,9 +225,9 @@ const DeliveriesView = ({ orders, onStatusChange, searchTerm, setSearchTerm }: {
                     <TableBody>
                         {orders.map((order) => (
                             <TableRow key={order.id}>
+                                <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
                                 <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
                                 <TableCell>{order.customerName}</TableCell>
-                                <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
                                 <TableCell className="hidden sm:table-cell max-w-[200px] truncate" title={order.products.map(p => {
                                         const details = [p.size, p.color].filter(Boolean).join(', ');
                                         return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
