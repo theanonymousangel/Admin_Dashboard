@@ -23,6 +23,7 @@ import {
   Save,
   CheckCircle2,
   XCircle,
+  Pencil,
 } from "lucide-react";
 import { addDays, format, isAfter, isBefore, setDate, addMonths } from "date-fns";
 
@@ -53,9 +54,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
@@ -749,17 +753,31 @@ const DocumentsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
-                                                    {doc.uploadedBy === 'affiliate' && doc.status === 'Pending' && !isDisabled && (
+                                                    {doc.uploadedBy === 'affiliate' && !isDisabled && (
                                                         <>
-                                                            <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Approved')}>
-                                                                <CheckCircle2 className="mr-2 h-4 w-4 text-green-600"/>
-                                                                <span>Approve</span>
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Rejected')}>
-                                                                <XCircle className="mr-2 h-4 w-4 text-red-600"/>
-                                                                <span>Reject</span>
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuSeparator />
+                                                          <DropdownMenuSub>
+                                                              <DropdownMenuSubTrigger>
+                                                                  <Pencil className="mr-2 h-4 w-4" />
+                                                                  <span>Change Status</span>
+                                                              </DropdownMenuSubTrigger>
+                                                              <DropdownMenuPortal>
+                                                                  <DropdownMenuSubContent>
+                                                                      <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Approved')}>
+                                                                          <CheckCircle2 className="mr-2 h-4 w-4 text-green-600"/>
+                                                                          <span>Approved</span>
+                                                                      </DropdownMenuItem>
+                                                                      <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Pending')}>
+                                                                          <Info className="mr-2 h-4 w-4 text-yellow-600"/>
+                                                                          <span>Pending</span>
+                                                                      </DropdownMenuItem>
+                                                                      <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Rejected')}>
+                                                                          <XCircle className="mr-2 h-4 w-4 text-red-600"/>
+                                                                          <span>Rejected</span>
+                                                                      </DropdownMenuItem>
+                                                                  </DropdownMenuSubContent>
+                                                              </DropdownMenuPortal>
+                                                          </DropdownMenuSub>
+                                                          <DropdownMenuSeparator />
                                                         </>
                                                     )}
                                                     <DropdownMenuItem>
