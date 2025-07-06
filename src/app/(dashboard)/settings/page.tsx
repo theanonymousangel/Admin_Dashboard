@@ -18,16 +18,18 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function SettingsPage() {
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-2">
       <h1 className="text-3xl font-semibold font-headline">Settings</h1>
       <Tabs defaultValue="store">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="store">Store</TabsTrigger>
           <TabsTrigger value="account">Account</TabsTrigger>
           <TabsTrigger value="system">System</TabsTrigger>
+          <TabsTrigger value="policies">Policies</TabsTrigger>
         </TabsList>
         <TabsContent value="store">
           <Card>
@@ -112,6 +114,33 @@ export default function SettingsPage() {
             </CardContent>
             <CardFooter>
               <Button>Save System Settings</Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+        <TabsContent value="policies">
+          <Card>
+            <CardHeader>
+              <CardTitle>Legal Policies</CardTitle>
+              <CardDescription>
+                Manage your store's legal policies. The content you enter here will be displayed on your sales website.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="terms-of-service">Terms of Service</Label>
+                <Textarea id="terms-of-service" placeholder="Enter your terms of service..." rows={8} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="privacy-policy">Privacy Policy</Label>
+                <Textarea id="privacy-policy" placeholder="Enter your privacy policy..." rows={8} />
+              </div>
+               <div className="space-y-2">
+                <Label htmlFor="refund-policy">Refund Policy</Label>
+                <Textarea id="refund-policy" placeholder="Enter your refund policy..." rows={8} />
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button>Save Policies</Button>
             </CardFooter>
           </Card>
         </TabsContent>
