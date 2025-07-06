@@ -614,6 +614,7 @@ const TransactionsView = ({ affiliate }: { affiliate: Affiliate }) => {
 
 const PromotionsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
     const products = mockProducts; 
+    const isDisabled = affiliate.status === 'Disabled';
 
     const handleProductToggle = (productId: string) => {
         const currentPromotableIds = affiliate.promotableProductIds || [];
@@ -662,7 +663,7 @@ const PromotionsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdat
                                     id={`product-${product.id}`}
                                     checked={(affiliate.promotableProductIds || []).includes(product.id)}
                                     onCheckedChange={() => handleProductToggle(product.id)}
-                                    disabled={affiliate.status === 'Disabled'}
+                                    disabled={isDisabled}
                                 />
                             </div>
                         ))}

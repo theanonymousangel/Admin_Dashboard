@@ -9,9 +9,10 @@ import {
   File,
   Save,
   Info,
+  Trash2,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -55,6 +56,17 @@ import { useToast } from "@/hooks/use-toast";
 import { mockAffiliates } from "@/lib/mock-data";
 import type { Affiliate } from "@/lib/types";
 import { Label } from "@/components/ui/label";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const CommissionRateEditor = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpdate: (id: string, data: Partial<Affiliate>) => void; }) => {
     const [rate, setRate] = useState<string>(affiliate.commissionRate.toString());
@@ -152,6 +164,14 @@ export default function AffiliatesPage() {
         description: "The affiliate's details have been saved.",
     });
   };
+  
+  const handleDeleteAffiliate = (affiliateId: string) => {
+    saveAffiliates(prev => prev.filter(aff => aff.id !== affiliateId));
+    toast({
+        title: "Affiliate Deleted",
+        description: "The selected affiliate has been permanently removed.",
+    });
+  };
 
   const handleNewAffiliateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -247,6 +267,7 @@ export default function AffiliatesPage() {
                 <TableHead>Status</TableHead>
                 <TableHead>Total Sales</TableHead>
                 <TableHead>Total Clicks</TableHead>
+                <TableHead><span className="sr-only">Actions</span></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -299,6 +320,33 @@ export default function AffiliatesPage() {
                           </TooltipProvider>
                         )}
                       </div>
+                    </TableCell>
+                    <TableCell>
+                      <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                                  <Trash2 className="h-4 w-4" />
+                                  <span className="sr-only">Delete Affiliate</span>
+                              </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                              <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                      This will permanently delete the affiliate {affiliate.firstName} {affiliate.lastName}. This action cannot be undone.
+                                  </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                      className={buttonVariants({ variant: "destructive" })}
+                                      onClick={() => handleDeleteAffiliate(affiliate.id)}
+                                  >
+                                      Delete
+                                  </AlertDialogAction>
+                              </AlertDialogFooter>
+                          </AlertDialogContent>
+                      </AlertDialog>
                     </TableCell>
                   </TableRow>
                 )
