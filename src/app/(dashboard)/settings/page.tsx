@@ -140,6 +140,10 @@ export default function SettingsPage() {
                 <Textarea id="refund-policy" placeholder="Enter your refund policy..." rows={8} />
               </div>
               <div className="space-y-2">
+                <Label htmlFor="affiliate-agreement">Affiliate Agreement</Label>
+                <Textarea id="affiliate-agreement" placeholder="Enter your affiliate agreement..." rows={8} />
+              </div>
+              <div className="space-y-2">
                 <Label>Policy Visibility</Label>
                 <p className="text-sm text-muted-foreground">
                   Select where to display links to these policies on your sales website.
@@ -156,6 +160,10 @@ export default function SettingsPage() {
                   <div className="flex items-center space-x-2">
                     <Checkbox id="visibility-checkout" />
                     <Label htmlFor="visibility-checkout" className="font-normal">Checkout Page</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="visibility-affiliate" />
+                    <Label htmlFor="visibility-affiliate" className="font-normal">Affiliate Application Page</Label>
                   </div>
                 </div>
               </div>
