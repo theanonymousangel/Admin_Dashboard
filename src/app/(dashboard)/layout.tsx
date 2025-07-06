@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -116,11 +115,11 @@ export default function DashboardLayout({
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="w-full justify-start gap-3 p-2 h-auto">
                          <Avatar className="h-9 w-9">
-                            <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="woman avatar" alt="Viktor Jakjimovikj" />
-                            <AvatarFallback>VJ</AvatarFallback>
+                            <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="woman avatar" alt="Viktor Stojanovski" />
+                            <AvatarFallback>VS</AvatarFallback>
                         </Avatar>
                         <div className="text-left">
-                            <p className="text-sm font-medium leading-none">Viktor Jakjimovikj</p>
+                            <p className="text-sm font-medium leading-none">Viktor Stojanovski</p>
                         </div>
                         <ChevronDown className="ml-auto h-4 w-4 text-muted-foreground" />
                     </Button>
@@ -147,8 +146,8 @@ export default function DashboardLayout({
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full">
                     <Avatar className="h-9 w-9">
-                      <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="woman avatar" alt="@admin" />
-                      <AvatarFallback>VJ</AvatarFallback>
+                      <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="woman avatar" alt="Viktor Stojanovski" />
+                      <AvatarFallback>VS</AvatarFallback>
                     </Avatar>
                     <span className="sr-only">Toggle user menu</span>
                   </Button>
