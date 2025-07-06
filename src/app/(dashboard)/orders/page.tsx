@@ -40,7 +40,7 @@ import { mockOrders, mockCustomers, mockAffiliates } from "@/lib/mock-data";
 import type { Order, Affiliate } from "@/lib/types";
 
 
-const TransactionsView = ({ orders }: { orders: Order[] }) => {
+const TransactionsView = ({ orders, searchTerm, setSearchTerm }: { orders: Order[], searchTerm: string, setSearchTerm: (term: string) => void }) => {
     const customerIdMap = useMemo(() => {
         const map = new Map<string, string>();
         mockCustomers.forEach(customer => {
@@ -59,11 +59,31 @@ const TransactionsView = ({ orders }: { orders: Order[] }) => {
 
     return (
     <Card>
-      <CardHeader>
-        <CardTitle className="font-headline">Transactions</CardTitle>
-        <CardDescription>
-          A list of all recent transactions from your store.
-        </CardDescription>
+      <CardHeader className="flex flex-row items-start justify-between">
+        <div>
+            <CardTitle className="font-headline">Transactions</CardTitle>
+            <CardDescription>
+              A list of all recent transactions from your store.
+            </CardDescription>
+        </div>
+        <div className="flex items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search orders..."
+                className="h-8 w-[150px] pl-8 lg:w-[250px]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <Button size="sm" variant="outline" className="h-8 gap-1">
+              <File className="h-3.5 w-3.5" />
+              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                Export
+              </span>
+            </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
@@ -160,12 +180,32 @@ const StatusBadge = ({ status }: { status: Order["status"] }) => {
 };
 
 
-const DeliveriesView = ({ orders, onStatusChange }: { orders: Order[]; onStatusChange: (orderId: string, newStatus: Order['status']) => void; }) => {
+const DeliveriesView = ({ orders, onStatusChange, searchTerm, setSearchTerm }: { orders: Order[]; onStatusChange: (orderId: string, newStatus: Order['status']) => void; searchTerm: string, setSearchTerm: (term: string) => void }) => {
     return (
         <Card>
-            <CardHeader>
-                <CardTitle>Manage Deliveries</CardTitle>
-                <CardDescription>Update the status of customer orders.</CardDescription>
+            <CardHeader className="flex flex-row items-start justify-between">
+                <div>
+                    <CardTitle>Manage Deliveries</CardTitle>
+                    <CardDescription>Update the status of customer orders.</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="relative">
+                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        type="search"
+                        placeholder="Search orders..."
+                        className="h-8 w-[150px] pl-8 lg:w-[250px]"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                    <Button size="sm" variant="outline" className="h-8 gap-1">
+                      <File className="h-3.5 w-3.5" />
+                      <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                        Export
+                      </span>
+                    </Button>
+                </div>
             </CardHeader>
             <CardContent>
                 <Table>
@@ -287,30 +327,12 @@ export default function OrdersPage() {
             <TabsTrigger value="transactions">Transactions</TabsTrigger>
             <TabsTrigger value="deliveries">Deliveries</TabsTrigger>
         </TabsList>
-        <div className="ml-auto flex items-center gap-2">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search orders..."
-                className="h-8 w-[150px] pl-8 lg:w-[250px]"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <Button size="sm" variant="outline" className="h-8 gap-1">
-              <File className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Export
-              </span>
-            </Button>
-        </div>
       </div>
       <TabsContent value="transactions">
-        <TransactionsView orders={filteredOrders} />
+        <TransactionsView orders={filteredOrders} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </TabsContent>
       <TabsContent value="deliveries">
-        <DeliveriesView orders={filteredOrders} onStatusChange={handleStatusChange} />
+        <DeliveriesView orders={filteredOrders} onStatusChange={handleStatusChange} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </TabsContent>
     </Tabs>
   );
