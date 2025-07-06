@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Aerøne Admin",
+  title: "Vendor Admin",
   description: "Admin Dashboard for your e-commerce store.",
 };
 
