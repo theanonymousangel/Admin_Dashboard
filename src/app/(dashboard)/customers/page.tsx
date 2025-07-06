@@ -2,12 +2,12 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import {
   File,
   Search
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,83 +26,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { mockCustomers, mockOrders } from "@/lib/mock-data";
-import type { Customer, Order } from "@/lib/types";
-
-function OrderStatusBadge({ status }: { status: Order["status"] }) {
-    const variantMapping: Record<Order['status'], 'default' | 'secondary' | 'outline' | 'destructive'> = {
-        Pending: 'secondary',
-        Completed: 'default',
-        Shipped: 'outline',
-        Refunded: 'destructive',
-        Cancelled: 'destructive'
-    };
-  return <Badge variant={variantMapping[status]}>{status}</Badge>;
-}
-
-const CustomerDetails = ({ customer, orders }: { customer: Customer, orders: Order[] }) => {
-  const customerOrders = useMemo(() => {
-    return orders.filter(order => order.customerEmail === customer.email)
-                 .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [customer.email, orders]);
-
-  return (
-    <div className="p-6 bg-muted/50">
-      <h3 className="text-lg font-semibold mb-4">Transaction History for {customer.name}</h3>
-      {customerOrders.length > 0 ? (
-        <Card>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Transaction ID</TableHead>
-                  <TableHead>Products</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Affiliate</TableHead>
-                  <TableHead>Contact & Shipping</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {customerOrders.map(order => (
-                  <TableRow key={order.id}>
-                    <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
-                    <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
-                    <TableCell className="max-w-[200px] truncate">
-                      {order.products.map(p => {
-                          const details = [p.size, p.color].filter(Boolean).join(', ');
-                          return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
-                      }).join('; ')}
-                    </TableCell>
-                    <TableCell>${order.amount.toFixed(2)}</TableCell>
-                    <TableCell><OrderStatusBadge status={order.status}/></TableCell>
-                    <TableCell>{order.affiliateUsername || ""}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
-                      <div>{order.customerPhone}</div>
-                      <div>{order.customerAddress}</div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="text-center text-muted-foreground py-8">
-          This customer has no transaction history.
-        </div>
-      )}
-    </div>
-  );
-};
-
+import { mockCustomers } from "@/lib/mock-data";
+import type { Customer } from "@/lib/types";
 
 export default function CustomersPage() {
   const [customers] = useState<Customer[]>(mockCustomers);
-  const [orders] = useState<Order[]>(mockOrders);
   const [searchTerm, setSearchTerm] = useState("");
-  const [openCustomerId, setOpenCustomerId] = useState<string | null>(null);
+  const router = useRouter();
 
   const filteredCustomers = useMemo(() => {
     if (!searchTerm) {
@@ -153,8 +83,8 @@ export default function CustomersPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Customer</TableHead>
-              <TableHead className="hidden md:table-cell">Contact</TableHead>
-              <TableHead className="hidden lg:table-cell">Address</TableHead>
+              <TableHead>Contact</TableHead>
+              <TableHead>Address</TableHead>
               <TableHead>Total Orders</TableHead>
               <TableHead>Total Spent</TableHead>
               <TableHead>Last Purchase</TableHead>
@@ -162,31 +92,23 @@ export default function CustomersPage() {
           </TableHeader>
           <TableBody>
             {filteredCustomers.map((customer) => (
-              <React.Fragment key={customer.id}>
-                <TableRow 
-                  className="cursor-pointer"
-                  onClick={() => setOpenCustomerId(openCustomerId === customer.id ? null : customer.id)}
-                >
-                  <TableCell>
-                    <div className="font-medium">{customer.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {customer.email}
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">{customer.phone || 'N/A'}</TableCell>
-                  <TableCell className="hidden lg:table-cell">{customer.address || 'N/A'}</TableCell>
-                  <TableCell>{customer.totalOrders}</TableCell>
-                  <TableCell>${customer.totalSpent.toFixed(2)}</TableCell>
-                  <TableCell>{new Date(customer.lastPurchaseDate).toLocaleDateString()}</TableCell>
-                </TableRow>
-                {openCustomerId === customer.id && (
-                  <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    <TableCell colSpan={6} className="p-0">
-                      <CustomerDetails customer={customer} orders={orders} />
-                    </TableCell>
-                  </TableRow>
-                )}
-              </React.Fragment>
+              <TableRow 
+                key={customer.id}
+                className="cursor-pointer"
+                onClick={() => router.push(`/customers/${customer.id}`)}
+              >
+                <TableCell>
+                  <div className="font-medium">{customer.name}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {customer.email}
+                  </div>
+                </TableCell>
+                <TableCell>{customer.phone || 'N/A'}</TableCell>
+                <TableCell>{customer.address || 'N/A'}</TableCell>
+                <TableCell>{customer.totalOrders}</TableCell>
+                <TableCell>${customer.totalSpent.toFixed(2)}</TableCell>
+                <TableCell>{new Date(customer.lastPurchaseDate).toLocaleDateString()}</TableCell>
+              </TableRow>
             ))}
           </TableBody>
         </Table>
