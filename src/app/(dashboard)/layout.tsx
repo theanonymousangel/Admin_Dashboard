@@ -67,7 +67,7 @@ const MobileNav = ({ pathname }: { pathname: string }) => (
         href="/"
         className="flex items-center gap-2 text-lg font-semibold mb-4 pl-3"
       >
-        <span className="font-headline text-lg tracking-wider">vendor</span>
+        <span className="font-headline text-lg tracking-wider">VENDOR</span>
       </Link>
       <nav className="grid gap-4 text-base font-medium">
          <div className="flex flex-col gap-1">
@@ -94,7 +94,7 @@ export default function DashboardLayout({
         <div className="flex h-full max-h-screen flex-col">
           <div className="flex h-16 items-center border-b px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <span className="font-headline text-lg tracking-wider">vendor</span>
+              <span className="font-headline text-lg tracking-wider">VENDOR</span>
             </Link>
             <div className="ml-auto">
               <ThemeToggle />
@@ -168,7 +168,7 @@ export default function DashboardLayout({
           {children}
         </main>
         <footer className="p-4 text-center text-xs text-muted-foreground md:p-8">
-            © 2025 – vendor – All rights reserved.
+            © 2025 – VENDOR – All rights reserved.
         </footer>
       </div>
     </div>
