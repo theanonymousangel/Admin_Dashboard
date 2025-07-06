@@ -73,7 +73,6 @@ export type PayoutDetails = {
   accountHolder: string;
   accountNumber: string;
   routingNumber: string;
-  paypalEmail: string;
 };
 
 export type ProductClicks = {

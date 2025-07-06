@@ -47,7 +47,7 @@ export const mockAffiliates: Affiliate[] = [
   { id: 'aff-01', username: 'fashion_blog', firstName: 'Jane', lastName: 'Doe', email: 'contact@fashionistablog.com', totalSales: 12500, commissionRate: 10, balance: 1250, status: 'Active', sales: salesForAffiliate1, totalClicks: 1523, documents: [
       { id: 'doc-1', name: 'Affiliate Agreement.pdf', url: '#', uploadedAt: '2024-07-01' },
       { id: 'doc-2', name: 'Tax Form W9.pdf', url: '#', uploadedAt: '2024-07-01' },
-  ], payoutDetails: { paypalEmail: 'contact@fashionistablog.com' }, promotableProductIds: ['prod-001', 'prod-002'], productClicks: [
+  ], payoutDetails: {}, promotableProductIds: ['prod-001', 'prod-002'], productClicks: [
       { productId: 'prod-001', productName: 'Classic White Tee', clicks: 800 },
       { productId: 'prod-002', productName: 'Denim Jacket', clicks: 723 },
   ] },

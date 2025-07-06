@@ -350,7 +350,6 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
         lastName: affiliate.lastName,
         username: affiliate.username,
         email: affiliate.email,
-        paypalEmail: affiliate.payoutDetails?.paypalEmail ?? '',
         accountHolder: affiliate.payoutDetails?.accountHolder ?? '',
         bankName: affiliate.payoutDetails?.bankName ?? '',
         accountNumber: affiliate.payoutDetails?.accountNumber ?? '',
@@ -369,8 +368,8 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
     };
 
     const handleSavePayoutDetails = () => {
-        const { paypalEmail, accountHolder, bankName, accountNumber, routingNumber } = formData;
-        const payoutDetails: Partial<PayoutDetails> = { paypalEmail, accountHolder, bankName, accountNumber, routingNumber };
+        const { accountHolder, bankName, accountNumber, routingNumber } = formData;
+        const payoutDetails: Partial<PayoutDetails> = { accountHolder, bankName, accountNumber, routingNumber };
         onUpdate(affiliate.id, { payoutDetails });
     };
 
@@ -449,17 +448,9 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                 <Card>
                     <CardHeader>
                         <CardTitle>Payout Information</CardTitle>
-                        <CardDescription>Banking or PayPal details for sending payouts.</CardDescription>
+                        <CardDescription>Banking details for sending payouts.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="paypalEmail">PayPal Email</Label>
-                            <Input id="paypalEmail" value={formData.paypalEmail} onChange={handleInputChange} placeholder="affiliate@paypal.com" disabled={isDisabled} />
-                        </div>
-                        <div className="relative my-4">
-                            <Separator />
-                            <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 bg-background px-2 text-sm text-muted-foreground">OR</span>
-                        </div>
                          <div className="space-y-2">
                             <Label htmlFor="accountHolder">Account Holder Name</Label>
                             <Input id="accountHolder" value={formData.accountHolder} onChange={handleInputChange} placeholder="Jane Doe" disabled={isDisabled} />
