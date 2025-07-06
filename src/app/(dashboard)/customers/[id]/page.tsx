@@ -92,9 +92,9 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
                     <Table>
                         <TableHeader>
                             <TableRow>
+                                <TableHead>Order Date</TableHead>
                                 <TableHead>Transaction ID</TableHead>
                                 <TableHead>Product</TableHead>
-                                <TableHead>Order Date</TableHead>
                                 <TableHead className="text-right">Order Amount</TableHead>
                                 <TableHead className="text-right">Affiliate</TableHead>
                             </TableRow>
@@ -103,12 +103,12 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
                             {purchaseHistory.length > 0 ? (
                                 purchaseHistory.map((item, index) => (
                                     <TableRow key={`${item.orderId}-${index}`}>
+                                        <TableCell>{item.orderDate}</TableCell>
                                         <TableCell className="font-medium">{item.orderId.toUpperCase()}</TableCell>
                                         <TableCell>
                                             <div className="font-medium">{item.productName}</div>
                                             {item.productDetails && <div className="text-sm text-muted-foreground">{item.productDetails}</div>}
                                         </TableCell>
-                                        <TableCell>{item.orderDate}</TableCell>
                                         <TableCell className="text-right">
                                             ${item.orderAmount.toFixed(2)}
                                         </TableCell>
