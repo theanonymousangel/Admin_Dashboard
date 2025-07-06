@@ -32,7 +32,7 @@ type PurchaseHistoryItem = {
     productDetails: string;
     orderDate: string;
     orderAmount: number;
-    commissionEarned: number | null;
+    affiliateUsername: string | null;
 };
 
 export default function CustomerDetailPage({ params }: { params: { id: string } }) {
@@ -50,20 +50,18 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
         const affiliate = mockAffiliates.find(
             (a) => a.username === order.affiliateUsername
         );
-        const commissionRate = affiliate ? affiliate.commissionRate : null;
 
         return order.products.map((p) => {
             const productInfo = mockProducts.find((mp) => mp.name === p.name);
             const price = productInfo ? productInfo.price : 0;
             const itemTotal = price * p.quantity;
-            const commission = commissionRate !== null ? itemTotal * (commissionRate / 100) : null;
             
             return {
                 productName: `${p.quantity > 1 ? `${p.quantity}x ` : ''}${p.name}`,
                 productDetails: [p.size, p.color].filter(Boolean).join(', '),
                 orderDate: format(new Date(order.date), 'yyyy-MM-dd'),
                 orderAmount: itemTotal,
-                commissionEarned: commission,
+                affiliateUsername: affiliate ? affiliate.username : null,
             };
         });
     });
@@ -95,7 +93,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
                                 <TableHead>Product</TableHead>
                                 <TableHead>Order Date</TableHead>
                                 <TableHead className="text-right">Order Amount</TableHead>
-                                <TableHead className="text-right">Commission Earned</TableHead>
+                                <TableHead className="text-right">Affiliate</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -110,10 +108,12 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
                                         <TableCell className="text-right">
                                             ${item.orderAmount.toFixed(2)}
                                         </TableCell>
-                                        <TableCell className="text-right font-medium text-green-600">
-                                            {item.commissionEarned !== null
-                                                ? `+$${item.commissionEarned.toFixed(2)}`
-                                                : <span className="text-muted-foreground">N/A</span>}
+                                        <TableCell className="text-right">
+                                            {item.affiliateUsername ? (
+                                                <span className="font-medium">{item.affiliateUsername}</span>
+                                            ) : (
+                                                <span className="text-muted-foreground">N/A</span>
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 ))
