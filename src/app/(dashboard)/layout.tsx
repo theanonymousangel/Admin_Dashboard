@@ -168,7 +168,7 @@ export default function DashboardLayout({
           {children}
         </main>
         <footer className="p-4 text-center text-xs text-muted-foreground md:p-8">
-            © 2025 – VENDOR – All rights reserved.
+            © 2025 – AERØNE – All rights reserved.
         </footer>
       </div>
     </div>
