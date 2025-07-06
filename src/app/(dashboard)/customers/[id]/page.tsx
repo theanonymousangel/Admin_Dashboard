@@ -2,7 +2,7 @@
 "use client";
 
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -36,7 +36,8 @@ type PurchaseHistoryItem = {
     affiliateUsername: string | null;
 };
 
-export default function CustomerDetailPage({ params }: { params: { id: string } }) {
+export default function CustomerDetailPage() {
+    const params = useParams();
     const customer = mockCustomers.find((c) => c.id === params.id);
     
     if (!customer) {
