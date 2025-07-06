@@ -4,7 +4,6 @@
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import {
-  MoreHorizontal,
   File,
   Search
 } from "lucide-react";
@@ -19,13 +18,6 @@ import {
   CardTitle,
   CardFooter
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -48,8 +40,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { mockOrders, mockCustomers } from "@/lib/mock-data";
-import type { Order } from "@/lib/types";
+import { mockOrders, mockCustomers, mockAffiliates } from "@/lib/mock-data";
+import type { Order, Affiliate } from "@/lib/types";
 
 function OrderStatusBadge({ status }: { status: Order["status"] }) {
     const variantMapping: Record<Order['status'], 'default' | 'secondary' | 'outline' | 'destructive'> = {
@@ -67,6 +59,14 @@ const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusCh
         const map = new Map<string, string>();
         mockCustomers.forEach(customer => {
             map.set(customer.email, customer.id);
+        });
+        return map;
+    }, []);
+
+    const affiliateMap = useMemo(() => {
+        const map = new Map<string, Affiliate>();
+        mockAffiliates.forEach(affiliate => {
+            map.set(affiliate.username, affiliate);
         });
         return map;
     }, []);
@@ -92,14 +92,22 @@ const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusCh
               <TableHead className="hidden xl:table-cell">Products</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>
-                <span className="sr-only">Actions</span>
-              </TableHead>
+              <TableHead className="text-right">Platform Earnings</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {orders.map((order) => {
               const customerId = customerIdMap.get(order.customerEmail);
+              const affiliate = order.affiliateUsername ? affiliateMap.get(order.affiliateUsername) : null;
+              
+              const orderAmountInDollars = order.amount / 100;
+              let platformEarnings = orderAmountInDollars;
+
+              if (affiliate) {
+                  const commissionAmount = orderAmountInDollars * (affiliate.commissionRate / 100);
+                  platformEarnings -= commissionAmount;
+              }
+
               return (
                 <TableRow key={order.id}>
                   <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
@@ -125,7 +133,7 @@ const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusCh
                           return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
                       }).join('; ')}
                   </TableCell>
-                  <TableCell>${order.amount.toFixed(2)}</TableCell>
+                  <TableCell>${orderAmountInDollars.toFixed(2)}</TableCell>
                   <TableCell>
                     <Select onValueChange={(value) => onStatusChange(order.id, value as Order['status'])} defaultValue={order.status}>
                           <SelectTrigger className="w-[120px] h-8">
@@ -140,20 +148,8 @@ const OrdersDisplay = ({ orders, onStatusChange }: { orders: Order[]; onStatusCh
                           </SelectContent>
                       </Select>
                   </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button aria-haspopup="true" size="icon" variant="ghost">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>Customer History</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                  <TableCell className="text-right font-medium">
+                    ${platformEarnings.toFixed(2)}
                   </TableCell>
                 </TableRow>
               );
@@ -200,7 +196,7 @@ export default function OrdersPage() {
       (order.customerPhone && order.customerPhone.includes(lowercasedTerm)) ||
       order.customerAddress.toLowerCase().includes(lowercasedTerm) ||
       order.products.some(p => p.name.toLowerCase().includes(lowercasedTerm)) ||
-      order.amount.toString().includes(lowercasedTerm) ||
+      (order.amount / 100).toFixed(2).includes(lowercasedTerm) ||
       order.status.toLowerCase().includes(lowercasedTerm)
     );
   }, [orders, searchTerm, activeTab]);
