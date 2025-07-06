@@ -30,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const operationsNavItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -96,6 +97,9 @@ export default function DashboardLayout({
             <Link href="/" className="flex items-center gap-2 font-semibold">
               <span className="font-headline text-lg tracking-wider">AERØNE</span>
             </Link>
+            <div className="ml-auto">
+              <ThemeToggle />
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto">
             <nav className="grid items-start p-4 text-sm font-medium">
@@ -137,7 +141,8 @@ export default function DashboardLayout({
       <div className="flex flex-col bg-background">
         <header className="flex h-16 items-center gap-4 border-b bg-card px-4 md:hidden">
           <MobileNav pathname={pathname} />
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
              <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full">
