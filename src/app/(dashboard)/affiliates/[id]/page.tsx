@@ -318,15 +318,6 @@ const PayoutsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
   )
 }
 
-const DocumentStatusBadge = ({ status }: { status: AffiliateDocument['status'] }) => {
-  const styles: Record<AffiliateDocument['status'], string> = {
-    'Pending': 'bg-yellow-100 text-yellow-800',
-    'Approved': 'bg-green-100 text-green-800',
-    'Rejected': 'bg-red-100 text-red-800',
-  };
-  return <Badge className={`border-none text-xs font-normal ${styles[status]}`}>{status}</Badge>;
-};
-
 const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
     const isDisabled = affiliate.status === 'Disabled';
     const [payoutMethod, setPayoutMethod] = useState<'usd' | 'eur'>(affiliate.payoutDetails?.payoutMethod || 'usd');
@@ -346,8 +337,7 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
         eur_iban: affiliate.payoutDetails?.eur?.iban ?? '',
         eur_bic: affiliate.payoutDetails?.eur?.bic ?? '',
     });
-    const [documents, setDocuments] = useState<AffiliateDocument[]>(affiliate.documents);
-
+    
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
@@ -375,34 +365,6 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
             }
         }
         onUpdate(affiliate.id, { payoutDetails });
-    };
-
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            const newFiles = Array.from(e.target.files).map(file => ({
-                id: `doc-${Date.now()}-${Math.random()}`,
-                name: file.name,
-                url: '#', // Placeholder URL
-                uploadedAt: new Date().toISOString(),
-                uploadedBy: 'admin' as const,
-                status: 'Approved' as const,
-            }));
-            const updatedDocuments = [...documents, ...newFiles];
-            setDocuments(updatedDocuments);
-            onUpdate(affiliate.id, { documents: updatedDocuments });
-        }
-    };
-
-    const handleRemoveDocument = (docId: string) => {
-        const updatedDocuments = documents.filter(doc => doc.id !== docId);
-        setDocuments(updatedDocuments);
-        onUpdate(affiliate.id, { documents: updatedDocuments });
-    };
-
-    const handleDocumentStatusChange = (docId: string, newStatus: AffiliateDocument['status']) => {
-        const updatedDocuments = documents.map(doc => doc.id === docId ? {...doc, status: newStatus} : doc);
-        setDocuments(updatedDocuments);
-        onUpdate(affiliate.id, { documents: updatedDocuments });
     };
 
     return (
@@ -525,82 +487,6 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                     <CardFooter>
                         <Button onClick={handleSavePayoutDetails} disabled={isDisabled}>Save Payout Info</Button>
                     </CardFooter>
-                </Card>
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Affiliate Documents</CardTitle>
-                        <CardDescription>Upload or manage documents for this affiliate.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                            {documents.length > 0 ? (
-                                <ul className="space-y-2">
-                                    {documents.map(doc => (
-                                        <li key={doc.id} className="flex items-center justify-between text-sm p-3 rounded-md border">
-                                            <div className="flex items-center gap-3 overflow-hidden">
-                                                <File className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                                                <div className="flex-grow overflow-hidden">
-                                                    <p className="font-medium truncate" title={doc.name}>{doc.name}</p>
-                                                    <p className="text-xs text-muted-foreground">
-                                                        Uploaded by {doc.uploadedBy === 'admin' ? 'You' : 'Affiliate'} on {format(new Date(doc.uploadedAt), 'MMM dd, yyyy')}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <DocumentStatusBadge status={doc.status} />
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon" className="h-7 w-7">
-                                                            <MoreHorizontal className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        {doc.uploadedBy === 'affiliate' && doc.status === 'Pending' && !isDisabled && (
-                                                            <>
-                                                                <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Approved')}>
-                                                                    <CheckCircle2 className="mr-2 h-4 w-4 text-green-600"/>
-                                                                    <span>Approve</span>
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Rejected')}>
-                                                                    <XCircle className="mr-2 h-4 w-4 text-red-600"/>
-                                                                    <span>Reject</span>
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuSeparator />
-                                                            </>
-                                                        )}
-                                                        <DropdownMenuItem>
-                                                            <Download className="mr-2 h-4 w-4"/>
-                                                            <span>Download</span>
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            className="text-destructive focus:text-destructive"
-                                                            onClick={() => handleRemoveDocument(doc.id)}
-                                                            disabled={isDisabled}
-                                                        >
-                                                            <Trash2 className="mr-2 h-4 w-4"/>
-                                                            <span>Delete</span>
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <div className="text-center text-sm text-muted-foreground py-4">
-                                    No documents uploaded.
-                                </div>
-                            )}
-                        </div>
-                        <div className="relative border-2 border-dashed border-muted-foreground/20 rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
-                            <UploadCloud className="mx-auto h-10 w-10 text-muted-foreground mb-2"/>
-                            <Label htmlFor="file-upload" className={`font-semibold ${isDisabled ? 'cursor-not-allowed text-muted-foreground' : 'text-primary cursor-pointer'}`}>
-                                Upload Documents
-                            </Label>
-                            <p className="text-xs text-muted-foreground mt-1">Select one or more files to upload.</p>
-                            <Input id="file-upload" type="file" multiple className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={handleFileUpload} disabled={isDisabled}/>
-                        </div>
-                    </CardContent>
                 </Card>
             </div>
         </div>
@@ -790,6 +676,130 @@ const PromotionsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdat
     );
 };
 
+const DocumentStatusBadge = ({ status }: { status: AffiliateDocument['status'] }) => {
+  const styles: Record<AffiliateDocument['status'], string> = {
+    'Pending': 'bg-yellow-100 text-yellow-800',
+    'Approved': 'bg-green-100 text-green-800',
+    'Rejected': 'bg-red-100 text-red-800',
+  };
+  return <Badge className={`border-none text-xs font-normal ${styles[status]}`}>{status}</Badge>;
+};
+
+const DocumentsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
+    const [documents, setDocuments] = useState<AffiliateDocument[]>(affiliate.documents);
+    const isDisabled = affiliate.status === 'Disabled';
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const newFiles = Array.from(e.target.files).map(file => ({
+                id: `doc-${Date.now()}-${Math.random()}`,
+                name: file.name,
+                url: '#', // Placeholder URL
+                uploadedAt: new Date().toISOString(),
+                uploadedBy: 'admin' as const,
+                status: 'Approved' as const,
+            }));
+            const updatedDocuments = [...documents, ...newFiles];
+            setDocuments(updatedDocuments);
+            onUpdate(affiliate.id, { documents: updatedDocuments });
+        }
+    };
+
+    const handleRemoveDocument = (docId: string) => {
+        const updatedDocuments = documents.filter(doc => doc.id !== docId);
+        setDocuments(updatedDocuments);
+        onUpdate(affiliate.id, { documents: updatedDocuments });
+    };
+
+    const handleDocumentStatusChange = (docId: string, newStatus: AffiliateDocument['status']) => {
+        const updatedDocuments = documents.map(doc => doc.id === docId ? {...doc, status: newStatus} : doc);
+        setDocuments(updatedDocuments);
+        onUpdate(affiliate.id, { documents: updatedDocuments });
+    };
+
+    return (
+        <div className="p-6 bg-background">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Affiliate Documents</CardTitle>
+                    <CardDescription>Upload or manage documents. Documents you upload are sent to the affiliate.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                        {documents.length > 0 ? (
+                            <ul className="space-y-2">
+                                {documents.map(doc => (
+                                    <li key={doc.id} className="flex items-center justify-between text-sm p-3 rounded-md border">
+                                        <div className="flex items-center gap-3 overflow-hidden">
+                                            <File className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                                            <div className="flex-grow overflow-hidden">
+                                                <p className="font-medium truncate" title={doc.name}>{doc.name}</p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    Uploaded by {doc.uploadedBy === 'admin' ? 'You' : 'Affiliate'} on {format(new Date(doc.uploadedAt), 'MMM dd, yyyy')}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <DocumentStatusBadge status={doc.status} />
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon" className="h-7 w-7">
+                                                        <MoreHorizontal className="h-4 w-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    {doc.uploadedBy === 'affiliate' && doc.status === 'Pending' && !isDisabled && (
+                                                        <>
+                                                            <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Approved')}>
+                                                                <CheckCircle2 className="mr-2 h-4 w-4 text-green-600"/>
+                                                                <span>Approve</span>
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={() => handleDocumentStatusChange(doc.id, 'Rejected')}>
+                                                                <XCircle className="mr-2 h-4 w-4 text-red-600"/>
+                                                                <span>Reject</span>
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuSeparator />
+                                                        </>
+                                                    )}
+                                                    <DropdownMenuItem>
+                                                        <Download className="mr-2 h-4 w-4"/>
+                                                        <span>Download</span>
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        className="text-destructive focus:text-destructive"
+                                                        onClick={() => handleRemoveDocument(doc.id)}
+                                                        disabled={isDisabled}
+                                                    >
+                                                        <Trash2 className="mr-2 h-4 w-4"/>
+                                                        <span>Delete</span>
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <div className="text-center text-sm text-muted-foreground py-4">
+                                No documents uploaded.
+                            </div>
+                        )}
+                    </div>
+                    <div className="relative border-2 border-dashed border-muted-foreground/20 rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
+                        <UploadCloud className="mx-auto h-10 w-10 text-muted-foreground mb-2"/>
+                        <Label htmlFor="file-upload" className={`font-semibold ${isDisabled ? 'cursor-not-allowed text-muted-foreground' : 'text-primary cursor-pointer'}`}>
+                            Upload Documents
+                        </Label>
+                        <p className="text-xs text-muted-foreground mt-1">Select one or more files to upload.</p>
+                        <Input id="file-upload" type="file" multiple className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={handleFileUpload} disabled={isDisabled}/>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    );
+};
+
+
 const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
     return (
         <Tabs defaultValue="account" className="w-full">
@@ -798,6 +808,7 @@ const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpd
                 <TabsTrigger value="promotions">Promotions</TabsTrigger>
                 <TabsTrigger value="transactions">Transactions</TabsTrigger>
                 <TabsTrigger value="payouts">Payout Overview</TabsTrigger>
+                <TabsTrigger value="documents">Documents</TabsTrigger>
             </TabsList>
             <TabsContent value="account" className="m-0">
                 <AccountView affiliate={affiliate} onUpdate={onUpdate} />
@@ -810,6 +821,9 @@ const AffiliateDetails = ({ affiliate, onUpdate }: { affiliate: Affiliate; onUpd
             </TabsContent>
             <TabsContent value="payouts" className="m-0">
                 <PayoutsView affiliate={affiliate} onUpdate={onUpdate} />
+            </TabsContent>
+            <TabsContent value="documents" className="m-0">
+                <DocumentsView affiliate={affiliate} onUpdate={onUpdate} />
             </TabsContent>
         </Tabs>
     );
@@ -880,3 +894,5 @@ export default function AffiliateDetailPage() {
         </div>
     );
 }
+
+    
