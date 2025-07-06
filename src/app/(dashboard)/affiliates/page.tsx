@@ -107,11 +107,11 @@ function calculatePayouts(sales: AffiliateSale[], commissionRate: number) {
       if (isAfter(today, eligibleDate)) {
         status = "Eligible for Payout";
       } else {
-        status = "Pending Eligibility";
+        status = "Pending Payout";
       }
     }
 
-    if (status === "Pending Eligibility") {
+    if (status === "Pending Payout") {
         pendingTotal += commission;
     }
 
@@ -141,12 +141,12 @@ function PayoutStatusBadge({ status }: { status: Payout["status"] }) {
   const variant: Record<Payout["status"], "default" | "secondary" | "outline"> = {
     "Paid": "default",
     "Eligible for Payout": "secondary",
-    "Pending Eligibility": "outline",
+    "Pending Payout": "outline",
   };
   const bgColors: Record<Payout["status"], string> = {
     "Paid": "bg-green-100 text-green-800",
     "Eligible for Payout": "bg-blue-100 text-blue-800",
-    "Pending Eligibility": "bg-yellow-100 text-yellow-800",
+    "Pending Payout": "bg-yellow-100 text-yellow-800",
   }
 
   return <Badge variant={variant[status]} className={`border-none ${bgColors[status]}`}>{status}</Badge>;
@@ -186,7 +186,7 @@ const PayoutStatusEditor = ({ payout, onStatusChange }: { payout: Payout, onStat
                     <SelectValue placeholder="Set Status" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="Pending Eligibility">Pending Eligibility</SelectItem>
+                    <SelectItem value="Pending Payout">Pending Payout</SelectItem>
                     <SelectItem value="Eligible for Payout">Eligible for Payout</SelectItem>
                     <SelectItem value="Paid">Paid</SelectItem>
                 </SelectContent>
@@ -212,14 +212,29 @@ const PayoutsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
     const updatedSales = affiliate.sales.map(sale => 
         sale.id === saleId ? { ...sale, status: newStatus } : sale
     );
+    const updatedAffiliate = { ...affiliate, sales: updatedSales };
+
     onUpdate(affiliate.id, { sales: updatedSales });
+    
+    try {
+        const storedAffiliates = localStorage.getItem('affiliatesData');
+        if (storedAffiliates) {
+            const allAffiliates = JSON.parse(storedAffiliates);
+            const updatedAllAffiliates = allAffiliates.map((aff: Affiliate) => 
+                aff.id === affiliate.id ? updatedAffiliate : aff
+            );
+            localStorage.setItem('affiliatesData', JSON.stringify(updatedAllAffiliates));
+        }
+    } catch (error) {
+        console.error("Failed to update affiliates in localStorage", error);
+    }
   };
 
   const filteredPayouts = useMemo(() => {
     return payouts.filter(p => {
       if (filter === 'all') return true;
       if (filter === 'eligible') return p.status === 'Eligible for Payout';
-      if (filter === 'pending') return p.status === 'Pending Eligibility';
+      if (filter === 'pending') return p.status === 'Pending Payout';
       if (filter === 'paid') return p.status === 'Paid';
       return false;
     });
@@ -727,6 +742,8 @@ export default function AffiliatesPage() {
   const [affiliates, setAffiliates] = useState<Affiliate[]>([]);
   const [openAffiliateId, setOpenAffiliateId] = useState<string | null>(null);
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
+  const [editedAffiliates, setEditedAffiliates] = useState<Record<string, Partial<Affiliate>>>({});
+  const { toast } = useToast();
   const [newAffiliateData, setNewAffiliateData] = useState({
     username: '',
     firstName: '',
@@ -766,6 +783,25 @@ export default function AffiliatesPage() {
     if (data.status === 'Disabled') {
       setOpenAffiliateId(null);
     }
+    setEditedAffiliates(prev => {
+      const newState = { ...prev };
+      delete newState[affiliateId];
+      return newState;
+    });
+    toast({
+        title: "Affiliate Updated",
+        description: "The affiliate's details have been saved.",
+    });
+  };
+
+  const handleInlineChange = (affiliateId: string, data: Partial<Affiliate>) => {
+    setEditedAffiliates(prev => ({
+        ...prev,
+        [affiliateId]: {
+            ...prev[affiliateId],
+            ...data
+        }
+    }));
   };
   
   const handlePermanentDelete = (affiliateId: string) => {
@@ -853,7 +889,11 @@ export default function AffiliatesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {affiliates.map((affiliate) => (
+              {affiliates.map((affiliate) => {
+                const isDirty = !!editedAffiliates[affiliate.id];
+                const currentData = { ...affiliate, ...editedAffiliates[affiliate.id] };
+
+                return (
                 <React.Fragment key={affiliate.id}>
                   <TableRow 
                     className="border-b cursor-pointer"
@@ -861,32 +901,32 @@ export default function AffiliatesPage() {
                       setOpenAffiliateId(openAffiliateId === affiliate.id ? null : affiliate.id)
                     }}
                   >
-                    <TableCell className="font-medium">{affiliate.username}</TableCell>
-                    <TableCell>${affiliate.totalSales.toLocaleString()}</TableCell>
+                    <TableCell className="font-medium">{currentData.username}</TableCell>
+                    <TableCell>${currentData.totalSales.toLocaleString()}</TableCell>
                     <TableCell onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center gap-1">
                         <Input
                           type="number"
-                          value={affiliate.commissionRate}
+                          value={currentData.commissionRate}
                           onChange={(e) => {
-                              handleAffiliateUpdate(affiliate.id, { commissionRate: Number(e.target.value) })
+                              handleInlineChange(affiliate.id, { commissionRate: Number(e.target.value) })
                           }}
                           className="w-20 h-8"
-                          disabled={affiliate.status === 'Disabled'}
+                          disabled={currentData.status === 'Disabled'}
                         />
                           <span className="text-muted-foreground">%</span>
                       </div>
                     </TableCell>
-                    <TableCell>${affiliate.balance.toFixed(2)}</TableCell>
+                    <TableCell>${currentData.balance.toFixed(2)}</TableCell>
                     <TableCell onClick={(e) => e.stopPropagation()}>
                       <Select
-                        defaultValue={affiliate.status}
+                        value={currentData.status}
                         onValueChange={(value) => {
-                            handleAffiliateUpdate(affiliate.id, { status: value as Affiliate['status'] });
+                            handleInlineChange(affiliate.id, { status: value as Affiliate['status'] });
                         }}
                         >
                         <SelectTrigger
-                            className={`w-[120px] h-8 ${affiliate.status === 'Disabled' ? 'text-muted-foreground' : ''}`}
+                            className={`w-[120px] h-8 ${currentData.status === 'Disabled' ? 'text-muted-foreground' : ''}`}
                         >
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
@@ -898,11 +938,11 @@ export default function AffiliatesPage() {
                         </SelectContent>
                       </Select>
                     </TableCell>
-                    <TableCell>{affiliate.sales.length}</TableCell>
+                    <TableCell>{currentData.sales.length}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <span>{affiliate.totalClicks?.toLocaleString() || 0}</span>
-                        {affiliate.productClicks && affiliate.productClicks.length > 0 && (
+                        <span>{currentData.totalClicks?.toLocaleString() || 0}</span>
+                        {currentData.productClicks && currentData.productClicks.length > 0 && (
                           <TooltipProvider>
                             <Tooltip delayDuration={0}>
                               <TooltipTrigger>
@@ -912,7 +952,7 @@ export default function AffiliatesPage() {
                                 <div className="p-1">
                                   <h4 className="font-semibold mb-2 text-center">Clicks per Product</h4>
                                   <ul className="space-y-1">
-                                    {affiliate.productClicks.map((pc) => (
+                                    {currentData.productClicks.map((pc) => (
                                       <li key={pc.productId} className="flex justify-between gap-4">
                                         <span className="text-muted-foreground">{pc.productName}:</span>
                                         <span className="font-medium">{pc.clicks.toLocaleString()}</span>
@@ -927,84 +967,100 @@ export default function AffiliatesPage() {
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button size="icon" variant="ghost" onClick={(e) => e.stopPropagation()}>
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Actions</span>
+                      <div className="flex items-center justify-end gap-2">
+                        {isDirty && (
+                          <Button
+                            size="sm"
+                            className="h-8 gap-1"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAffiliateUpdate(affiliate.id, editedAffiliates[affiliate.id]!);
+                            }}
+                          >
+                            <Save className="h-3.5 w-3.5" />
+                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Save</span>
                           </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          {affiliate.status !== 'Disabled' ? (
+                        )}
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button size="icon" variant="ghost" onClick={(e) => e.stopPropagation()}>
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Actions</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {currentData.status !== 'Disabled' ? (
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="flex items-center gap-2">
+                                    <UserX className="h-4 w-4" />
+                                    <span>Disable Account</span>
+                                  </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Disable Affiliate Account?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Disabling this account will revoke their access and stop commission tracking. Their data will be retained. Are you sure?
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleAffiliateUpdate(affiliate.id, { status: 'Disabled' })}>
+                                      Yes, Disable
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            ) : (
+                              <DropdownMenuItem onClick={() => handleAffiliateUpdate(affiliate.id, { status: 'Active' })} className="flex items-center gap-2">
+                                <UserCheck className="h-4 w-4" />
+                                <span>Enable Account</span>
+                              </DropdownMenuItem>
+                            )}
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
-                                <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="flex items-center gap-2">
-                                  <UserX className="h-4 w-4" />
-                                  <span>Disable Account</span>
+                                <DropdownMenuItem
+                                  className="flex items-center gap-2 text-destructive focus:text-destructive focus:bg-destructive/10"
+                                  onSelect={(e) => e.preventDefault()}
+                                  disabled={currentData.status !== 'Disabled'}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                  <span>Permanently Delete</span>
                                 </DropdownMenuItem>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                 <AlertDialogHeader>
-                                  <AlertDialogTitle>Disable Affiliate Account?</AlertDialogTitle>
+                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                   <AlertDialogDescription>
-                                    Disabling this account will revoke their access and stop commission tracking. Their data will be retained. Are you sure?
+                                    This action cannot be undone. This will permanently delete the affiliate and all of their associated data.
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction onClick={() => handleAffiliateUpdate(affiliate.id, { status: 'Disabled' })}>
-                                    Yes, Disable
+                                  <AlertDialogAction onClick={() => handlePermanentDelete(affiliate.id)} className={buttonVariants({ variant: "destructive" })}>
+                                    Yes, Permanently Delete
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
                               </AlertDialogContent>
                             </AlertDialog>
-                          ) : (
-                            <DropdownMenuItem onClick={() => handleAffiliateUpdate(affiliate.id, { status: 'Active' })} className="flex items-center gap-2">
-                              <UserCheck className="h-4 w-4" />
-                              <span>Enable Account</span>
-                            </DropdownMenuItem>
-                          )}
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <DropdownMenuItem
-                                className="flex items-center gap-2 text-destructive focus:text-destructive focus:bg-destructive/10"
-                                onSelect={(e) => e.preventDefault()}
-                                disabled={affiliate.status !== 'Disabled'}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                                <span>Permanently Delete</span>
-                              </DropdownMenuItem>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This action cannot be undone. This will permanently delete the affiliate and all of their associated data.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handlePermanentDelete(affiliate.id)} className={buttonVariants({ variant: "destructive" })}>
-                                  Yes, Permanently Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </TableCell>
                   </TableRow>
                   {openAffiliateId === affiliate.id && (
                     <TableRow className="bg-muted/50 hover:bg-muted/50">
                       <TableCell colSpan={8} className="p-0">
-                        <AffiliateDetails affiliate={affiliate} onUpdate={handleAffiliateUpdate} />
+                        <AffiliateDetails affiliate={currentData} onUpdate={handleAffiliateUpdate} />
                       </TableCell>
                     </TableRow>
                   )}
                 </React.Fragment>
-              ))}
+                )
+              })}
             </TableBody>
           </Table>
         </CardContent>
