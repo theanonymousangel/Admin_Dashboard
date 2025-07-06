@@ -255,6 +255,7 @@ export default function DashboardPage() {
                         tickLine={false}
                         axisLine={false}
                         tickFormatter={(value) => `$${value / 1000}K`}
+                        domain={[0, 10000]}
                     />
                     <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3' }} />
                     <Line 
