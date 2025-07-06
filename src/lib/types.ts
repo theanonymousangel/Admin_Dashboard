@@ -69,10 +69,18 @@ export type AffiliateDocument = {
 };
 
 export type PayoutDetails = {
-  bankName: string;
-  accountHolder: string;
-  accountNumber: string;
-  routingNumber: string;
+  payoutMethod?: 'usd' | 'eur';
+  usd?: {
+    accountHolder: string;
+    bankName: string;
+    accountNumber: string;
+    routingNumber: string;
+  };
+  eur?: {
+    accountHolder: string;
+    iban: string;
+    bic: string;
+  }
 };
 
 export type ProductClicks = {
@@ -94,7 +102,7 @@ export type Affiliate = {
   status: 'Active' | 'Pending' | 'Rejected' | 'Disabled';
   sales: AffiliateSale[];
   documents: AffiliateDocument[];
-  payoutDetails?: Partial<PayoutDetails>;
+  payoutDetails?: PayoutDetails;
   promotableProductIds?: string[];
   productClicks?: ProductClicks[];
 };

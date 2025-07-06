@@ -74,6 +74,7 @@ import { useToast } from "@/hooks/use-toast";
 
 import { mockAffiliates, mockProducts } from "@/lib/mock-data";
 import type { Affiliate, AffiliateSale, Payout, AffiliateDocument, Transaction, PayoutDetails, Product } from "@/lib/types";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 function getNextPayoutDate(eligibleDate: Date): Date {
   const payoutDays = [7, 14, 21, 28];
@@ -345,15 +346,22 @@ const PayoutsView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
 
 const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: (id: string, data: Partial<Affiliate>) => void }) => {
     const isDisabled = affiliate.status === 'Disabled';
+    const [payoutMethod, setPayoutMethod] = useState<'usd' | 'eur'>(affiliate.payoutDetails?.payoutMethod || 'usd');
+
     const [formData, setFormData] = useState({
         firstName: affiliate.firstName,
         lastName: affiliate.lastName,
         username: affiliate.username,
         email: affiliate.email,
-        accountHolder: affiliate.payoutDetails?.accountHolder ?? '',
-        bankName: affiliate.payoutDetails?.bankName ?? '',
-        accountNumber: affiliate.payoutDetails?.accountNumber ?? '',
-        routingNumber: affiliate.payoutDetails?.routingNumber ?? '',
+        // USD fields
+        usd_accountHolder: affiliate.payoutDetails?.usd?.accountHolder ?? '',
+        usd_bankName: affiliate.payoutDetails?.usd?.bankName ?? '',
+        usd_accountNumber: affiliate.payoutDetails?.usd?.accountNumber ?? '',
+        usd_routingNumber: affiliate.payoutDetails?.usd?.routingNumber ?? '',
+        // EUR fields
+        eur_accountHolder: affiliate.payoutDetails?.eur?.accountHolder ?? '',
+        eur_iban: affiliate.payoutDetails?.eur?.iban ?? '',
+        eur_bic: affiliate.payoutDetails?.eur?.bic ?? '',
     });
     const [documents, setDocuments] = useState<AffiliateDocument[]>(affiliate.documents);
 
@@ -368,8 +376,21 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
     };
 
     const handleSavePayoutDetails = () => {
-        const { accountHolder, bankName, accountNumber, routingNumber } = formData;
-        const payoutDetails: Partial<PayoutDetails> = { accountHolder, bankName, accountNumber, routingNumber };
+        const payoutDetails: PayoutDetails = { payoutMethod };
+        if (payoutMethod === 'usd') {
+            payoutDetails.usd = {
+                accountHolder: formData.usd_accountHolder,
+                bankName: formData.usd_bankName,
+                accountNumber: formData.usd_accountNumber,
+                routingNumber: formData.usd_routingNumber,
+            };
+        } else { // 'eur'
+            payoutDetails.eur = {
+                accountHolder: formData.eur_accountHolder,
+                iban: formData.eur_iban,
+                bic: formData.eur_bic,
+            }
+        }
         onUpdate(affiliate.id, { payoutDetails });
     };
 
@@ -451,22 +472,64 @@ const AccountView = ({ affiliate, onUpdate }: { affiliate: Affiliate, onUpdate: 
                         <CardDescription>Banking details for sending payouts.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                         <div className="space-y-2">
-                            <Label htmlFor="accountHolder">Account Holder Name</Label>
-                            <Input id="accountHolder" value={formData.accountHolder} onChange={handleInputChange} placeholder="Jane Doe" disabled={isDisabled} />
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="bankName">Bank Name</Label>
-                            <Input id="bankName" value={formData.bankName} onChange={handleInputChange} placeholder="Global Bank" disabled={isDisabled} />
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="accountNumber">Account Number</Label>
-                            <Input id="accountNumber" value={formData.accountNumber} onChange={handleInputChange} placeholder="**** **** **** 1234" disabled={isDisabled} />
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="routingNumber">Routing Number</Label>
-                            <Input id="routingNumber" value={formData.routingNumber} onChange={handleInputChange} placeholder="123456789" disabled={isDisabled} />
-                        </div>
+                         <RadioGroup defaultValue={payoutMethod} onValueChange={(value: 'usd' | 'eur') => setPayoutMethod(value)} className="grid grid-cols-2 gap-4" disabled={isDisabled}>
+                            <div>
+                                <RadioGroupItem value="usd" id="usd" className="peer sr-only" />
+                                <Label
+                                    htmlFor="usd"
+                                    className={`flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary ${isDisabled ? 'cursor-not-allowed opacity-70' : ''}`}
+                                >
+                                    USD (US Bank)
+                                </Label>
+                            </div>
+                            <div>
+                                <RadioGroupItem value="eur" id="eur" className="peer sr-only" />
+                                <Label
+                                    htmlFor="eur"
+                                    className={`flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary ${isDisabled ? 'cursor-not-allowed opacity-70' : ''}`}
+                                >
+                                    EUR (International)
+                                </Label>
+                            </div>
+                        </RadioGroup>
+
+                        {payoutMethod === 'usd' && (
+                            <div className="space-y-4 pt-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="usd_accountHolder">Account Holder Name</Label>
+                                    <Input id="usd_accountHolder" value={formData.usd_accountHolder} onChange={handleInputChange} placeholder="Jane Doe" disabled={isDisabled} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="usd_bankName">Bank Name</Label>
+                                    <Input id="usd_bankName" value={formData.usd_bankName} onChange={handleInputChange} placeholder="Global Bank" disabled={isDisabled} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="usd_accountNumber">Account Number</Label>
+                                    <Input id="usd_accountNumber" value={formData.usd_accountNumber} onChange={handleInputChange} placeholder="**** **** **** 1234" disabled={isDisabled} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="usd_routingNumber">Routing Number</Label>
+                                    <Input id="usd_routingNumber" value={formData.usd_routingNumber} onChange={handleInputChange} placeholder="123456789" disabled={isDisabled} />
+                                </div>
+                            </div>
+                        )}
+
+                        {payoutMethod === 'eur' && (
+                            <div className="space-y-4 pt-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="eur_accountHolder">Account Holder Name</Label>
+                                    <Input id="eur_accountHolder" value={formData.eur_accountHolder} onChange={handleInputChange} placeholder="Jane Doe" disabled={isDisabled} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="eur_iban">IBAN</Label>
+                                    <Input id="eur_iban" value={formData.eur_iban} onChange={handleInputChange} placeholder="DE89370400440532013000" disabled={isDisabled} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="eur_bic">BIC / SWIFT</Label>
+                                    <Input id="eur_bic" value={formData.eur_bic} onChange={handleInputChange} placeholder="COBADEFFXXX" disabled={isDisabled} />
+                                </div>
+                            </div>
+                        )}
                     </CardContent>
                     <CardFooter>
                         <Button onClick={handleSavePayoutDetails} disabled={isDisabled}>Save Payout Info</Button>

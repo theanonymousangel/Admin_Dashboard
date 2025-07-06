@@ -51,7 +51,7 @@ export const mockAffiliates: Affiliate[] = [
       { productId: 'prod-001', productName: 'Classic White Tee', clicks: 800 },
       { productId: 'prod-002', productName: 'Denim Jacket', clicks: 723 },
   ] },
-  { id: 'aff-02', username: 'style_influencer', firstName: 'John', lastName: 'Smith', email: 'style@influencer.com', totalSales: 8200, commissionRate: 12, balance: 984, status: 'Active', sales: salesForAffiliate2, totalClicks: 987, documents: [], payoutDetails: { bankName: 'Global Bank Inc.', accountHolder: 'John Smith', accountNumber: '**** **** **** 5678', routingNumber: '987654321' }, promotableProductIds: ['prod-001', 'prod-003', 'prod-005'], productClicks: [
+  { id: 'aff-02', username: 'style_influencer', firstName: 'John', lastName: 'Smith', email: 'style@influencer.com', totalSales: 8200, commissionRate: 12, balance: 984, status: 'Active', sales: salesForAffiliate2, totalClicks: 987, documents: [], payoutDetails: { payoutMethod: 'usd', usd: { bankName: 'Global Bank Inc.', accountHolder: 'John Smith', accountNumber: '**** **** **** 5678', routingNumber: '987654321' } }, promotableProductIds: ['prod-001', 'prod-003', 'prod-005'], productClicks: [
         { productId: 'prod-001', productName: 'Classic White Tee', clicks: 450 },
         { productId: 'prod-003', productName: 'Black Skinny Jeans', clicks: 300 },
         { productId: 'prod-005', productName: 'Beige Hoodie', clicks: 237 },
