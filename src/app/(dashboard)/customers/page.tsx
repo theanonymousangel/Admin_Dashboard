@@ -112,7 +112,9 @@ export default function CustomersPage() {
 
     return customers.filter(customer => 
       customer.name.toLowerCase().includes(lowercasedTerm) ||
-      customer.email.toLowerCase().includes(lowercasedTerm)
+      customer.email.toLowerCase().includes(lowercasedTerm) ||
+      (customer.phone && customer.phone.includes(lowercasedTerm)) ||
+      (customer.address && customer.address.toLowerCase().includes(lowercasedTerm))
     );
   }, [customers, searchTerm]);
 
@@ -151,6 +153,8 @@ export default function CustomersPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Customer</TableHead>
+              <TableHead className="hidden md:table-cell">Contact</TableHead>
+              <TableHead className="hidden lg:table-cell">Address</TableHead>
               <TableHead>Total Orders</TableHead>
               <TableHead>Total Spent</TableHead>
               <TableHead>Last Purchase</TableHead>
@@ -165,17 +169,19 @@ export default function CustomersPage() {
                 >
                   <TableCell>
                     <div className="font-medium">{customer.name}</div>
-                    <div className="hidden text-sm text-muted-foreground md:inline">
+                    <div className="text-sm text-muted-foreground">
                       {customer.email}
                     </div>
                   </TableCell>
+                  <TableCell className="hidden md:table-cell">{customer.phone || 'N/A'}</TableCell>
+                  <TableCell className="hidden lg:table-cell">{customer.address || 'N/A'}</TableCell>
                   <TableCell>{customer.totalOrders}</TableCell>
                   <TableCell>${customer.totalSpent.toFixed(2)}</TableCell>
                   <TableCell>{new Date(customer.lastPurchaseDate).toLocaleDateString()}</TableCell>
                 </TableRow>
                 {openCustomerId === customer.id && (
                   <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    <TableCell colSpan={4} className="p-0">
+                    <TableCell colSpan={6} className="p-0">
                       <CustomerDetails customer={customer} orders={orders} />
                     </TableCell>
                   </TableRow>

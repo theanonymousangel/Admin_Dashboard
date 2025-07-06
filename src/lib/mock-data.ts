@@ -19,10 +19,10 @@ export const mockOrders: Order[] = [
 ];
 
 export const mockCustomers: Customer[] = [
-  { id: 'cust-01', name: 'Jane Doe', email: 'jane.doe@example.com', totalOrders: 2, totalSpent: 99.97, lastPurchaseDate: '2023-10-26' },
-  { id: 'cust-02', name: 'John Smith', email: 'john.smith@example.com', totalOrders: 1, totalSpent: 169.98, lastPurchaseDate: '2023-10-25' },
-  { id: 'cust-03', name: 'Alice Johnson', email: 'alice.j@example.com', totalOrders: 2, totalSpent: 139.98, lastPurchaseDate: '2023-10-27' },
-  { id: 'cust-04', name: 'Bob Brown', email: 'bob.brown@example.com', totalOrders: 1, totalSpent: 0.00, lastPurchaseDate: '2023-10-24' },
+  { id: 'cust-01', name: 'Jane Doe', email: 'jane.doe@example.com', phone: '123-456-7890', address: '123 Oak St, Anytown, USA', totalOrders: 2, totalSpent: 99.97, lastPurchaseDate: '2023-10-26' },
+  { id: 'cust-02', name: 'John Smith', email: 'john.smith@example.com', phone: '234-567-8901', address: '456 Maple Ave, Somecity, USA', totalOrders: 1, totalSpent: 169.98, lastPurchaseDate: '2023-10-25' },
+  { id: 'cust-03', name: 'Alice Johnson', email: 'alice.j@example.com', phone: '345-678-9012', address: '789 Pine Rd, Otherville, USA', totalOrders: 2, totalSpent: 139.98, lastPurchaseDate: '2023-10-27' },
+  { id: 'cust-04', name: 'Bob Brown', email: 'bob.brown@example.com', phone: '456-789-0123', address: '101 Birch Blvd, Anyplace, USA', totalOrders: 1, totalSpent: 0.00, lastPurchaseDate: '2023-10-24' },
 ];
 
 const today = new Date();
