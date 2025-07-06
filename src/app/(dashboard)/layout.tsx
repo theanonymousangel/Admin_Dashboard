@@ -67,7 +67,7 @@ const MobileNav = ({ pathname }: { pathname: string }) => (
         href="/"
         className="flex items-center gap-2 text-lg font-semibold mb-4 pl-3"
       >
-        <span className="font-headline text-lg tracking-wider">VENDOR</span>
+        <span className="font-headline text-lg tracking-wider">ADMIN</span>
       </Link>
       <nav className="grid gap-4 text-base font-medium">
          <div className="flex flex-col gap-1">
@@ -94,7 +94,7 @@ export default function DashboardLayout({
         <div className="flex h-full max-h-screen flex-col">
           <div className="flex h-16 items-center border-b px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <span className="font-headline text-lg tracking-wider">VENDOR</span>
+              <span className="font-headline text-lg tracking-wider">ADMIN</span>
             </Link>
             <div className="ml-auto">
               <ThemeToggle />
