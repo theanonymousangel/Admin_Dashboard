@@ -8,6 +8,7 @@ import {
   Download,
   File,
   Save,
+  Info,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { mockAffiliates } from "@/lib/mock-data";
 import type { Affiliate } from "@/lib/types";
@@ -180,6 +187,7 @@ export default function AffiliatesPage() {
       documents: [],
       payoutDetails: {},
       promotableProductIds: [],
+      productClicks: [],
     };
     saveAffiliates((prev) => [newAffiliate, ...prev]);
     setIsAddSheetOpen(false);
@@ -264,7 +272,33 @@ export default function AffiliatesPage() {
                     </TableCell>
                     <TableCell>{affiliate.sales.length}</TableCell>
                     <TableCell>
-                      {affiliate.totalClicks?.toLocaleString() || 0}
+                      <div className="flex items-center gap-1">
+                        <span>{affiliate.totalClicks?.toLocaleString() || 0}</span>
+                        {affiliate.productClicks && affiliate.productClicks.length > 0 && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-6 w-6 cursor-default">
+                                  <Info className="h-4 w-4 text-muted-foreground" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" align="center">
+                                <div className="p-1">
+                                  <h4 className="text-sm font-semibold mb-2 text-center">Clicks by Product</h4>
+                                  <ul className="space-y-1">
+                                    {affiliate.productClicks.map((pc) => (
+                                      <li key={pc.productId} className="flex justify-between items-center gap-4 text-xs">
+                                        <span>{pc.productName}</span>
+                                        <span className="font-bold">{pc.clicks.toLocaleString()}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 )
