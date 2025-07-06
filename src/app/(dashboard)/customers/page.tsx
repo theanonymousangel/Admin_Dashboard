@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   File,
   Search
@@ -32,7 +32,6 @@ import type { Customer } from "@/lib/types";
 export default function CustomersPage() {
   const [customers] = useState<Customer[]>(mockCustomers);
   const [searchTerm, setSearchTerm] = useState("");
-  const router = useRouter();
 
   const filteredCustomers = useMemo(() => {
     if (!searchTerm) {
@@ -95,14 +94,13 @@ export default function CustomersPage() {
               <TableRow 
                 key={customer.id}
               >
-                <TableCell 
-                  className="cursor-pointer"
-                  onClick={() => router.push(`/customers/${customer.id}`)}
-                >
-                  <div className="font-medium">{customer.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {customer.email}
-                  </div>
+                <TableCell>
+                  <Link href={`/customers/${customer.id}`} className="group">
+                    <div className="font-medium group-hover:underline">{customer.name}</div>
+                    <div className="text-sm text-muted-foreground group-hover:underline">
+                      {customer.email}
+                    </div>
+                  </Link>
                 </TableCell>
                 <TableCell>{customer.phone || 'N/A'}</TableCell>
                 <TableCell>{customer.address || 'N/A'}</TableCell>
