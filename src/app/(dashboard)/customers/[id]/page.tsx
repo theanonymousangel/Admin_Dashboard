@@ -28,6 +28,7 @@ import type { Customer } from '@/lib/types';
 import React from 'react';
 
 type PurchaseHistoryItem = {
+    orderId: string;
     productName: string;
     productDetails: string;
     orderDate: string;
@@ -57,6 +58,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
             const itemTotal = price * p.quantity;
             
             return {
+                orderId: order.id,
                 productName: `${p.quantity > 1 ? `${p.quantity}x ` : ''}${p.name}`,
                 productDetails: [p.size, p.color].filter(Boolean).join(', '),
                 orderDate: format(new Date(order.date), 'yyyy-MM-dd'),
@@ -90,6 +92,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
                     <Table>
                         <TableHeader>
                             <TableRow>
+                                <TableHead>Transaction ID</TableHead>
                                 <TableHead>Product</TableHead>
                                 <TableHead>Order Date</TableHead>
                                 <TableHead className="text-right">Order Amount</TableHead>
@@ -99,7 +102,8 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
                         <TableBody>
                             {purchaseHistory.length > 0 ? (
                                 purchaseHistory.map((item, index) => (
-                                    <TableRow key={index}>
+                                    <TableRow key={`${item.orderId}-${index}`}>
+                                        <TableCell className="font-medium">{item.orderId.toUpperCase()}</TableCell>
                                         <TableCell>
                                             <div className="font-medium">{item.productName}</div>
                                             {item.productDetails && <div className="text-sm text-muted-foreground">{item.productDetails}</div>}
@@ -119,7 +123,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={4} className="h-24 text-center">
+                                    <TableCell colSpan={5} className="h-24 text-center">
                                         This customer has no purchase history.
                                     </TableCell>
                                 </TableRow>
