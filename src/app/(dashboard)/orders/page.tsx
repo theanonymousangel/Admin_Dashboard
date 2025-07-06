@@ -105,7 +105,7 @@ const TransactionsView = ({ orders, searchTerm, setSearchTerm }: { orders: Order
               const customerId = customerIdMap.get(order.customerEmail);
               const affiliate = order.affiliateUsername ? affiliateMap.get(order.affiliateUsername) : null;
               
-              const orderAmountInDollars = order.amount / 100;
+              const orderAmountInDollars = order.amount;
               let platformCommission = order.amount;
 
               if (affiliate) {
@@ -140,7 +140,7 @@ const TransactionsView = ({ orders, searchTerm, setSearchTerm }: { orders: Order
                   </TableCell>
                   <TableCell>${orderAmountInDollars.toFixed(2)}</TableCell>
                   <TableCell className="text-right font-medium">
-                    ${(platformCommission / 100).toFixed(2)}
+                    ${(platformCommission).toFixed(2)}
                   </TableCell>
                 </TableRow>
               );
@@ -214,7 +214,9 @@ const DeliveriesView = ({ orders, onStatusChange, searchTerm, setSearchTerm }: {
                             <TableHead>Order ID</TableHead>
                             <TableHead>Customer</TableHead>
                             <TableHead>Date</TableHead>
-                            <TableHead>Address</TableHead>
+                            <TableHead className="hidden sm:table-cell">Products</TableHead>
+                            <TableHead className="hidden md:table-cell">Affiliate</TableHead>
+                            <TableHead className="hidden lg:table-cell">Address</TableHead>
                             <TableHead>Current Status</TableHead>
                             <TableHead className="w-[180px]">Update Status</TableHead>
                         </TableRow>
@@ -225,7 +227,17 @@ const DeliveriesView = ({ orders, onStatusChange, searchTerm, setSearchTerm }: {
                                 <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
                                 <TableCell>{order.customerName}</TableCell>
                                 <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
-                                <TableCell className="hidden sm:table-cell">{order.customerAddress}</TableCell>
+                                <TableCell className="hidden sm:table-cell max-w-[200px] truncate" title={order.products.map(p => {
+                                        const details = [p.size, p.color].filter(Boolean).join(', ');
+                                        return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
+                                    }).join('; ')}>
+                                    {order.products.map(p => {
+                                        const details = [p.size, p.color].filter(Boolean).join(', ');
+                                        return `${p.quantity}x ${p.name}${details ? ` (${details})` : ''}`;
+                                    }).join('; ')}
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">{order.affiliateUsername || 'N/A'}</TableCell>
+                                <TableCell className="hidden lg:table-cell">{order.customerAddress}</TableCell>
                                 <TableCell><StatusBadge status={order.status} /></TableCell>
                                 <TableCell>
                                     <Select
@@ -315,7 +327,7 @@ export default function OrdersPage() {
       (order.customerPhone && order.customerPhone.includes(lowercasedTerm)) ||
       order.customerAddress.toLowerCase().includes(lowercasedTerm) ||
       order.products.some(p => p.name.toLowerCase().includes(lowercasedTerm)) ||
-      (order.amount / 100).toFixed(2).includes(lowercasedTerm) ||
+      (order.amount).toFixed(2).includes(lowercasedTerm) ||
       order.status.toLowerCase().includes(lowercasedTerm)
     );
   }, [orders, searchTerm]);
